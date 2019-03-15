@@ -1,0 +1,18 @@
+{
+  "name": "rtls-server",
+  "version": "1.0.0",
+  "description": "Service for configuring UWB RTLS built on NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DemianZ",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "ip": "^1.1.5",
+    "plotly": "^1.0.6",
+    "serialport": "^7.1.4",
+    "socket.io": "^2.2.0"
+  }
+}

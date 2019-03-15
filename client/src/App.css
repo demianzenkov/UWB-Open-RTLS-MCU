@@ -1,0 +1,53 @@
+.headerRow {
+    background: #dae7ff;
+    height: 15px;
+    border-bottom: solid rgba(144, 132, 252, 0.384) 1px;
+    border-top: solid rgba(144, 132, 252, 0.384) 1px;
+}
+
+.colSerialConfig {
+    background: #f4f7ff;
+    height: 100vh;
+}
+    .divSelectPort {
+        padding-top: 15px; 
+        width: 200px;
+    }
+    .buttonDiv {
+        width: 200px;
+        margin: 5px;
+    }
+
+.colConsoleConfig {
+    background: #dae7ff;
+}
+
+.colSerialConsole {  
+    background: #f4f7ff;
+}    
+    .divConsoleText {
+        padding-top: 15px; 
+    }
+        .textareaConsoleText {
+            resize: none;
+            min-width: 90%;
+            min-height: 60vh;
+            max-height: 70vh;
+        }
+    .colConsoleSendButton {
+        padding-top: 10px;
+    }
+    .colConsoleInput{
+        padding-top: 10px;
+    }
+        .textareaConsoleInput {
+
+            resize: none;
+        }
+        
+.colConsoleFeatures {
+    background: #dae7ff;
+}
+    .buttonDivFeatures {
+        padding-top: 15px;
+    }
