@@ -1,3 +1,7 @@
+.navPadding {
+    padding-left: 64px;
+}
+
 .headerRow {
     background: #dae7ff;
     height: 15px;
@@ -11,10 +15,10 @@
 }
     .divSelectPort {
         padding-top: 15px; 
-        width: 200px;
+        width: 90%;
     }
     .buttonDiv {
-        width: 200px;
+        width: 90%;
         margin: 5px;
     }
 
