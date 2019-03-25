@@ -1,7 +1,6 @@
-*/node_modules/*
-*/node_modules/*
+node_modules/
 
-*.DS_Store
-*.pyc
+**.DS_Store
+**.pyc
 
 .vscode
