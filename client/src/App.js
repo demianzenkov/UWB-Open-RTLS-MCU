@@ -1,12 +1,13 @@
 import React from 'react';
+
 import { BrowserRouter, Route } from "react-router-dom";
+
 import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import '@fortawesome/free-solid-svg-icons'
-import '@fortawesome/fontawesome-svg-core'
+import { faTerminal } from "@fortawesome/free-solid-svg-icons";
+
 import SerialConsole from './items/serial-console';
-import { faHome, faTerminal } from "@fortawesome/free-solid-svg-icons";
 
 class App extends React.Component {
   render() {

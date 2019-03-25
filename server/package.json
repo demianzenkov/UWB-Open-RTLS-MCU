@@ -9,9 +9,11 @@
   "author": "DemianZ",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "ip": "^1.1.5",
-    "plotly": "^1.0.6",
+    "mongoose": "^5.4.19",
+    "node-osc": "^3.0.0",
     "serialport": "^7.1.4",
     "socket.io": "^2.2.0"
   }

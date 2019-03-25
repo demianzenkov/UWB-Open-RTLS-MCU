@@ -1,3 +1,5 @@
+var osc = require('node-osc');
+
 const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
@@ -20,6 +22,11 @@ var SerialPort = require('serialport');
 const server = http.createServer(app);
 
 const io = socketio(server); // create socket using instance of http server
+
+var client = new osc.Client('localhost', 3333);
+client.send('/oscAddress', 200, function () {
+    client.kill();
+  });
 
 let portOpenedFlag = false;
 let serial_port;
