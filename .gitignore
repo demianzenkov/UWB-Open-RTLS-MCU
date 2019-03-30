@@ -4,3 +4,9 @@ node_modules/
 *.pyc
 
 .vscode
+
+
+reader
+writer
+
+.idea
