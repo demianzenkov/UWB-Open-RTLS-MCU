@@ -1,13 +1,21 @@
+import sys
+from enum import Enum
 import time
 import asyncio
 import serial_asyncio
 import zmq
 from zmq.asyncio import Context, Poller
 
+sys.path.append('../dwm_api')
+from dwm_api import DWM1001
 
-zmq_url = 'tcp://127.0.0.1:5555'
+
+dwm = DWM1001()
+# dwm.dwm_init()
+# print(dwm.dwm_upd_rate.DWM_UPD_RATE_MAX.value)
+
 ctx = Context.instance()
-# queue = asyncio.Queue()
+zmq_url = 'tcp://127.0.0.1:5555'
 
 
 async def zmq_receiver():
@@ -52,28 +60,31 @@ class SerialFactory(asyncio.Protocol):
     def connection_made(self, transport):
         self.transport = transport
         """Store the serial transport and prepare to receive data."""
-        self.send(b'uart: port opened')
         print('Reader connection created')
+
+
 
     def data_received(self, data):
         """Store characters until a newline is received."""
         self.buf += data
-        if b'\n' in self.buf:
-            lines = self.buf.split(b'\n')
-            self.buf = lines[-1]  # whatever was left over
-            for line in lines[:-1]:
-                print(f'Reader received: {line.decode()}')
-                self.msgs_recvd += 1
-        # if self.msgs_recvd == 4:
-        #     self.transport.close()
+        print('uart_rx: ', data)
+        # if b'\n' in self.buf:
+        #     lines = self.buf.split(b'\n')
+        #     self.buf = lines[-1]  # whatever was left over
+        #     for line in lines[:-1]:
+        #         print(f'Reader received: {line.decode()}')
+        #         self.msgs_recvd += 1
+        # if self.msgs_recvd == 5:
+        #     self.send(b'5 strings accepted')
 
     def connection_lost(self, exc):
         print('Reader closed')
 
     def send(self, message):
-        for b in message:
-            self.transport.serial.write(bytes([b]))
-        print(f'Writer sent: {bytes([b])}')
+        # for b in message:
+            # self.transport.serial.write(bytes([b]))
+        self.transport.serial.write(message)
+        print('serial_tx: ', message)
 
 
 async def zmq_routine():
