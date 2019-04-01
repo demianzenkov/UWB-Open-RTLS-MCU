@@ -1,3 +1,4 @@
 pyserial
 asyncio
 zmq
+numpy

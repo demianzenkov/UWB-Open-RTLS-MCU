@@ -59,13 +59,10 @@ class SerialFactory(asyncio.Protocol):
 
     def connection_made(self, transport):
         self.transport = transport
-        """Store the serial transport and prepare to receive data."""
-        print('Reader connection created')
-
-
+        if self.transport.serial.isOpen():
+            print('Reader connection created')
 
     def data_received(self, data):
-        """Store characters until a newline is received."""
         self.buf += data
         print('uart_rx: ', data)
         # if b'\n' in self.buf:
@@ -93,7 +90,7 @@ async def zmq_routine():
 
 def main():
     loop = asyncio.get_event_loop()
-    serial_routine = serial_asyncio.create_serial_connection(loop, SerialFactory, 'COM18', baudrate=115200)
+    serial_routine = serial_asyncio.create_serial_connection(loop, SerialFactory, 'reader', baudrate=115200)
     # reader, writer = await serial_asyncio.open_serial_connection(url='COM18', baudrate=115200)
 
     loop.create_task(zmq_routine())

@@ -6,11 +6,18 @@ from zmq.asyncio import Context, Poller
 
 message_queue = asyncio.Queue()
 
+ctx = Context.instance()
 zmq_url = 'tcp://127.0.0.1:5555'
 
-async def pzm():
-    # todo: zmq listener
-    ctx = Context.instance()
+
+async def dummy_ws():
+    while True:
+        await message_queue.put('>>>>>>')
+        await asyncio.sleep(2.0)
+
+
+async def zmq_receiver():
+    """receive messages with polling"""
     pull = ctx.socket(zmq.PULL)
     pull.connect(zmq_url)
     poller = Poller()
@@ -18,16 +25,18 @@ async def pzm():
     while True:
         events = await poller.poll()
         if pull in dict(events):
-            # print("recving", events)
             msg = await pull.recv_multipart()
-            await zmq_parser(msg)
-
-        await message_queue.put('>>>>>>')
-        await asyncio.sleep(2.0)
+            print('zmq_rx: ', msg)
 
 
-async def zmq_parser(msg):
-    print('zmq_rx: ', msg)
+async def zmq_sender():
+    push = ctx.socket(zmq.PUSH)
+    # push.bind(zmq_url)
+    while True:
+        await push.send_multipart(["hello from socket server".encode('ascii')])
+        await asyncio.sleep(2.5)
+        print("zmq sent")
+
 
 async def websocket_handler(request):
 
@@ -49,7 +58,9 @@ app.add_routes([web.get('/ws', websocket_handler)])
 
 
 async def start_background_tasks(app):
-    app['zmq_listener'] = app.loop.create_task(pzm())
+    app['dummy_ws'] = app.loop.create_task(dummy_ws())
+    app['zmq_receiver'] = app.loop.create_task(zmq_receiver())
+    app['zmq_sender'] = app.loop.create_task(zmq_sender())
 
 app.on_startup.append(start_background_tasks)
 
