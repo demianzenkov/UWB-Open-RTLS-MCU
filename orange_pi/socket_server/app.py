@@ -2,17 +2,32 @@ import aiohttp
 from aiohttp import web
 import asyncio
 import zmq
-import zmq.asyncio
+from zmq.asyncio import Context, Poller
 
 message_queue = asyncio.Queue()
 
+zmq_url = 'tcp://127.0.0.1:5555'
 
 async def pzm():
     # todo: zmq listener
+    ctx = Context.instance()
+    pull = ctx.socket(zmq.PULL)
+    pull.connect(zmq_url)
+    poller = Poller()
+    poller.register(pull, zmq.POLLIN)
     while True:
+        events = await poller.poll()
+        if pull in dict(events):
+            # print("recving", events)
+            msg = await pull.recv_multipart()
+            await zmq_parser(msg)
+
         await message_queue.put('>>>>>>')
         await asyncio.sleep(2.0)
 
+
+async def zmq_parser(msg):
+    print('zmq_rx: ', msg)
 
 async def websocket_handler(request):
 
