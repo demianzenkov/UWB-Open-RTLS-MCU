@@ -89,13 +89,9 @@ class DWM1001:
         'mode': dwm_mode.get('DWM_MODE_TAG')
     }
 
-
-
     # Configures node to tag mode with given options
     def dwm_cfg_tag_set(self, cfg):
         pass
-
-
 
     # Configures node to anchor mode with given options
     def dwm_cfg_anchor_set(self, cfg):
@@ -177,7 +173,6 @@ class DWM1001:
         pass
 
     # DWM status
-
     dwm_status = {
         'loc_data': bool,
         'uwbmac_joined': bool

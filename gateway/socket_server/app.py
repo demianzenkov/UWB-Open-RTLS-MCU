@@ -19,7 +19,7 @@ logger.addHandler(handler)
 _WS_SLEEP_TIME = 0.5
 _ZMQ_PAIR_SLEEP = 0.5
 
-_ZMQ_URL = 'tcp://localhost:9999'
+_ZMQ_URL = 'tcp://127.0.0.1:9999'
 
 context = Context.instance()
 socket = context.socket(zmq.PAIR)
@@ -62,6 +62,17 @@ app.add_routes([web.get('/', websocket_handler)])
 
 async def start_background_tasks(app):
     app['zmq_receiver'] = app.loop.create_task(zmq_receiver())
+    app['open_serial'] = app.loop.create_task(send_openport())
+
+
+async def send_openport():
+    await zmq_send('serial_openport')
+    await asyncio.sleep(5)
+    print('zmq_tx: serial_openport')
+    await zmq_send('serial_closeport')
+    await asyncio.sleep(5)
+    print('zmq_tx: serial_closeport')
+
 
 app.on_startup.append(start_background_tasks)
 

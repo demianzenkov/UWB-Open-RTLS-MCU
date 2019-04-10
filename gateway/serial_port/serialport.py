@@ -1,102 +1,100 @@
 import sys
-from enum import Enum
-import time
+
 import asyncio
 import serial_asyncio
 import zmq
-from zmq.asyncio import Context, Poller
+from zmq.asyncio import Context
 
 sys.path.append('../dwm_api')
 from dwm_api import DWM1001
 
-
 dwm = DWM1001()
-# dwm.dwm_init()
-# print(dwm.dwm_upd_rate.DWM_UPD_RATE_MAX.value)
+dwm.dwm_init()
+# print(dwm.dwm_upd_rate['DWM_UPD_RATE_MAX'])
 
-ctx = Context.instance()
-zmq_url = 'tcp://127.0.0.1:5555'
+_ZMQ_PAIR_SLEEP = 0.5
+_ZMQ_URL = 'tcp://127.0.0.1:9999'
+
+
+context = Context.instance()
+socket = context.socket(zmq.PAIR)
+socket.bind(_ZMQ_URL)
+
+reader = None
+writer = None
+portInitialized = False
+reader_task = None
+
+
+async def serial_openport(device, **kwargs):
+    global reader, writer, portInitialized
+    if portInitialized is False:
+        try:
+            portInitialized = True
+            reader, writer = await serial_asyncio.open_serial_connection(url=device, **kwargs)
+            loop = asyncio.get_event_loop()
+            global reader_task
+            reader_task = loop.create_task(serial_read())
+            # loop.create_task(serial_checkconnection())
+            print('Port opened!')
+        except:
+            print('Port cant be opened')
+
+
+async def serial_closeport():
+    global reader, writer, reader_task, portInitialized
+    if portInitialized is True and writer.transport.serial.is_open:
+        #TODO: Cancel read task!
+        reader_task.cancel()
+        writer.transport.serial.close()
+        # reader.transport.serial.close()
+        portInitialized = False
+        print('Port closed!')
+
+async def serial_checkconnection():
+    while True:
+        if reader_task:
+            global reader, writer, reader_task
+            if writer.transport.serial.closed:
+                print('Serial connection lost!')
+                await reader_task.cancel()
+                reader_task, reader, writer = None
+            await asyncio.sleep(3)
 
 
 async def zmq_receiver():
-    """receive messages with polling"""
-    pull = ctx.socket(zmq.PULL)
-    pull.connect(zmq_url)
-    poller = Poller()
-    poller.register(pull, zmq.POLLIN)
     while True:
-        events = await poller.poll()
-        if pull in dict(events):
-            # print("recving", events)
-            msg = await pull.recv_multipart()
-            await zmq_parser(msg)
+        message = await socket.recv_string()
+        print("zmq_rx:", message)
+        if 'serial_openport' in message:
+            await serial_openport('COM18', baudrate=115200)
+        elif 'serial_closeport' in message:
+            await serial_closeport()
+        await asyncio.sleep(_ZMQ_PAIR_SLEEP)
 
 
-async def zmq_parser(msg):
-    print('zmq_rx: ', msg)
+async def zmq_sender(message: str):
+    await socket.send_string(message)
 
 
-async def zmq_tx(push, msg):
-    print("zmq_tx: ", msg)
-    await push.send_multipart(msg)
-
-
-async def zmq_sender():
-    """send a message every second"""
-    tic = time.time()
-    push = ctx.socket(zmq.PUSH)
-    push.bind(zmq_url)
+async def serial_read():
     while True:
-        await zmq_tx(push, [str(time.time() - tic).encode('ascii')])
-        await asyncio.sleep(1)
+        if reader._transport.serial.is_open:
+            msg = await reader.readuntil(b'\n')
+            print(f'received: {msg.rstrip().decode()}')
 
 
-class SerialFactory(asyncio.Protocol):
-    def __init__(self):
-        self.buf = bytes()
-        self.msgs_recvd = 0
-        self.transport = 0
-
-    def connection_made(self, transport):
-        self.transport = transport
-        if self.transport.serial.isOpen():
-            print('Reader connection created')
-
-    def data_received(self, data):
-        self.buf += data
-        print('uart_rx: ', data)
-        # if b'\n' in self.buf:
-        #     lines = self.buf.split(b'\n')
-        #     self.buf = lines[-1]  # whatever was left over
-        #     for line in lines[:-1]:
-        #         print(f'Reader received: {line.decode()}')
-        #         self.msgs_recvd += 1
-        # if self.msgs_recvd == 5:
-        #     self.send(b'5 strings accepted')
-
-    def connection_lost(self, exc):
-        print('Reader closed')
-
-    def send(self, message):
-        # for b in message:
-            # self.transport.serial.write(bytes([b]))
-        self.transport.serial.write(message)
-        print('serial_tx: ', message)
-
-
-async def zmq_routine():
-    await asyncio.wait([zmq_receiver(), zmq_sender()])
+async def alive():
+    while True:
+        print('ping')
+        await asyncio.sleep(3)
 
 
 def main():
     loop = asyncio.get_event_loop()
-    serial_routine = serial_asyncio.create_serial_connection(loop, SerialFactory, 'reader', baudrate=115200)
-    # reader, writer = await serial_asyncio.open_serial_connection(url='COM18', baudrate=115200)
-
-    loop.create_task(zmq_routine())
-    loop.create_task(serial_routine)
+    # loop.create_task(alive())
+    loop.create_task(zmq_receiver())
     loop.run_forever()
-    # loop.run_until_complete(main())
     loop.close()
 
 
