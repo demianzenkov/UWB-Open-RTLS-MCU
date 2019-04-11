@@ -12,4 +12,4 @@ test
 
 .idea
 
-.log
+*.log
