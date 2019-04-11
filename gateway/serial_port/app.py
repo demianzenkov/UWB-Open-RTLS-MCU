@@ -4,6 +4,7 @@ import logging
 import json
 import serial_asyncio
 from zmq.asyncio import Context
+from queue import Queue
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -19,7 +20,7 @@ logger.addHandler(ch)
 logger.addHandler(fh)
 logger.setLevel(logging.DEBUG)
 
-_ZMQ_PAIR_SLEEP = 0.5
+_ZMQ_PAIR_SLEEP = 0.01
 _ZMQ_URL = 'tcp://127.0.0.1:9999'
 _SERIAL_PORT_ADDRESS = '/dev/tty.usbserial-A9A51FF3'
 _BAUD_RATE = 115200
@@ -27,6 +28,8 @@ _BAUD_RATE = 115200
 context = Context.instance()
 socket = context.socket(zmq.PAIR)
 socket.bind(_ZMQ_URL)
+
+to_socket_server_queue = Queue()
 
 async def zmq_receiver(loop):
     transport, protocol = None, None
@@ -42,7 +45,8 @@ async def zmq_receiver(loop):
         command = data.get('command')
         payload = data.get('payload')
 
-        assert command in ['open', 'close', 'send']
+        if command not in ['open', 'close', 'send']:
+            continue
 
         if transport is None and command != 'open':
             logger.warning('Closed serial port can only receive open command')
@@ -54,7 +58,10 @@ async def zmq_receiver(loop):
         
         if command == 'open' and (transport is None or transport.is_closing()):
             logger.info('Opening serial port connection')
-            transport, protocol = await loop.create_task(serial_asyncio.create_serial_connection(loop, Output, _SERIAL_PORT_ADDRESS, baudrate=_BAUD_RATE))
+            try:
+                transport, protocol = await loop.create_task(serial_asyncio.create_serial_connection(loop, Output, _SERIAL_PORT_ADDRESS, baudrate=_BAUD_RATE))
+            except Exception as e:
+                logger.exception(e)
             continue
         
         if command == 'close' and (transport is None or transport.is_closing()):
@@ -72,8 +79,14 @@ async def zmq_receiver(loop):
         
         await asyncio.sleep(_ZMQ_PAIR_SLEEP)
 
-async def zmq_sender(message: str):
-    await socket.send_string(message)
+async def zmq_sender():
+    while True:
+        try:
+            message = to_socket_server_queue.get(block=False)
+        except:
+            await asyncio.sleep(_ZMQ_PAIR_SLEEP)
+            continue
+        await socket.send_string(json.dumps(message))
 
 class Output(asyncio.Protocol):
     
@@ -83,9 +96,11 @@ class Output(asyncio.Protocol):
         
     def data_received(self, data):
         logger.info(f'Received message from serial port: {data}')
+        to_socket_server_queue.put({'type': 'serial_port_data', 'data': data.decode()})
 
     def connection_lost(self, exc):
         logger.info(f'Serial port connection lost')
+        to_socket_server_queue.put({'type': 'message', 'message': 'serial_port_connection_lost'})
 
     def pause_writing(self):
         pass
@@ -93,5 +108,8 @@ class Output(asyncio.Protocol):
     def resume_writing(self):
         pass
 
+async def main(loop):
+    await asyncio.gather(zmq_sender(), zmq_receiver(loop))
+
 loop = asyncio.get_event_loop()
-loop.run_until_complete(zmq_receiver(loop))
+loop.run_until_complete(main(loop))

@@ -16,8 +16,8 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-_WS_SLEEP_TIME = 0.5
-_ZMQ_PAIR_SLEEP = 0.5
+_WS_SLEEP_TIME = 0.01
+_ZMQ_PAIR_SLEEP = 0.01
 
 _ZMQ_URL = 'tcp://127.0.0.1:9999'
 
