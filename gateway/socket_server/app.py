@@ -49,7 +49,7 @@ async def websocket_handler(request):
     app['clients']['cloud_ws'] = ws
     async for message in ws:
         logger.info(f'Socket received message from cloud: {message.data}')
-        # await zmq_send(message.data)
+        await zmq_send(message.data)
         logger.info(f'Socket sent message to zmq: {message.data}')
     await ws.close()
     return ws
@@ -62,16 +62,6 @@ app.add_routes([web.get('/', websocket_handler)])
 
 async def start_background_tasks(app):
     app['zmq_receiver'] = app.loop.create_task(zmq_receiver())
-    app['open_serial'] = app.loop.create_task(send_openport())
-
-
-async def send_openport():
-    await zmq_send('serial_openport')
-    await asyncio.sleep(5)
-    print('zmq_tx: serial_openport')
-    await zmq_send('serial_closeport')
-    await asyncio.sleep(5)
-    print('zmq_tx: serial_closeport')
 
 
 app.on_startup.append(start_background_tasks)
