@@ -1,7 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "tsk_udp_client.hpp"
 
 TskUdpClient tskUdpClient;
@@ -99,8 +95,3 @@ void TskUdpClient::SendThread(void *arg)
     osDelay(500);
   }
 }
-
-
-#ifdef __cplusplus
-}
-#endif

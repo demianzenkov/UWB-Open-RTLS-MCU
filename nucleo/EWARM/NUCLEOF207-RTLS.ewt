@@ -1196,6 +1196,9 @@
         <group>
             <name>Modules</name>
             <file>
+                <name>$PROJ_DIR$\..\Src\dwm1000.cpp</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
             </file>
             <file>
@@ -1277,6 +1280,60 @@
     </group>
     <group>
         <name>Middlewares</name>
+        <group>
+            <name>Decawave</name>
+            <group>
+                <name>decadriver</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_device.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_device_api.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_param_types.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_params_init.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_regs.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_types.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\decadriver\deca_version.h</name>
+                </file>
+            </group>
+            <group>
+                <name>platform</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_mutex.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_port.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_port.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_range_tables.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_sleep.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_spi.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_spi.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\sleep.h</name>
+                </file>
+            </group>
+        </group>
         <group>
             <name>FreeRTOS</name>
             <file>

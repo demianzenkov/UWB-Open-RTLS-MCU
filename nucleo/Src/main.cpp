@@ -18,9 +18,6 @@
   */
 /* USER CODE END Header */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
   
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -35,7 +32,8 @@ extern "C" {
 #include "lwip/netbuf.h"
 
 #include "tsk_udp_client.hpp"
-
+//#include "dwm1000.hpp"
+  
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -223,9 +221,5 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-#ifdef __cplusplus
-}
-#endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
