@@ -11,3 +11,5 @@ test
 .idea
 
 *.log
+
+node_modules
