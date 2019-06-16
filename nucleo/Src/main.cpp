@@ -18,26 +18,29 @@
   */
 /* USER CODE END Header */
 
+//#define EX_06A_DEF 1
   
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+    
 #include "lwip.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 #include "lwip/opt.h"
 #include "lwip/arch.h"
 #include "lwip/api.h"
 #include "lwip/netbuf.h"
 
+#include "deca_port.h"
+#include "dwm1000.hpp"
+
 #include "tsk_udp_client.hpp"
-//#include "dwm1000.hpp"
+
   
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 extern TskUdpClient tskUdpClient;
+extern DWM1000 dwm1000;
 
 /**
   * @brief  The application entry point.
@@ -55,7 +58,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   
+  dwm1000.periphInit();
+  setup_DW1000RSTnIRQ(0);
+  
+  dwm1000.createTask();
   tskUdpClient.createTask();
+  
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
 
@@ -118,13 +126,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
+
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
-
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 

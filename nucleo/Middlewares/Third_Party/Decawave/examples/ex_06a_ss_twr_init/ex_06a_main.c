@@ -22,9 +22,8 @@
 
 #include "deca_device_api.h"
 #include "deca_regs.h"
-#include "lcd.h"
 #include "deca_spi.h"
-#include "port.h"
+#include "deca_port.h"
 
 /* Example application name and version to display on LCD screen. */
 #define APP_NAME "SS TWR INIT v1.3"
@@ -104,9 +103,6 @@ static void resp_msg_get_ts(uint8 *ts_field, uint32 *ts);
  */
 int dw_main(void)
 {
-    /* Display application name on LCD. */
-    lcd_display_str(APP_NAME);
-
     /* Reset and initialise DW1000.
      * For initialisation, DW1000 clocks must be temporarily set to crystal speed. After initialisation SPI rate can be increased for optimum
      * performance. */

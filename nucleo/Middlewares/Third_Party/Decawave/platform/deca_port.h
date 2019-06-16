@@ -24,43 +24,43 @@ extern "C" {
 #include "compiler.h"
 
 #include "stm32f2xx.h"
+#include "stm32f207xx.h"
 #include "stm32f2xx_hal.h"
-
-
-#define DW_RESET_Pin GPIO_PIN_0
-#define DW_RESET_GPIO_Port GPIOA
-#define DW_NSS_Pin GPIO_PIN_4
-#define DW_NSS_GPIO_Port GPIOA
+  
+#define DW_RESET_Pin GPIO_PIN_3
+#define DW_RESET_GPIO_Port GPIOC
+#define DW_NSS_Pin GPIO_PIN_12
+#define DW_NSS_GPIO_Port GPIOF
 #define DW_SCK_Pin GPIO_PIN_5
 #define DW_SCK_GPIO_Port GPIOA
 #define DW_MISO_Pin GPIO_PIN_6
 #define DW_MISO_GPIO_Port GPIOA
-#define DW_MOSI_Pin GPIO_PIN_7
-#define DW_MOSI_GPIO_Port GPIOA?
+#define DW_MOSI_Pin GPIO_PIN_5
+#define DW_MOSI_GPIO_Port GPIOB
 #define DW_WUP_Pin GPIO_PIN_0
-#define DW_WUP_GPIO_Port GPIOB
-#define PB2_BOOT1_Pin GPIO_PIN_2
-#define PB2_BOOT1_GPIO_Port GPIOB
-#define LCD_RW_Pin GPIO_PIN_10
-#define LCD_RW_GPIO_Port GPIOB
-#define LCD_RS_Pin GPIO_PIN_11
-#define LCD_RS_GPIO_Port GPIOB
-#define LCD_NSS_Pin GPIO_PIN_12
-#define LCD_NSS_GPIO_Port GPIOB
-#define LCD_SCK_Pin GPIO_PIN_13
-#define LCD_SCK_GPIO_Port GPIOB
-#define LCD_MISO_Pin GPIO_PIN_14
-#define LCD_MISO_GPIO_Port GPIOB
-#define LCD_MOSI_Pin GPIO_PIN_15
-#define LCD_MOSI_GPIO_Port GPIOB
-#define LED5_Pin GPIO_PIN_6
-#define LED5_GPIO_Port GPIOC
-#define LED6_Pin GPIO_PIN_7
-#define LED6_GPIO_Port GPIOC
-#define LED7_Pin GPIO_PIN_8
-#define LED7_GPIO_Port GPIOC
-#define LED8_Pin GPIO_PIN_9
-#define LED8_GPIO_Port GPIOC
+#define DW_WUP_GPIO_Port GPIOC
+//#define PB2_BOOT1_Pin GPIO_PIN_2
+//#define PB2_BOOT1_GPIO_Port GPIOB
+//#define LCD_RW_Pin GPIO_PIN_10
+//#define LCD_RW_GPIO_Port GPIOB
+//#define LCD_RS_Pin GPIO_PIN_11
+//#define LCD_RS_GPIO_Port GPIOB
+//#define LCD_NSS_Pin GPIO_PIN_12
+//#define LCD_NSS_GPIO_Port GPIOB
+//#define LCD_SCK_Pin GPIO_PIN_13
+//#define LCD_SCK_GPIO_Port GPIOB
+//#define LCD_MISO_Pin GPIO_PIN_14
+//#define LCD_MISO_GPIO_Port GPIOB
+//#define LCD_MOSI_Pin GPIO_PIN_15
+//#define LCD_MOSI_GPIO_Port GPIOB
+//#define LED5_Pin GPIO_PIN_6
+//#define LED5_GPIO_Port GPIOC
+//#define LED6_Pin GPIO_PIN_7
+//#define LED6_GPIO_Port GPIOC
+//#define LED7_Pin GPIO_PIN_8
+//#define LED7_GPIO_Port GPIOC
+//#define LED8_Pin GPIO_PIN_9
+//#define LED8_GPIO_Port GPIOC
 #define USB_VBUS_Pin GPIO_PIN_9
 #define USB_VBUS_GPIO_Port GPIOA
 #define USB_ID_Pin GPIO_PIN_10
@@ -69,18 +69,18 @@ extern "C" {
 #define USB_DM_GPIO_Port GPIOA
 #define USB_DP_Pin GPIO_PIN_12
 #define USB_DP_GPIO_Port GPIOA
-#define J_TMS_Pin GPIO_PIN_13
-#define J_TMS_GPIO_Port GPIOA
-#define J_TCK_Pin GPIO_PIN_14
-#define J_TCK_GPIO_Port GPIOA
-#define J_TDI_Pin GPIO_PIN_15
-#define J_TDI_GPIO_Port GPIOA
-#define J_TDO_Pin GPIO_PIN_3
-#define J_TDO_GPIO_Port GPIOB
-#define J_TRST_Pin GPIO_PIN_4
-#define J_TRST_GPIO_Port GPIOB
+//#define J_TMS_Pin GPIO_PIN_13
+//#define J_TMS_GPIO_Port GPIOA
+//#define J_TCK_Pin GPIO_PIN_14
+//#define J_TCK_GPIO_Port GPIOA
+//#define J_TDI_Pin GPIO_PIN_15
+//#define J_TDI_GPIO_Port GPIOA
+//#define J_TDO_Pin GPIO_PIN_3
+//#define J_TDO_GPIO_Port GPIOB
+//#define J_TRST_Pin GPIO_PIN_4
+//#define J_TRST_GPIO_Port GPIOB
 #define DW_IRQn_Pin GPIO_PIN_5
-#define DW_IRQn_GPIO_Port GPIOB
+#define DW_IRQn_GPIO_Port GPIOF
   
 /* DW1000 IRQ (EXTI9_5_IRQ) handler type. */
 typedef void (*port_deca_isr_t)(void);
@@ -158,15 +158,8 @@ typedef enum
  *******************************************************************************/
 
 
-#if !(EXTI9_5_IRQn)
-#define DECAIRQ_EXTI_IRQn       (int)(23)
-#else
-#define DECAIRQ_EXTI_IRQn       (EXTI9_5_IRQn)
-#endif
 
-#if !(EXTI0_IRQn)
-#define EXTI0_IRQn      (6)
-#endif
+#define DECAIRQ_EXTI_IRQn       (EXTI9_5_IRQn)
 
 
 
@@ -177,19 +170,19 @@ typedef enum
 #define DECAIRQ                     DW_IRQn_Pin
 #define DECAIRQ_GPIO                DW_IRQn_GPIO_Port
 
-#define TA_BOOT1                    GPIO_PIN_2
-#define TA_BOOT1_GPIO               GPIOB
-
-#define TA_RESP_DLY                 GPIO_PIN_0
-#define TA_RESP_DLY_GPIO            GPIOC
-
-#define TA_SW1_3                    GPIO_PIN_0
-#define TA_SW1_4                    GPIO_PIN_1
-#define TA_SW1_5                    GPIO_PIN_2
-#define TA_SW1_6                    GPIO_PIN_3
-#define TA_SW1_7                    GPIO_PIN_4
-#define TA_SW1_8                    GPIO_PIN_5
-#define TA_SW1_GPIO                 GPIOC
+//#define TA_BOOT1                    GPIO_PIN_2
+//#define TA_BOOT1_GPIO               GPIOB
+//
+//#define TA_RESP_DLY                 GPIO_PIN_0
+//#define TA_RESP_DLY_GPIO            GPIOC
+//
+//#define TA_SW1_3                    GPIO_PIN_0
+//#define TA_SW1_4                    GPIO_PIN_1
+//#define TA_SW1_5                    GPIO_PIN_2
+//#define TA_SW1_6                    GPIO_PIN_3
+//#define TA_SW1_7                    GPIO_PIN_4
+//#define TA_SW1_8                    GPIO_PIN_5
+//#define TA_SW1_GPIO                 GPIOC
 
 /****************************************************************************//**
  *

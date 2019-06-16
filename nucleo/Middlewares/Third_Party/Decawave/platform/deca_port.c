@@ -14,14 +14,17 @@
 #include "deca_port.h"
 #include "deca_device_api.h"
 #include "stm32f2xx_hal_conf.h"
-
+#include "dwm1000.hpp"
+   
 /****************************************************************************//**
  *
  *                              APP global variables
  *
  *******************************************************************************/
-extern SPI_HandleTypeDef hspi1;
-extern SPI_HandleTypeDef hspi2; /*clocked from 36MHz*/
+//extern SPI_HandleTypeDef dwm1000.hspi;
+//extern SPI_HandleTypeDef hspi2; /*clocked from 36MHz*/
+
+extern DWM1000 dwm1000;
 
 /****************************************************************************//**
  *
@@ -175,18 +178,18 @@ void setup_DW1000RSTnIRQ(int enable)
 
     if(enable)
     {
-        // Enable GPIO used as DECA RESET for interrupt
+        // Enable GPIO used as DECA RESET for interrupt PC3
         GPIO_InitStruct.Pin = DW_RESET_Pin;
         GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         HAL_GPIO_Init(DW_RESET_GPIO_Port, &GPIO_InitStruct);
 
-        HAL_NVIC_EnableIRQ(EXTI0_IRQn);     //pin #0 -> EXTI #0
-        HAL_NVIC_SetPriority(EXTI0_IRQn, 5, 0);
+        HAL_NVIC_EnableIRQ(EXTI3_IRQn);     //pin #3 -> EXTI #3
+        HAL_NVIC_SetPriority(EXTI3_IRQn, 5, 0);
     }
     else
     {
-        HAL_NVIC_DisableIRQ(EXTI0_IRQn);    //pin #0 -> EXTI #0
+        HAL_NVIC_DisableIRQ(EXTI3_IRQn);    //pin #3 -> EXTI #3
 
         //put the pin back to tri-state ... as
         //output open-drain (not active)
@@ -204,92 +207,92 @@ void setup_DW1000RSTnIRQ(int enable)
  * @brief   check the BOOT1 pin status.
  * @return  1 if ON and 0 for OFF
  * */
-int port_is_boot1_low(void)
-{
-    return ((GPIO_ReadInputDataBit(TA_BOOT1_GPIO, TA_BOOT1))?(0):(1));
-}
-
-/* @fn      port_is_boot1_low
- * @brief   check the BOOT1 pin status.
- * @return  1 if ON and 0 for OFF
- * */
-int port_is_boot1_on(uint16_t x)
-{
-    return ((GPIO_ReadInputDataBit(TA_BOOT1_GPIO, TA_BOOT1))?(0):(1));
-}
-
-/* @fn      port_is_switch_on
- * @brief   check the switch status.
- *          when switch (S1) is 'on' the pin is low
- * @return  1 if ON and 0 for OFF
- * */
-int port_is_switch_on(uint16_t GPIOpin)
-{
-    return ((GPIO_ReadInputDataBit(TA_SW1_GPIO, GPIOpin))?(0):(1));
-}
+//int port_is_boot1_low(void)
+//{
+//    return ((GPIO_ReadInputDataBit(TA_BOOT1_GPIO, TA_BOOT1))?(0):(1));
+//}
+//
+///* @fn      port_is_boot1_low
+// * @brief   check the BOOT1 pin status.
+// * @return  1 if ON and 0 for OFF
+// * */
+//int port_is_boot1_on(uint16_t x)
+//{
+//    return ((GPIO_ReadInputDataBit(TA_BOOT1_GPIO, TA_BOOT1))?(0):(1));
+//}
+//
+///* @fn      port_is_switch_on
+// * @brief   check the switch status.
+// *          when switch (S1) is 'on' the pin is low
+// * @return  1 if ON and 0 for OFF
+// * */
+//int port_is_switch_on(uint16_t GPIOpin)
+//{
+//    return ((GPIO_ReadInputDataBit(TA_SW1_GPIO, GPIOpin))?(0):(1));
+//}
 
 
 /* @fn      led_off
  * @brief   switch off the led from led_t enumeration
  * */
-void led_off (led_t led)
-{
-    switch (led)
-    {
-    case LED_PC6:
-        GPIO_ResetBits(LED5_GPIO_Port, LED5_Pin);
-        break;
-    case LED_PC7:
-        GPIO_ResetBits(LED6_GPIO_Port, LED6_Pin);
-        break;
-    case LED_PC8:
-        GPIO_ResetBits(LED7_GPIO_Port, LED7_Pin);
-        break;
-    case LED_PC9:
-        GPIO_ResetBits(LED8_GPIO_Port, LED8_Pin);
-        break;
-    case LED_ALL:
-        GPIO_ResetBits(LED5_GPIO_Port, LED5_Pin);
-        GPIO_ResetBits(LED6_GPIO_Port, LED6_Pin);
-        GPIO_ResetBits(LED7_GPIO_Port, LED7_Pin);
-        GPIO_ResetBits(LED8_GPIO_Port, LED8_Pin);
-        break;
-    default:
-        // do nothing for undefined led number
-        break;
-    }
-}
+//void led_off (led_t led)
+//{
+//    switch (led)
+//    {
+//    case LED_PC6:
+//        GPIO_ResetBits(LED5_GPIO_Port, LED5_Pin);
+//        break;
+//    case LED_PC7:
+//        GPIO_ResetBits(LED6_GPIO_Port, LED6_Pin);
+//        break;
+//    case LED_PC8:
+//        GPIO_ResetBits(LED7_GPIO_Port, LED7_Pin);
+//        break;
+//    case LED_PC9:
+//        GPIO_ResetBits(LED8_GPIO_Port, LED8_Pin);
+//        break;
+//    case LED_ALL:
+//        GPIO_ResetBits(LED5_GPIO_Port, LED5_Pin);
+//        GPIO_ResetBits(LED6_GPIO_Port, LED6_Pin);
+//        GPIO_ResetBits(LED7_GPIO_Port, LED7_Pin);
+//        GPIO_ResetBits(LED8_GPIO_Port, LED8_Pin);
+//        break;
+//    default:
+//        // do nothing for undefined led number
+//        break;
+//    }
+//}
 
 /* @fn      led_on
  * @brief   switch on the led from led_t enumeration
  * */
-void led_on (led_t led)
-{
-    switch (led)
-    {
-    case LED_PC6:
-        GPIO_SetBits(LED5_GPIO_Port, LED5_Pin);
-        break;
-    case LED_PC7:
-        GPIO_SetBits(LED6_GPIO_Port, LED6_Pin);
-        break;
-    case LED_PC8:
-        GPIO_SetBits(LED7_GPIO_Port, LED7_Pin);
-        break;
-    case LED_PC9:
-        GPIO_SetBits(LED8_GPIO_Port, LED8_Pin);
-        break;
-    case LED_ALL:
-        GPIO_SetBits(LED5_GPIO_Port, LED5_Pin);
-        GPIO_SetBits(LED6_GPIO_Port, LED6_Pin);
-        GPIO_SetBits(LED7_GPIO_Port, LED7_Pin);
-        GPIO_SetBits(LED8_GPIO_Port, LED8_Pin);
-        break;
-    default:
-        // do nothing for undefined led number
-        break;
-    }
-}
+//void led_on (led_t led)
+//{
+//    switch (led)
+//    {
+//    case LED_PC6:
+//        GPIO_SetBits(LED5_GPIO_Port, LED5_Pin);
+//        break;
+//    case LED_PC7:
+//        GPIO_SetBits(LED6_GPIO_Port, LED6_Pin);
+//        break;
+//    case LED_PC8:
+//        GPIO_SetBits(LED7_GPIO_Port, LED7_Pin);
+//        break;
+//    case LED_PC9:
+//        GPIO_SetBits(LED8_GPIO_Port, LED8_Pin);
+//        break;
+//    case LED_ALL:
+//        GPIO_SetBits(LED5_GPIO_Port, LED5_Pin);
+//        GPIO_SetBits(LED6_GPIO_Port, LED6_Pin);
+//        GPIO_SetBits(LED7_GPIO_Port, LED7_Pin);
+//        GPIO_SetBits(LED8_GPIO_Port, LED8_Pin);
+//        break;
+//    default:
+//        // do nothing for undefined led number
+//        break;
+//    }
+//}
 
 
 /* @fn      port_wakeup_dw1000
@@ -338,55 +341,28 @@ void port_wakeup_dw1000_fast(void)
 
 /* @fn      port_set_dw1000_slowrate
  * @brief   set 2.25MHz
- *          note: hspi1 is clocked from 72MHz
+ *          note: dwm1000.hspi is clocked from 72MHz
  * */
 void port_set_dw1000_slowrate(void)
 {
-    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-    HAL_SPI_Init(&hspi1);
+    dwm1000.hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    HAL_SPI_Init(&dwm1000.hspi);
 }
 
 /* @fn      port_set_dw1000_fastrate
  * @brief   set 18MHz
- *          note: hspi1 is clocked from 72MHz
+ *          note: dwm1000.hspi is clocked from 72MHz
  * */
 void port_set_dw1000_fastrate(void)
 {
-    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
-    HAL_SPI_Init(&hspi1);
+    dwm1000.hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    HAL_SPI_Init(&dwm1000.hspi);
 }
 
 /* @fn      port_LCD_RS_set
  * @brief   wrapper to set LCD_RS pin
  * */
-void port_LCD_RS_set(void)
-{
-    HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_SET);
-}
 
-/* @fn      port_LCD_RS_clear
- * @brief   wrapper to clear LCD_RS pin
- * */
-void port_LCD_RS_clear(void)
-{
-    HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET);
-}
-
-/* @fn      port_LCD_RW_clear
- * @brief   wrapper to set LCD_RW pin
- * */
-void port_LCD_RW_set(void)
-{
-    HAL_GPIO_WritePin(LCD_RW_GPIO_Port, LCD_RW_Pin, GPIO_PIN_SET);
-}
-
-/* @fn      port_LCD_RW_clear
- * @brief   wrapper to clear LCD_RW pin
- * */
-void port_LCD_RW_clear(void)
-{
-    HAL_GPIO_WritePin(LCD_RW_GPIO_Port, LCD_RW_Pin, GPIO_PIN_RESET);
-}
 
 /****************************************************************************//**
  *
@@ -625,19 +601,19 @@ port_deca_isr_t port_deca_isr = NULL;
  */
 void port_set_deca_isr(port_deca_isr_t deca_isr)
 {
-    /* Check DW1000 IRQ activation status. */
-    ITStatus en = port_GetEXT_IRQStatus();
-
-    /* If needed, deactivate DW1000 IRQ during the installation of the new handler. */
-    if (en)
-    {
-        port_DisableEXT_IRQ();
-    }
-    port_deca_isr = deca_isr;
-    if (en)
-    {
-        port_EnableEXT_IRQ();
-    }
+  /* Check DW1000 IRQ activation status. */
+  //    ITStatus en = port_GetEXT_IRQStatus();
+  uint32_t en = port_GetEXT_IRQStatus();
+  /* If needed, deactivate DW1000 IRQ during the installation of the new handler. */
+  if (en)
+  {
+    port_DisableEXT_IRQ();
+  }
+  port_deca_isr = deca_isr;
+  if (en)
+  {
+    port_EnableEXT_IRQ();
+  }
 }
 
 

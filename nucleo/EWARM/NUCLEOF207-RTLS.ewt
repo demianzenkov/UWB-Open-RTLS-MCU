@@ -1196,13 +1196,13 @@
         <group>
             <name>Modules</name>
             <file>
-                <name>$PROJ_DIR$\..\Src\dwm1000.cpp</name>
+                <name>$PROJ_DIR$\..\Src\modules\dwm1000\dwm1000.cpp</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
+                <name>$PROJ_DIR$\..\Src\modules\ethernet\ethernetif.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\lwip.c</name>
+                <name>$PROJ_DIR$\..\Src\modules\lwip\lwip.c</name>
             </file>
         </group>
         <group>
@@ -1271,6 +1271,9 @@
                 <name>$PROJ_DIR$\..\Drivers\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_rcc_ex.c</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\Drivers\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_spi.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Drivers\STM32F2xx_HAL_Driver\Src\stm32f2xx_hal_tim.c</name>
             </file>
             <file>
@@ -1307,12 +1310,18 @@
                 </file>
             </group>
             <group>
+                <name>examples</name>
+            </group>
+            <group>
                 <name>platform</name>
                 <file>
                     <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_mutex.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_port.c</name>
+                    <configuration>
+                        <name>NUCLEOF207-RTLS</name>
+                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_port.h</name>
@@ -1325,6 +1334,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_spi.c</name>
+                    <configuration>
+                        <name>NUCLEOF207-RTLS</name>
+                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Middlewares\Third_Party\Decawave\platform\deca_spi.h</name>
