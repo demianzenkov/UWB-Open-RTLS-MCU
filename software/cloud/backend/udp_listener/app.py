@@ -2,7 +2,8 @@ import socket
 import time
 
 _UDP_HOST = '127.0.0.1'
-_UDP_PORT = 5005
+#_UDP_HOST = '255.255.255.255'
+_UDP_PORT = 30000
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((_UDP_HOST, _UDP_PORT))
@@ -20,7 +21,7 @@ def listen_udp():
             reqs = 0
         data = None
         try:
-            data = sock.recv(4096)
+            data = sock.recv(5000)
             reqs += 1
         except socket.timeout as e:
             pass

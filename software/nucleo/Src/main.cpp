@@ -61,7 +61,7 @@ int main(void)
   dwm1000.periphInit();
   setup_DW1000RSTnIRQ(0);
   
-  dwm1000.createTask();
+  //dwm1000.createTask();
   tskUdpClient.createTask();
   
   /* Create the thread(s) */

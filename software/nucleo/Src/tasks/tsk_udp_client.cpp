@@ -15,7 +15,7 @@ TskUdpClient::~TskUdpClient()
 void TskUdpClient::createTask()
 { 
   osThreadId udpClientTaskHandle;
-  osThreadDef(UDPClientTask, (&tskUdpClient)->UdpClientTsk, osPriorityNormal, 0, 2500);
+  osThreadDef(UDPClientTask, (&tskUdpClient)->udpClientTsk, osPriorityNormal, 0, 2500);
   udpClientTaskHandle = osThreadCreate(osThread(UDPClientTask), NULL);
   
 //  sys_thread_new("udp_thread1", udp_thread, NULL, DEFAULT_THREAD_STACKSIZE, osPriorityNormal );
@@ -23,25 +23,25 @@ void TskUdpClient::createTask()
 
 
 
-void TskUdpClient::UdpClientTsk(void const *pvParameters)
+void TskUdpClient::udpClientTsk(void const *pvParameters)
 {
   MX_LWIP_Init();
   
   err_t err;
   struct netconn *conn;
   ip_addr_t DestIPaddr;
-  conn = netconn_new_with_callback(NETCONN_UDP, (&tskUdpClient)->UdpReceiveCallback);
+  conn = netconn_new_with_callback(NETCONN_UDP, (&tskUdpClient)->udpReceiveCallback);
   IP4_ADDR(&DestIPaddr, 192, 168, 1, 8);
   if (conn!= NULL)
   {
-  	err = netconn_bind(conn, NULL, 1555);
+  	err = netconn_bind(conn, NULL, 30001);
     if (err == ERR_OK)
     {
       err = netconn_connect(conn, &DestIPaddr, 7);
       if (err == ERR_OK)
       {
         tskUdpClient.conn01.conn = conn;
-        sys_thread_new("send_thread1", (&tskUdpClient)->SendThread, (void*)(&tskUdpClient.conn01.conn), DEFAULT_THREAD_STACKSIZE, osPriorityNormal );
+        sys_thread_new("send_thread1", (&tskUdpClient)->sendThread, (void*)(&tskUdpClient.conn01.conn), DEFAULT_THREAD_STACKSIZE, osPriorityNormal );
       }
     }
     else
@@ -55,7 +55,7 @@ void TskUdpClient::UdpClientTsk(void const *pvParameters)
   }
 }
 
-void TskUdpClient::UdpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len)
+void TskUdpClient::udpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len)
 {
   uint32_t syscnt;
   unsigned short port;
@@ -75,7 +75,7 @@ void TskUdpClient::UdpReceiveCallback(struct netconn* conn, enum netconn_evt evt
 }
 
 
-void TskUdpClient::SendThread(void *arg)
+void TskUdpClient::sendThread(void *arg)
 {
   struct_conn *arg_conn;
   struct netconn *conn;

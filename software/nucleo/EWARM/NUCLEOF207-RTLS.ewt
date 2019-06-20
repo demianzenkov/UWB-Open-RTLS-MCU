@@ -1196,13 +1196,13 @@
         <group>
             <name>Modules</name>
             <file>
-                <name>$PROJ_DIR$\..\Src\modules\dwm1000\dwm1000.cpp</name>
+                <name>$PROJ_DIR$\..\Src\modules\dwm1000.cpp</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\modules\ethernet\ethernetif.c</name>
+                <name>$PROJ_DIR$\..\Src\modules\ethernetif.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\modules\lwip\lwip.c</name>
+                <name>$PROJ_DIR$\..\Src\modules\lwip.c</name>
             </file>
         </group>
         <group>

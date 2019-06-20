@@ -352,8 +352,6 @@
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/../Inc</state>
                     <state>$PROJ_DIR$/../Inc/modules/</state>
-                    <state>$PROJ_DIR$/../Inc/modules/dwm1000</state>
-                    <state>$PROJ_DIR$/../Inc/modules/ethernet</state>
                     <state>$PROJ_DIR$/../Inc/modules/lwip</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/system</state>
@@ -1066,13 +1064,13 @@
         <group>
             <name>Modules</name>
             <file>
-                <name>$PROJ_DIR$\..\Src\modules\dwm1000\dwm1000.cpp</name>
+                <name>$PROJ_DIR$\..\Src\modules\dwm1000.cpp</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\modules\ethernet\ethernetif.c</name>
+                <name>$PROJ_DIR$\..\Src\modules\ethernetif.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\modules\lwip\lwip.c</name>
+                <name>$PROJ_DIR$\..\Src\modules\lwip.c</name>
             </file>
         </group>
         <group>

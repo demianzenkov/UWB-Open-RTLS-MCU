@@ -21,9 +21,9 @@ public:
   void createTask();
 
 public:
-  static void UdpClientTsk(void const *);
-  static void UdpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len);
-  static void SendThread(void *arg);
+  static void udpClientTsk(void const *);
+  static void udpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len);
+  static void sendThread(void *arg);
   
 public:
   typedef struct struct_conn_t {

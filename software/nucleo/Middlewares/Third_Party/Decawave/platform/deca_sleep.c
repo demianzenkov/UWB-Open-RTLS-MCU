@@ -10,7 +10,7 @@
  *
  * @author DecaWave
  */
-
+#include "cmsis_os.h"
 #include "deca_device_api.h"
 #include "sleep.h"
 #include "deca_port.h"
@@ -18,6 +18,6 @@
 /* Wrapper function to be used by decadriver. Declared in deca_device_api.h */
 __INLINE void deca_sleep(unsigned int time_ms)
 {
-  Sleep(time_ms);
+  osDelay(time_ms);
 }
 
