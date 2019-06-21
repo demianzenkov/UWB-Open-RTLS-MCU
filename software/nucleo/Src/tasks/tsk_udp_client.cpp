@@ -30,14 +30,15 @@ void TskUdpClient::udpClientTsk(void const *pvParameters)
   err_t err;
   struct netconn *conn;
   ip_addr_t DestIPaddr;
+//    conn = netconn_new(NETCONN_UDP);
   conn = netconn_new_with_callback(NETCONN_UDP, (&tskUdpClient)->udpReceiveCallback);
   IP4_ADDR(&DestIPaddr, 192, 168, 1, 8);
   if (conn!= NULL)
   {
-  	err = netconn_bind(conn, NULL, 30001);
+    err = netconn_bind(conn, NULL, 0);
     if (err == ERR_OK)
     {
-      err = netconn_connect(conn, &DestIPaddr, 7);
+      err = netconn_connect(conn, &DestIPaddr, 30001);
       if (err == ERR_OK)
       {
         tskUdpClient.conn01.conn = conn;
@@ -72,6 +73,10 @@ void TskUdpClient::udpReceiveCallback(struct netconn* conn, enum netconn_evt evt
       HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
     }
   }
+  else if (evt == NETCONN_EVT_ERROR)
+  {
+    __no_operation();
+  }
 }
 
 
@@ -92,6 +97,6 @@ void TskUdpClient::sendThread(void *arg)
     netconn_send(conn,buf);
     netbuf_delete(buf);
     HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-    osDelay(500);
+    osDelay(1);
   }
 }
