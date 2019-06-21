@@ -8,13 +8,19 @@ UDP_PORT = 5005
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.connect(('127.0.0.1', UDP_PORT))
 
-reqs = 0
-t1 = time.time()
-while True:
-    t2 = time.time()
-    if t2 - t1 >= 1:
-        print(f'Reqs/sec: {reqs}')
-        t1 = t2
-        reqs = 0
-    sock.send('1'.encode())
-    reqs += 1
+
+def send(message: bytes):
+    sock.send(message)
+
+
+if __name__ == "__main__":
+    reqs = 0
+    t1 = time.time()
+    while True:
+        t2 = time.time()
+        if t2 - t1 >= 1:
+            print(f'Reqs/sec: {reqs}')
+            t1 = t2
+            reqs = 0
+        sock.send('1'.encode())
+        reqs += 1
