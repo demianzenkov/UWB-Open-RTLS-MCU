@@ -4,8 +4,12 @@ services:
   core:
     build:
       context: ./core
+    ports:
+      - 8000:8000
     environment:
       - PYTHONUNBUFFERED=1
+    volumes:
+      - "./core:/app"
 
   db:
     build:

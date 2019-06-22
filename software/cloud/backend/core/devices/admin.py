@@ -1,3 +1,14 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+
+class TagAdmin(admin.ModelAdmin):
+    pass
+
+
+class AnchorAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Tag, TagAdmin)
+admin.site.register(Anchor, AnchorAdmin)
