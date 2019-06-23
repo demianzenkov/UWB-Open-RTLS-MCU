@@ -1,7 +1,7 @@
 import socket
 import binascii
 
-from app import send
+from .app import send
 
 _STATION_TO_CLOUD_PREFIX = 0x94
 _CLOUD_TO_STATION_PREFIX = 0x9D

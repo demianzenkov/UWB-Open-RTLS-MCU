@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import logging
+
+logger = logging.getLogger('root')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch_format = logging.Formatter('%(asctime)s : [%(name)s] : [%(levelname)s] : %(message)s')
+ch.setFormatter(ch_format)
+logger.addHandler(ch)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
