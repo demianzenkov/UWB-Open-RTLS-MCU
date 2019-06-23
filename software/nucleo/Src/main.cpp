@@ -65,6 +65,7 @@ int main(void)
   
   //dwm1000.createTask();
   tskUdpClient.createTask();
+  createLwipInitTsk();
   
   /* Create the thread(s) */
   /* definition and creation of defaultTask */

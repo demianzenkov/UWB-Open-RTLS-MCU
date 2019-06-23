@@ -44,7 +44,17 @@ extern TskUdpClient tskUdpClient;
 /**
   * LwIP initialization function
   */
-void MX_LWIP_Init(void)
+
+osThreadId initLwipTaskHandle;
+
+void createLwipInitTsk()
+{ 
+  osThreadDef(LWIPInitTask, MX_LWIP_Init, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
+  initLwipTaskHandle = osThreadCreate(osThread(LWIPInitTask), NULL);
+  
+}
+
+void MX_LWIP_Init(void const *arg)
 {
   /* IP addresses initialization */
   IP_ADDRESS[0] = tskUdpClient.net_conf.getDeviceIp()[0];
@@ -84,17 +94,14 @@ void MX_LWIP_Init(void)
     /* When the netif link is down this function must be called */
     netif_set_down(&gnetif);
   }
-
-/* USER CODE BEGIN 3 */
-
-/* USER CODE END 3 */
+  
+  xSemaphoreGive(tskUdpClient.xSemLwipReady);
+  vTaskSuspend(initLwipTaskHandle);
 }
 
 #ifdef USE_OBSOLETE_USER_CODE_SECTION_4
 /* Kept to help code migration. (See new 4_1, 4_2... sections) */
 /* Avoid to use this user section which will become obsolete. */
-/* USER CODE BEGIN 4 */
-/* USER CODE END 4 */
 #endif
 
 #if defined ( __CC_ARM )  /* MDK ARM Compiler */
@@ -107,11 +114,7 @@ void MX_LWIP_Init(void)
 sio_fd_t sio_open(u8_t devnum)
 {
   sio_fd_t sd;
-
-/* USER CODE BEGIN 7 */
-  sd = 0; // dummy code
-/* USER CODE END 7 */
-	
+  sd = 0; // dummy code	
   return sd;
 }
 
@@ -125,8 +128,6 @@ sio_fd_t sio_open(u8_t devnum)
  */
 void sio_send(u8_t c, sio_fd_t fd)
 {
-/* USER CODE BEGIN 8 */
-/* USER CODE END 8 */
 }
 
 /**
@@ -163,9 +164,7 @@ u32_t sio_tryread(sio_fd_t fd, u8_t *data, u32_t len)
 {
   u32_t recved_bytes;
 
-/* USER CODE BEGIN 10 */
-  recved_bytes = 0; // dummy code
-/* USER CODE END 10 */	
+  recved_bytes = 0; // dummy code	
   return recved_bytes;
 }
 #endif /* MDK ARM Compiler */

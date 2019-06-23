@@ -21,24 +21,35 @@ public:
   void createTask();
 
 public:
-  static void udpClientTsk(void const *);
-  static void receiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len);
-  static void sendThread(void *arg);
+  static void udpEchoThread(void const *);
+  static void udpTransmitThread(void const *);
   
 public:
   typedef struct struct_conn_t {
-    void * conn;
-    void * buf;
+    struct netconn *conn;
+    struct netbuf *buf;
+    struct ip4_addr *addr;
+    unsigned short port;
   } struct_conn;
-  struct_conn conn01;
+  
+  struct_conn udp_recv_conn;
+  struct_conn udp_send_conn;
   
   NetConfig net_conf;
   SocketProtocol soc_proto;
   
+  SemaphoreHandle_t xSemLwipReady;
+  SemaphoreHandle_t xSemConnReady;
+  
   QueueHandle_t xQueueUdpRx;
   QueueHandle_t xQueueUdpTx;
-  const U16 _rxQueueSize = 256;
-  const U16 _txQueueSize = 256;
+  typedef struct queue_data_t{
+    U08 data[64];
+    U08 len;
+  } queue_data;
+  const U16 _rxQueueSize = 1;
+  const U16 _txQueueSize = 1;
+  
 };
 
 

@@ -34,6 +34,9 @@ public:
   void  setServerPort(U16 port);
   U08 * getSubnetMask(void);
   void  setSubnetMask(U08 a, U08 b, U08 c, U08 d);
+  
+  U32 ipArrToHex(U08 * ip);
+  
 private:
   ip_conf_t ip_conf;
 };

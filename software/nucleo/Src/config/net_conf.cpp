@@ -16,6 +16,13 @@ NetConfig::~NetConfig()
   
 }
 
+U32 NetConfig::ipArrToHex(U08 * ip)
+{
+  return ( (U32) ((ip[3]) & 0xff) << 24) | \
+         ( (U32) ((ip[2]) & 0xff) << 16) | \
+	 ( (U32) ((ip[1]) & 0xff) << 8)  | \
+	 ( (U32) ((ip[0]) & 0xff) << 0);
+}
 U08 * NetConfig::getDeviceIp(void)
 {
   return ip_conf.device_ip;

@@ -1188,6 +1188,15 @@
     <group>
         <name>Application</name>
         <group>
+            <name>Config</name>
+            <file>
+                <name>$PROJ_DIR$\..\Inc\config\bsp_conf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\config\net_conf.cpp</name>
+            </file>
+        </group>
+        <group>
             <name>EWARM</name>
             <file>
                 <name>$PROJ_DIR$\startup_stm32f207xx.s</name>
@@ -1203,6 +1212,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\modules\lwip.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\modules\soc_proto.cpp</name>
             </file>
         </group>
         <group>

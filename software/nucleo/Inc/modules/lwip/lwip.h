@@ -47,8 +47,8 @@
 extern ETH_HandleTypeDef heth;
 
 /* LWIP init function */	
-void MX_LWIP_Init(void);
-
+void MX_LWIP_Init(void const *arg);
+void createLwipInitTsk();
 #if !WITH_RTOS
 /* USER CODE BEGIN 1 */
 /* Function defined in lwip.c to:
