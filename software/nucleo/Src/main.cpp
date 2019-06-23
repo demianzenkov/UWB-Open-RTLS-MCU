@@ -32,7 +32,8 @@
 
 #include "deca_port.h"
 #include "dwm1000.hpp"
-
+#include "soc_proto.hpp"
+    
 #include "tsk_udp_client.hpp"
 
   
@@ -41,6 +42,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 extern TskUdpClient tskUdpClient;
 extern DWM1000 dwm1000;
+extern SocketProtocol soc_proto;
 
 /**
   * @brief  The application entry point.
