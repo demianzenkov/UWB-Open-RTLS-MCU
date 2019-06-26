@@ -1,6 +1,5 @@
 #ifndef TSK_UDP_CLIENT
 #define TSK_UDP_CLIENT
-
   
 #include "cmsis_os.h"
 
@@ -43,10 +42,9 @@ public:
   
   QueueHandle_t xQueueUdpRx;
   QueueHandle_t xQueueUdpTx;
-  typedef struct queue_data_t{
-    U08 data[64];
-    U08 len;
-  } queue_data;
+  
+  
+  
   const U16 _rxQueueSize = 1;
   const U16 _txQueueSize = 1;
   

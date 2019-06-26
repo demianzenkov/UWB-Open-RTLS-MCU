@@ -4,6 +4,7 @@
 #include <vector>
 #include "custom_types.h"
 
+
 #define SOC_RX_PREF 0x94
 #define SOC_TX_PREF 0x9D
 
@@ -39,8 +40,15 @@ public:
   
   proto_base_t proto_base;
   
+  typedef struct {
+    U08 data[64];
+    U08 len;
+  } queue_data_t;
+  
+  
+  
 public:
-  err_te parseBuf(U08 * buf, U16 len);
+  err_te parseBuf(U08 * buf, U16 len, queue_data_t *);
   err_te toProtoBase(std::vector<U08> data, proto_base_t *);
   
 };

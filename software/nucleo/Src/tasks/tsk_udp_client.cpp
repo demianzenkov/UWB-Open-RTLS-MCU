@@ -18,8 +18,8 @@ void TskUdpClient::createTask()
   xSemLwipReady = xSemaphoreCreateBinary();
   xSemConnReady = xSemaphoreCreateBinary();
   
-  xQueueUdpRx = xQueueCreate(_rxQueueSize, sizeof(queue_data));
-  xQueueUdpTx = xQueueCreate(_txQueueSize, sizeof(queue_data));
+  xQueueUdpRx = xQueueCreate(_rxQueueSize, sizeof(SocketProtocol::queue_data_t));
+  xQueueUdpTx = xQueueCreate(_txQueueSize, sizeof(SocketProtocol::queue_data_t));
   
   osThreadId udpEchoTaskHandle;
   osThreadDef(UDPEchoTask, tskUdpClient.udpEchoThread, osPriorityNormal, 0, 1024);
@@ -52,27 +52,31 @@ void TskUdpClient::udpEchoThread(void const *arg)
       {  
         err = netconn_recv(tskUdpClient.udp_recv_conn.conn,  &tskUdpClient.udp_recv_conn.buf);
         if (err == ERR_OK) 
-	{
-	  TskUdpClient::queue_data rx_queue;
-	  
-	  memcpy(rx_queue.data, 
-		 tskUdpClient.udp_recv_conn.buf->p->payload,
-		 tskUdpClient.udp_recv_conn.buf->p->len);
-	  rx_queue.len = tskUdpClient.udp_recv_conn.buf->p->len;
-	  
-	  xQueueSend( tskUdpClient.xQueueUdpTx,
-		     (void *) &rx_queue, 
-		     (TickType_t)0 );
-	  
-	  tskUdpClient.udp_recv_conn.addr = \
-	    netbuf_fromaddr(tskUdpClient.udp_recv_conn.buf);
+        {
+          tskUdpClient.udp_recv_conn.addr = \
+            netbuf_fromaddr(tskUdpClient.udp_recv_conn.buf);
+          tskUdpClient.udp_recv_conn.port = \
+            netbuf_fromport(tskUdpClient.udp_recv_conn.buf);
           
-	  tskUdpClient.udp_recv_conn.port = \
-	    netbuf_fromport(tskUdpClient.udp_recv_conn.buf);
-	  
-	  netbuf_delete(tskUdpClient.udp_recv_conn.buf);
+          SocketProtocol::queue_data_t resp_queue;
+          
+          tskUdpClient.soc_proto.parseBuf((U08 *)tskUdpClient.udp_recv_conn.buf->p->payload, 
+                                          tskUdpClient.udp_recv_conn.buf->p->len,
+                                          &resp_queue);
+          if(resp_queue.len > 0)
+            xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &resp_queue, (TickType_t)0 );
+          
+          /* Echo start */ 
+//          TskUdpClient::queue_data rx_queue;
+//          memcpy(rx_queue.data, 
+//                 tskUdpClient.udp_recv_conn.buf->p->payload,
+//                 tskUdpClient.udp_recv_conn.buf->p->len);
+//          rx_queue.len = tskUdpClient.udp_recv_conn.buf->p->len;
+//          xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &rx_queue, (TickType_t)0 );
+          /* Echo end */
+          
+          netbuf_delete(tskUdpClient.udp_recv_conn.buf);
         }
-	osDelay(1);
       }
     }
     else {
@@ -95,32 +99,31 @@ void TskUdpClient::udpTransmitThread(void const *arg)
   
   tskUdpClient.udp_send_conn.port = tskUdpClient.net_conf.getServerPort();
   
+  // connect to server 
   err_t err = netconn_connect(tskUdpClient.udp_send_conn.conn, 
 		  tskUdpClient.udp_send_conn.addr, 
 		  tskUdpClient.udp_send_conn.port);
   
   if (err == ERR_OK)
   {
-    TskUdpClient::queue_data tx_queue;
+    SocketProtocol::queue_data_t tx_queue;
     for(;;)
     {
-      
+      // wait for data put in tx queue
       if(xQueueReceive(tskUdpClient.xQueueUdpTx, &tx_queue, portMAX_DELAY));
-      
+      // allocate netbuf
       tskUdpClient.udp_send_conn.buf = netbuf_new();
       void * buf_p = netbuf_alloc(tskUdpClient.udp_send_conn.buf, tx_queue.len);
-      
+      // fill netbuf with data from queue
       memcpy (buf_p, &tx_queue, tx_queue.len);
-      
+      // fill netbuf with server ip and port
       tskUdpClient.udp_send_conn.buf->addr.addr = \
     	tskUdpClient.net_conf.ipArrToHex(tskUdpClient.net_conf.getServerIp());
-    
       tskUdpClient.udp_send_conn.buf->port = tskUdpClient.net_conf.getServerPort();
-      
+      // send data
       err = netconn_send(tskUdpClient.udp_send_conn.conn, tskUdpClient.udp_send_conn.buf);
+      // clean netbuf
       netbuf_delete(tskUdpClient.udp_send_conn.buf);
-      
-      osDelay(1);
     }
   }
 }
