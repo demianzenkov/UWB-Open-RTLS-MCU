@@ -17,5 +17,24 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  udp_listener:
+    build:
+      context: ./udp_listener
+    volumes:
+      - "./udp_listener:/app"
+    ports:
+      - 0.0.0.0:5005-5100:5005-5100
+      - 0.0.0.0:5005-5100:5005-5100/udp
+
+  ws:
+    build:
+      context: ./ws
+    volumes:
+      - "./ws:/app"
+    ports:
+      - 0.0.0.0:5004:5004
+      - 0.0.0.0:5004:5004/udp
+      - 0.0.0.0:8080:8080
+
 volumes:
   pgdata:
