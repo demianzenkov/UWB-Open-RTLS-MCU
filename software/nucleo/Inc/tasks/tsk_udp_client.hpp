@@ -1,9 +1,5 @@
 #ifndef TSK_UDP_CLIENT
 #define TSK_UDP_CLIENT
-
-#ifdef __cplusplus
-extern "C" {
-#endif
   
 #include "cmsis_os.h"
 
@@ -13,6 +9,9 @@ extern "C" {
 #include "lwip/api.h"
 #include "lwip/netbuf.h"
 
+#include "net_conf.hpp"
+#include "soc_proto.hpp"
+  
 class TskUdpClient 
 {
 public:
@@ -21,21 +20,35 @@ public:
   void createTask();
 
 public:
-  static void udpClientTsk(void const *);
-  static void udpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len);
-  static void sendThread(void *arg);
+  static void udpEchoThread(void const *);
+  static void udpTransmitThread(void const *);
   
 public:
   typedef struct struct_conn_t {
-    void * conn;
-    void * buf;
+    struct netconn *conn;
+    struct netbuf *buf;
+    struct ip4_addr *addr;
+    unsigned short port;
   } struct_conn;
-  struct_conn conn01;
+  
+  struct_conn udp_recv_conn;
+  struct_conn udp_send_conn;
+  
+  NetConfig net_conf;
+  SocketProtocol soc_proto;
+  
+  SemaphoreHandle_t xSemLwipReady;
+  SemaphoreHandle_t xSemConnReady;
+  
+  QueueHandle_t xQueueUdpRx;
+  QueueHandle_t xQueueUdpTx;
+  
+  
+  
+  const U16 _rxQueueSize = 1;
+  const U16 _txQueueSize = 1;
   
 };
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif //TSK_UDP_CLIENT
