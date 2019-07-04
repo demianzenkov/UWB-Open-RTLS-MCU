@@ -1,8 +1,3 @@
-import socket
-import binascii
-
-from .app import send
-
 _STATION_TO_CLOUD_PREFIX = 0x94
 _CLOUD_TO_STATION_PREFIX = 0x9D
 
@@ -41,15 +36,16 @@ def crc16(pbuf):
     return crc
 
 
-def send_read_network_settings_command(network_address: str):
+def send_read_network_settings_command(sock, receiver_address: tuple, network_address: str):
     operation_code = 0x06
     network_address = [int(i) for i in network_address.split('.')]
     body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code]
     checksum = crc8(body)
-    send(bytes([*body, checksum]))
+    sock.sendto(bytes([*body, checksum]), receiver_address)
 
 
-def send_write_network_settings_command(network_address: str, station_ip: str, subnet_mask: str, server_ip: str, server_port: int):
+def send_write_network_settings_command(sock, receiver_address: tuple, network_address: str, station_ip: str,
+                                        subnet_mask: str, server_ip: str, server_port: int):
     operation_code = 0x07
     network_address = [int(i) for i in network_address.split('.')]
     station_ip = [int(i) for i in station_ip.split('.')]
@@ -57,12 +53,12 @@ def send_write_network_settings_command(network_address: str, station_ip: str, s
     server_ip = [int(i) for i in server_ip.split('.')]
     body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code, station_ip, subnet_mask, server_ip, server_port]
     checksum = crc8(body)
-    send(bytes([*body, checksum]))
+    sock.sendto(bytes([*body, checksum]), receiver_address)
 
 
-def send_read_module_settings_command(network_address: str):
+def send_read_module_settings_command(sock, receiver_address: tuple, network_address: str):
     operation_code = 0x08
     network_address = [int(i) for i in network_address.split('.')]
     body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code]
     checksum = crc8(body)
-    send(bytes([*body, checksum]))
+    sock.sendto(bytes([*body, checksum]), receiver_address)
