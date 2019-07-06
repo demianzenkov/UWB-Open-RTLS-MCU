@@ -11,7 +11,7 @@ async def websocket_handler(request):
 
     app['data']['ws'] = ws
 
-    await ws.send_str('{}')
+    # await ws.send_str('{}')
 
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:

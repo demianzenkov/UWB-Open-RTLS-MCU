@@ -46,15 +46,16 @@ def _create_anchor(ip, subnet_mask, server_ip_address, server_port):
     logger.info(f'Creating database anchor entry for {ip}')
     try:
         cur.execute(
-            f'''insert into devices_anchor
-             (ip, subnet_mask, server_ip_address, server_port) 
+            f'''insert into anchor
+             (ip, port, server_ip, server_port, subnet_mask) 
              select 
-             \'{ip}\', \'{subnet_mask}\', \'{server_ip_address}\', \'{server_port}\'
+             \'{ip}\', 8080, \'{server_ip_address}\', \'{server_port}\', \'{subnet_mask}\'
              where not exists 
-             (select ip from devices_anchor where ip = \'{ip}\');''')
+             (select ip from anchor where ip = \'{ip}\');''')
         pg_conn.commit()
     except Exception as e:
         logger.exception(e)
+        cur.close()
     else:
         logger.info(f'Creating database anchor entry for {ip} [Success]')
     finally:
@@ -76,11 +77,24 @@ def _handle_read_network_settings_command(data):
 
 
 def _handle_write_network_settings_command(data):
-    pass
+    is_command_completed_successful = data[6:8]
+
+    logger.info(f'Write network settings command returned code: {is_command_completed_successful}')
 
 
 def _handle_read_module_settings_command(data):
-    pass
+    channel_number = data[6:8]
+    pulse_repetition_frequency = data[8:10]
+    tx_preamble_length = data[10:12]
+    rxpac = data[12:14]
+    tx_preamble_code = data[14:16]
+    rx_preamble_code = data[16:18]
+    nonstd_sfd = data[18:20]
+    data_rate = data[20:22]
+    pht_mode = data[22:24]
+    sfd_timeout_value = data[24:26]
+
+    # write to db
 
 
 operations_handlers = {

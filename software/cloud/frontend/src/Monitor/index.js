@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as actionsModule from "./actions";
 
 class Monitor extends Component {
   constructor(props) {
@@ -22,8 +24,8 @@ class Monitor extends Component {
           height="500"
           style={{
             backgroundColor: "yellow",
-            marginTop: "6rem",
-            marginLeft: "2rem",
+            marginTop: "1rem",
+            marginLeft: "1rem",
             border: "1px solid black"
           }}
         >
@@ -36,4 +38,7 @@ class Monitor extends Component {
   }
 }
 
-export default connect(state => state)(Monitor);
+export default connect(
+  state => state.monitor,
+  dispatch => ({ actions: bindActionCreators(actionsModule, dispatch) })
+)(Monitor);
