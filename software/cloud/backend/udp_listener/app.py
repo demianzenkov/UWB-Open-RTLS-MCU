@@ -2,6 +2,7 @@ import socket
 import time
 import psycopg2
 import logging
+import json
 
 from senders import send_read_network_settings_command
 
@@ -32,16 +33,41 @@ sock.bind((_UDP_HOST, _UDP_PORT))
 _ACQUAINTED_STATIONS = []
 
 
-def get_anchors():
+def _get_anchors(fields=('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask')):
     cur = pg_conn.cursor()
-    cur.execute("select id, ip from devices_anchor;")
+    cur.execute(f"select {', '.join(fields)} from anchor;")
     res = list(cur)
     cur.close()
 
-    return res
+    anchors_ = []
+
+    for row in res:
+        row_ = []
+        for v in row:
+            if type(v) is str:
+                v = v.strip(' ')
+            row_.append(v)
+        anchors_.append(row_)
+
+    return anchors_
 
 
-def _create_anchor(ip, subnet_mask, server_ip_address, server_port):
+def is_anchor_exists(address: tuple):
+    cur = pg_conn.cursor()
+    cur.execute(f'select ip, port from anchor where ip = \'{address[0]}\' and port = \'{address[1]}\';')
+    res = list(cur)
+    cur.close()
+
+    return len(res) > 0
+
+
+for anchor in _get_anchors(fields=('ip', 'port')):
+    _ACQUAINTED_STATIONS.append((anchor[0], anchor[1]))
+
+logger.info(f'Acquainted anchors: {_ACQUAINTED_STATIONS}')
+
+
+def _create_anchor(ip, port, subnet_mask, server_ip_address, server_port):
     cur = pg_conn.cursor()
     logger.info(f'Creating database anchor entry for {ip}')
     try:
@@ -49,9 +75,10 @@ def _create_anchor(ip, subnet_mask, server_ip_address, server_port):
             f'''insert into anchor
              (ip, port, server_ip, server_port, subnet_mask) 
              select 
-             \'{ip}\', 8080, \'{server_ip_address}\', \'{server_port}\', \'{subnet_mask}\'
+             \'{ip}\', \'{port}\', \'{server_ip_address}\', \'{server_port}\', \'{subnet_mask}\'
              where not exists 
              (select ip from anchor where ip = \'{ip}\');''')
+        logger.info(f'Inserted {cur.statusmessage.split(" ")[-1]} rows\nFull db status message: {cur.statusmessage}')
         pg_conn.commit()
     except Exception as e:
         logger.exception(e)
@@ -62,7 +89,7 @@ def _create_anchor(ip, subnet_mask, server_ip_address, server_port):
         cur.close()
 
 
-def _handle_read_network_settings_command(data):
+def _handle_read_network_settings_command(data, address):
     station_ip = data[8:16]
     subnet_mask = data[16:24]
     server_ip = data[24:32]
@@ -73,16 +100,36 @@ def _handle_read_network_settings_command(data):
     server_ip = '.'.join([str(int(server_ip[i] + server_ip[i + 1], 16)) for i in range(0, len(server_ip), 2)])
     server_port = int(server_port, 16)
 
-    _create_anchor(station_ip, subnet_mask, server_ip, server_port)
+    logger.info(f'''Handling read_network_settings command response:
+                    \t\tAddress (from socket): {address}
+                    \t\tStation ip (from payload):{station_ip}
+                    \t\tServer ip: {server_ip}
+                    \t\tServer port: {server_port}
+                    \t\tSubnet mask: {subnet_mask}''')
+
+    if not is_anchor_exists(address):
+        logger.info(f'Anchor with address {address} not represented in db.')
+        _create_anchor(address[0], address[1], subnet_mask, server_ip, server_port)
+
+    fields = ('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask')
+    data = [dict(zip(fields, tuple(row))) for row in _get_anchors(fields=fields)]
+
+    socket_payload = {
+        'type': 'anchors',
+        'data': str(data).replace('\'', '"')
+    }
+
+    socket_payload = json.dumps(socket_payload)
+    ws_sock.send(socket_payload.encode())
 
 
-def _handle_write_network_settings_command(data):
+def _handle_write_network_settings_command(data, address):
     is_command_completed_successful = data[6:8]
 
     logger.info(f'Write network settings command returned code: {is_command_completed_successful}')
 
 
-def _handle_read_module_settings_command(data):
+def _handle_read_module_settings_command(data, address):
     channel_number = data[6:8]
     pulse_repetition_frequency = data[8:10]
     tx_preamble_length = data[10:12]
@@ -114,7 +161,7 @@ def parse(data, address):
         return
 
     try:
-        handler(data)
+        handler(data, address)
     except Exception as e:
         logger.exception(e)
 

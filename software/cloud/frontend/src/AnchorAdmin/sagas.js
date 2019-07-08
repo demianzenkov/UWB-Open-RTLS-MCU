@@ -1,7 +1,7 @@
 /* Saga */
 import { call, fork, put, takeLatest } from "redux-saga/effects";
 
-function foo() {
+function fetchAnchors() {
   return fetch("http://localhost:8000/anchors").then(response =>
     response.json().then(data => {
       return { body: data, status: response.status };
@@ -10,8 +10,7 @@ function foo() {
 }
 
 function* requestAnchors(action) {
-  const response = yield call(foo);
-  console.log(response);
+  const response = yield call(fetchAnchors);
   if (response.status === 200) {
     yield put({
       type: "anchorAdmin.requestAnchors.success",
@@ -29,4 +28,43 @@ function* watchRequestAnchors() {
   yield takeLatest("anchorAdmin.requestAnchors", requestAnchors);
 }
 
-export default [fork(watchRequestAnchors)];
+function fetchRequestReadNetworkSettings(ip, port) {
+  return fetch("http://localhost:8000/anchors/read_network_settings_command", {
+    method: "POST",
+    body: JSON.stringify({ ip, port }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(response =>
+    response.json().then(data => {
+      return { status: response.status };
+    })
+  );
+}
+
+function* requestReadNetworkSettings(action) {
+  const response = yield call(
+    fetchRequestReadNetworkSettings,
+    action.ip,
+    action.port
+  );
+  if (response.status === 200) {
+    yield put({
+      type: "anchorAdmin.requestReadNetworkSettings.success"
+    });
+  } else {
+    yield put({
+      type: "anchorAdmin.requestReadNetworkSettings.fail",
+      status: response.status
+    });
+  }
+}
+
+function* watchRequestNetworkSettings() {
+  yield takeLatest(
+    "anchorAdmin.requestReadNetworkSettings",
+    requestReadNetworkSettings
+  );
+}
+
+export default [fork(watchRequestAnchors), fork(watchRequestNetworkSettings)];

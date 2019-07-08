@@ -17,15 +17,32 @@ class AnchorAdmin extends Component {
     if (isRequestingAnchors) {
       return <div>Loading</div>;
     }
-    console.log(this.props);
+
+    console.log(">>>>>", anchors, typeof anchors);
+
     return (
-      <div>
-        <div>Anchor Admin</div>
+      <div style={{ marginTop: "1rem", marginLeft: "1rem" }}>
+        <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
+          Anchor Admin
+        </div>
         {anchors.map(a => (
           <div key={a.id}>
-            {a.ip} {a.port} {a.server_ip} {a.server_port} {a.subnet_mask}
+            <div>
+              ip: {a.ip} port: {a.port} server ip: {a.server_ip} server port:{" "}
+              {a.server_port} subnet mask: {a.subnet_mask}
+            </div>
+            <button
+              onClick={() => {
+                this.props.actions.requestReadNetworkSettings(a.ip, a.port);
+              }}
+            >
+              Read network settings
+            </button>
+            <button>Write network settings</button>
+            <div className="loader" />
           </div>
         ))}
+        <input />
       </div>
     );
   }

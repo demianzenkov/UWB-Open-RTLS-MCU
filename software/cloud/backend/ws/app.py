@@ -1,7 +1,18 @@
 import socket
 import aiohttp
 import asyncio
+import logging
 from aiohttp import web
+import json
+
+logger = logging.getLogger('ws')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch_format = logging.Formatter('%(asctime)s : [%(name)s] : [%(levelname)s] : %(message)s')
+ch.setFormatter(ch_format)
+
+logger.addHandler(ch)
+logger.setLevel(logging.DEBUG)
 
 
 async def websocket_handler(request):
@@ -11,16 +22,13 @@ async def websocket_handler(request):
 
     app['data']['ws'] = ws
 
-    # await ws.send_str('{}')
-
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.TEXT:
-            print(f'received some {msg.data}')
+            logger.info(f'Received message: {msg.data}')
         elif msg.type == aiohttp.WSMsgType.ERROR:
-            print('ws connection closed with exception %s' %
-                  ws.exception())
+            logger.info(f'Websocket connection closed with exception {ws.exception()}')
 
-    print('websocket connection closed')
+    logger.info('Websocket connection closed')
 
     return ws
 
@@ -31,20 +39,21 @@ app.add_routes([web.get('/ws', websocket_handler)])
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('0.0.0.0', 5004))
-sock.setblocking(0)
+sock.setblocking(False)
 
 
-async def t():
+async def listen_socket():
     while True:
         await asyncio.sleep(0.1)
         try:
-            data = sock.recv(5000)
-            print('sock', data)
+            data = sock.recv(4096)
+            logger.info(f'Websocket received {data}')
         except:
             pass
         else:
             await app['data'].get('ws').send_str(data.decode())
 
-asyncio.get_event_loop().create_task(t())
+
+asyncio.get_event_loop().create_task(listen_socket())
 
 web.run_app(app, host='0.0.0.0', port=8080)

@@ -18,16 +18,18 @@ class Monitor extends Component {
 
   render() {
     return (
-      <div>
+      <div
+        style={{
+          marginTop: "1rem",
+          marginLeft: "1rem",
+          fontSize: "2rem"
+        }}
+      >
+        <div>Monitor</div>
         <svg
           width="1000"
           height="500"
-          style={{
-            backgroundColor: "yellow",
-            marginTop: "1rem",
-            marginLeft: "1rem",
-            border: "1px solid black"
-          }}
+          style={{ backgroundColor: "yellow", border: "1px solid black" }}
         >
           {this.state.dots.map(d => (
             <circle key={d.k} cx={d.x} cy={d.y} r="5px" />
