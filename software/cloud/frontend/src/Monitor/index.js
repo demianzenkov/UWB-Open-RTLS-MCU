@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as actionsModule from "./actions";
 
 class Monitor extends Component {
   constructor(props) {
@@ -16,16 +18,18 @@ class Monitor extends Component {
 
   render() {
     return (
-      <div>
+      <div
+        style={{
+          marginTop: "1rem",
+          marginLeft: "1rem",
+          fontSize: "2rem"
+        }}
+      >
+        <div>Monitor</div>
         <svg
           width="1000"
           height="500"
-          style={{
-            backgroundColor: "yellow",
-            marginTop: "6rem",
-            marginLeft: "2rem",
-            border: "1px solid black"
-          }}
+          style={{ backgroundColor: "yellow", border: "1px solid black" }}
         >
           {this.state.dots.map(d => (
             <circle key={d.k} cx={d.x} cy={d.y} r="5px" />
@@ -36,4 +40,7 @@ class Monitor extends Component {
   }
 }
 
-export default connect(state => state)(Monitor);
+export default connect(
+  state => state.monitor,
+  dispatch => ({ actions: bindActionCreators(actionsModule, dispatch) })
+)(Monitor);

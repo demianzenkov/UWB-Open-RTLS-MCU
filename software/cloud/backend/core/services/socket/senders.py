@@ -1,6 +1,3 @@
-import socket
-import binascii
-
 _STATION_TO_CLOUD_PREFIX = 0x94
 _CLOUD_TO_STATION_PREFIX = 0x9D
 
@@ -39,29 +36,29 @@ def crc16(pbuf):
     return crc
 
 
-def send_read_network_settings_command(sock, network_address: str):
+def send_read_network_settings_command(sock, receiver_address: tuple, network_address: str):
     operation_code = 0x06
     network_address = [int(i) for i in network_address.split('.')]
     body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code]
     checksum = crc8(body)
-    sock.send(bytes([*body, checksum]))
+    sock.sendto(bytes([*body, checksum]), receiver_address)
 
 
-def send_write_network_settings_command(sock, current_network_address: str, new_network_address: str, subnet_mask: str, server_ip: str, server_port: int):
+def send_write_network_settings_command(sock, receiver_address: tuple, network_address: str, station_ip: str,
+                                        subnet_mask: str, server_ip: str, server_port: int):
     operation_code = 0x07
-    current_network_address = [int(i) for i in current_network_address.split('.')]
-    new_network_address = [int(i) for i in new_network_address.split('.')]
+    network_address = [int(i) for i in network_address.split('.')]
+    station_ip = [int(i) for i in station_ip.split('.')]
     subnet_mask = [int(i) for i in subnet_mask.split('.')]
     server_ip = [int(i) for i in server_ip.split('.')]
-    body = [_CLOUD_TO_STATION_PREFIX, *current_network_address,
-            operation_code, *new_network_address, *subnet_mask, *server_ip, server_port]
+    body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code, station_ip, subnet_mask, server_ip, server_port]
     checksum = crc8(body)
-    sock.send(bytes([*body, checksum]))
+    sock.sendto(bytes([*body, checksum]), receiver_address)
 
 
-def send_read_module_settings_command(sock, network_address: str):
+def send_read_module_settings_command(sock, receiver_address: tuple, network_address: str):
     operation_code = 0x08
     network_address = [int(i) for i in network_address.split('.')]
     body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code]
     checksum = crc8(body)
-    sock.send(bytes([*body, checksum]))
+    sock.sendto(bytes([*body, checksum]), receiver_address)
