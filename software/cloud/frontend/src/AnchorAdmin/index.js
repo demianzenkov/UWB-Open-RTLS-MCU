@@ -7,6 +7,8 @@ class AnchorAdmin extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {};
+
     this.props.actions.requestAnchors();
   }
 
@@ -18,8 +20,6 @@ class AnchorAdmin extends Component {
       return <div>Loading</div>;
     }
 
-    console.log(">>>>>", anchors, typeof anchors);
-
     return (
       <div style={{ marginTop: "1rem", marginLeft: "1rem" }}>
         <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
@@ -27,22 +27,76 @@ class AnchorAdmin extends Component {
         </div>
         {anchors.map(a => (
           <div key={a.id}>
-            <div>
-              ip: {a.ip} port: {a.port} server ip: {a.server_ip} server port:{" "}
-              {a.server_port} subnet mask: {a.subnet_mask}
+            <div className="anchor">
+              <div>ip:</div>
+              <div style={{ display: "flex" }}>
+                <div>{a.ip}</div>
+                <input
+                  className="anchor-admin-input"
+                  type="text"
+                  onChange={e => {
+                    this.setState(
+                      {
+                        forms: {
+                          ...this.state.forms,
+                          [a.id]: { ip: e.target.value }
+                        }
+                      },
+                      () => {
+                        console.log(this.state);
+                      }
+                    );
+                  }}
+                />
+              </div>
             </div>
-            <button
-              onClick={() => {
-                this.props.actions.requestReadNetworkSettings(a.ip, a.port);
+            <div className="anchor">
+              <div>port:</div>
+              <div style={{ display: "flex" }}>
+                <div>{a.port}</div>
+                <input className="anchor-admin-input" onChange={e => {}} />
+              </div>
+            </div>
+            <div className="anchor">
+              <div>server ip:</div>
+              <div style={{ display: "flex" }}>
+                <div>{a.server_ip}</div>
+                <input className="anchor-admin-input" />
+              </div>
+            </div>
+            <div className="anchor">
+              <div>server port:</div>
+              <div style={{ display: "flex" }}>
+                <div>{a.server_port}</div>
+                <input className="anchor-admin-input" />
+              </div>
+            </div>
+            <div className="anchor">
+              <div>subnet mask:</div>
+              <div style={{ display: "flex" }}>
+                <div>{a.subnet_mask}</div>
+                <input className="anchor-admin-input" />
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "25rem"
               }}
             >
-              Read network settings
-            </button>
-            <button>Write network settings</button>
-            <div className="loader" />
+              <button
+                onClick={() => {
+                  this.props.actions.requestReadNetworkSettings(a.ip, a.port);
+                }}
+              >
+                Read network settings
+              </button>
+              <button>Write network settings</button>
+              <button>Clear</button>
+            </div>
           </div>
         ))}
-        <input />
       </div>
     );
   }

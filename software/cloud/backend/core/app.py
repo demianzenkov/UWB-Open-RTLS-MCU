@@ -54,6 +54,7 @@ async def handle_post_read_network_settings_command(request):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+    logger.info(f'Sending read_network_settings command to {body.get("ip")} {body.get("port")}')
     try:
         send_read_network_settings_command(sock, (body.get('ip'), body.get('port')), body.get('ip'))
     except Exception as e:

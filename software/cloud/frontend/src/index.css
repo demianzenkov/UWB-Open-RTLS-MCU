@@ -30,3 +30,14 @@ code {
     transform: rotate(360deg);
   }
 }
+
+.anchor {
+  display: flex;
+  margin-top: 0.25rem;
+  width: 25rem;
+  justify-content: space-between;
+}
+
+.anchor-admin-input {
+  margin-left: 0.5rem;
+}
