@@ -12,7 +12,23 @@ class AnchorAdmin extends Component {
     this.props.actions.requestAnchors();
   }
 
-  componentWillReceiveProps(props) {}
+  componentWillReceiveProps(props) {
+    if (!!props) {
+      props.state.anchors.forEach(a => {
+        if (!Object.keys(props.state.anchors).includes(a.id)) {
+          this.setState({
+            [a.id]: {
+              ip: "",
+              port: "",
+              "server ip": "",
+              "server port": "",
+              "subnet mask": ""
+            }
+          });
+        }
+      });
+    }
+  }
 
   render() {
     const { anchors, isRequestingAnchors } = this.props.state;
@@ -34,18 +50,11 @@ class AnchorAdmin extends Component {
                 <input
                   className="anchor-admin-input"
                   type="text"
+                  value={this.state[a.id]["ip"]}
                   onChange={e => {
-                    this.setState(
-                      {
-                        forms: {
-                          ...this.state.forms,
-                          [a.id]: { ip: e.target.value }
-                        }
-                      },
-                      () => {
-                        console.log(this.state);
-                      }
-                    );
+                    this.setState({
+                      [a.id]: { ...this.state[1], ip: e.target.value }
+                    });
                   }}
                 />
               </div>
@@ -54,28 +63,71 @@ class AnchorAdmin extends Component {
               <div>port:</div>
               <div style={{ display: "flex" }}>
                 <div>{a.port}</div>
-                <input className="anchor-admin-input" onChange={e => {}} />
+                <input
+                  className="anchor-admin-input"
+                  value={this.state[a.id]["port"]}
+                  onChange={e => {
+                    this.setState({
+                      [a.id]: { ...this.state[1], port: e.target.value }
+                    });
+                  }}
+                />
               </div>
             </div>
             <div className="anchor">
               <div>server ip:</div>
               <div style={{ display: "flex" }}>
                 <div>{a.server_ip}</div>
-                <input className="anchor-admin-input" />
+                <input
+                  className="anchor-admin-input"
+                  value={this.state[a.id]["server ip"]}
+                  onChange={e => {
+                    this.setState({
+                      [a.id]: { ...this.state[1], "server ip": e.target.value }
+                    });
+                  }}
+                />
               </div>
             </div>
             <div className="anchor">
               <div>server port:</div>
               <div style={{ display: "flex" }}>
                 <div>{a.server_port}</div>
-                <input className="anchor-admin-input" />
+                <input
+                  className="anchor-admin-input"
+                  value={this.state[a.id]["server port"]}
+                  onChange={e => {
+                    this.setState({
+                      [a.id]: {
+                        ...this.state[1],
+                        "server port": e.target.value
+                      }
+                    });
+                  }}
+                />
               </div>
             </div>
             <div className="anchor">
               <div>subnet mask:</div>
               <div style={{ display: "flex" }}>
                 <div>{a.subnet_mask}</div>
-                <input className="anchor-admin-input" />
+                <input
+                  className="anchor-admin-input"
+                  value={this.state[a.id]["subnet mask"]}
+                  onChange={e => {
+                    this.setState(
+                      {
+                        [a.id]: {
+                          ...this.state[1],
+                          "subnet mask": e.target.value
+                        }
+                      },
+                      () => {
+                        console.log(this.state);
+                      }
+                    );
+                  }}
+                />
               </div>
             </div>
             <div
@@ -93,7 +145,21 @@ class AnchorAdmin extends Component {
                 Read network settings
               </button>
               <button>Write network settings</button>
-              <button>Clear</button>
+              <button
+                onClick={() => {
+                  this.setState({
+                    [a.id]: {
+                      ip: "",
+                      port: "",
+                      "server ip": "",
+                      "server port": "",
+                      "subnet mask": ""
+                    }
+                  });
+                }}
+              >
+                Clear
+              </button>
             </div>
           </div>
         ))}
