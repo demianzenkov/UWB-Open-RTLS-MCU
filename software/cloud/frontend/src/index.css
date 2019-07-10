@@ -38,6 +38,17 @@ code {
   justify-content: space-between;
 }
 
+.anchor:first-child {
+  margin-top: 0rem;
+}
+
 .anchor-admin-input {
+  margin: 0;
   margin-left: 0.5rem;
+  margin-top: 0.25rem;
+  height: 0.75rem;
+}
+
+.anchor-admin-input:first-child {
+  margin-top: 0;
 }
