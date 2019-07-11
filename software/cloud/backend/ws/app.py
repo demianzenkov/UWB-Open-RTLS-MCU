@@ -47,11 +47,17 @@ async def listen_socket():
         await asyncio.sleep(0.1)
         try:
             data = sock.recv(4096)
+            data = data.decode()
+            data = json.loads(data)
             logger.info(f'Websocket received {data}')
-        except:
+            await app['data'].get('ws').send_json(data)
+        except BlockingIOError:
             pass
-        else:
-            await app['data'].get('ws').send_str(data.decode())
+        except AttributeError as e:
+            logger.exception(e)
+            logger.info('Browser probably lost ws connection. Reload page.')
+        except Exception as e:
+            logger.exception(e)
 
 
 asyncio.get_event_loop().create_task(listen_socket())

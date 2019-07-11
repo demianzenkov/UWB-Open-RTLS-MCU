@@ -35,7 +35,7 @@ _ACQUAINTED_STATIONS = []
 
 def _get_anchors(fields=('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask')):
     cur = pg_conn.cursor()
-    cur.execute(f"select {', '.join(fields)} from anchor;")
+    cur.execute(f"select {', '.join(fields)} from anchor order by id asc;")
     res = list(cur)
     cur.close()
 
@@ -77,7 +77,7 @@ def _create_anchor(ip, port, subnet_mask, server_ip_address, server_port):
              select 
              \'{ip}\', \'{port}\', \'{server_ip_address}\', \'{server_port}\', \'{subnet_mask}\'
              where not exists 
-             (select ip from anchor where ip = \'{ip}\');''')
+             (select ip from anchor where ip = \'{ip}\' and port = \'{port}\');''')
         logger.info(f'Inserted {cur.statusmessage.split(" ")[-1]} rows\nFull db status message: {cur.statusmessage}')
         pg_conn.commit()
     except Exception as e:
@@ -85,6 +85,22 @@ def _create_anchor(ip, port, subnet_mask, server_ip_address, server_port):
         cur.close()
     else:
         logger.info(f'Creating database anchor entry for {ip} [Success]')
+    finally:
+        cur.close()
+
+
+def _set_received_read_network_settings_command_response(address):
+    cur = pg_conn.cursor()
+    try:
+        cur.execute(
+            f"""update anchor 
+                set is_waiting_for_read_network_settings_command_response = false 
+                where ip = \'{address[0]}\' and port = \'{address[1]}\';""")
+        logger.info(f'Updated {address} anchor. Full db status message: {cur.statusmessage}')
+        pg_conn.commit()
+    except Exception as e:
+        logger.exception(e)
+        cur.close()
     finally:
         cur.close()
 
@@ -111,12 +127,15 @@ def _handle_read_network_settings_command(data, address):
         logger.info(f'Anchor with address {address} not represented in db.')
         _create_anchor(address[0], address[1], subnet_mask, server_ip, server_port)
 
-    fields = ('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask')
+    _set_received_read_network_settings_command_response(address)
+
+    fields = ('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask',
+              'is_waiting_for_read_network_settings_command_response')
     data = [dict(zip(fields, tuple(row))) for row in _get_anchors(fields=fields)]
 
     socket_payload = {
         'type': 'anchors',
-        'data': str(data).replace('\'', '"')
+        'data': data
     }
 
     socket_payload = json.dumps(socket_payload)

@@ -41,8 +41,9 @@ class AnchorAdmin extends Component {
         <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
           Anchor Admin
         </div>
+        {anchors.length === 0 && <div>No anchors</div>}
         {anchors.map(a => (
-          <div>
+          <div key={a.id}>
             <div style={{ display: "flex" }}>
               <div key={a.id}>
                 <div className="anchor">
@@ -66,7 +67,7 @@ class AnchorAdmin extends Component {
                   <div>{a.subnet_mask}</div>
                 </div>
               </div>
-              <div style={{ display: "flex", "flex-direction": "column" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 <input
                   className="anchor-admin-input"
                   type="text"
@@ -123,7 +124,7 @@ class AnchorAdmin extends Component {
                   }}
                 />
               </div>
-              <div style={{ display: "flex", "flex-direction": "column" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 <button style={{ marginLeft: "0.25rem" }}>
                   Write network settings
                 </button>
@@ -143,6 +144,14 @@ class AnchorAdmin extends Component {
                 >
                   Clear
                 </button>
+                <button
+                  style={{ marginLeft: "0.25rem", marginTop: "0.25rem" }}
+                  onClick={() => {
+                    this.props.actions.requestDeleteAnchor(a.ip, a.port);
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
             <div
@@ -152,14 +161,30 @@ class AnchorAdmin extends Component {
                 width: "25rem"
               }}
             >
-              <button
-                style={{ marginTop: "0.25rem" }}
-                onClick={() => {
-                  this.props.actions.requestReadNetworkSettings(a.ip, a.port);
-                }}
-              >
-                Read network settings
-              </button>
+              <div style={{ display: "flex" }}>
+                <button
+                  style={{ marginTop: "0.25rem" }}
+                  onClick={() => {
+                    this.props.actions.requestReadNetworkSettings(a.ip, a.port);
+                  }}
+                  disabled={
+                    a["is_waiting_for_read_network_settings_command_response"]
+                  }
+                >
+                  Read network settings
+                </button>
+                {a["is_waiting_for_read_network_settings_command_response"] && (
+                  <div
+                    style={{
+                      fontSize: "0.8rem",
+                      marginTop: "0.4rem",
+                      marginLeft: "0.5rem"
+                    }}
+                  >
+                    Waiting for response
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ))}

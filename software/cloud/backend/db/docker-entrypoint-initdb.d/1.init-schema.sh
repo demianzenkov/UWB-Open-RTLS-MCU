@@ -18,7 +18,9 @@ psql -a -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     port int,
     server_ip char(16),
     server_port int,
-    subnet_mask char(16)
+    subnet_mask char(16),
+    is_waiting_for_read_network_settings_command_response bool default false,
+    is_waiting_for_write_network_settings_command_response bool default false
     );
 
     ALTER TABLE anchor OWNER TO root;

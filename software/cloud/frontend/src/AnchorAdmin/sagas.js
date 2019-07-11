@@ -37,7 +37,7 @@ function fetchRequestReadNetworkSettings(ip, port) {
     }
   }).then(response =>
     response.json().then(data => {
-      return { status: response.status };
+      return { body: data, status: response.status };
     })
   );
 }
@@ -48,9 +48,11 @@ function* requestReadNetworkSettings(action) {
     action.ip,
     action.port
   );
+
   if (response.status === 200) {
     yield put({
-      type: "anchorAdmin.requestReadNetworkSettings.success"
+      type: "anchorAdmin.requestReadNetworkSettings.success",
+      data: response.body
     });
   } else {
     yield put({
@@ -67,4 +69,42 @@ function* watchRequestNetworkSettings() {
   );
 }
 
-export default [fork(watchRequestAnchors), fork(watchRequestNetworkSettings)];
+function fetchRequestDeleteAnchor(ip, port) {
+  return fetch("http://localhost:8000/anchors/anchor_deletion", {
+    method: "POST",
+    body: JSON.stringify({ ip, port }),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(response =>
+    response.json().then(data => {
+      return { body: data, status: response.status };
+    })
+  );
+}
+
+function* requestDeleteAnchor(action) {
+  const response = yield call(fetchRequestDeleteAnchor, action.ip, action.port);
+
+  if (response.status === 200) {
+    yield put({
+      type: "anchorAdmin.requestDeleteAnchor.success",
+      data: response.body
+    });
+  } else {
+    yield put({
+      type: "anchorAdmin.requestDeleteAnchor.fail",
+      status: response.status
+    });
+  }
+}
+
+function* watchRequestDeleteAnchor() {
+  yield takeLatest("anchorAdmin.requestDeleteAnchor", requestDeleteAnchor);
+}
+
+export default [
+  fork(watchRequestAnchors),
+  fork(watchRequestNetworkSettings),
+  fork(watchRequestDeleteAnchor)
+];

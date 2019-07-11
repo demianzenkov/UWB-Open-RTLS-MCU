@@ -49,8 +49,8 @@ function* listenToWebSocket(delayTimeout) {
     if (message) {
       const { type } = message;
       if (type === "anchors") {
-        const data = JSON.parse(message.data);
-        yield put({ type: "anchorAdmin.ws.anchors", data });
+        // const data = JSON.parse(message.data);
+        yield put({ type: "anchorAdmin.ws.anchors", data: message.data });
       } else {
         yield put({ type: "ws.message", message });
       }

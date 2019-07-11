@@ -24,9 +24,7 @@ async def _connect():
                                     database='core', host='db')
 
 
-async def handle_get_anchors(request):
-    anchors = await _get_anchors()
-
+def format_anchors(anchors: list):
     anchors_ = []
 
     for anchor in anchors:
@@ -38,6 +36,14 @@ async def handle_get_anchors(request):
             anchor_[k] = v
         anchors_.append(anchor_)
 
+    return anchors_
+
+
+async def handle_get_anchors(request):
+    anchors = await _get_anchors()
+
+    anchors_ = format_anchors(anchors)
+
     resp = web.Response(text=json.dumps(anchors_))
     resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
 
@@ -45,7 +51,7 @@ async def handle_get_anchors(request):
 
 
 async def _get_anchors():
-    values = await pg_conn.fetch('''SELECT * FROM anchor;''')
+    values = await pg_conn.fetch('''SELECT * FROM anchor ORDER BY id ASC;''')
     return values
 
 
@@ -55,14 +61,48 @@ async def handle_post_read_network_settings_command(request):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     logger.info(f'Sending read_network_settings command to {body.get("ip")} {body.get("port")}')
+
+    try:
+        async with pg_conn.transaction():
+            await pg_conn.execute(
+                f"""update anchor 
+                set is_waiting_for_read_network_settings_command_response = true 
+                where ip = \'{body.get("ip")}\' and port = \'{body.get('port')}\';""")
+    except Exception as e:
+        logger.exception(e)
+
     try:
         send_read_network_settings_command(sock, (body.get('ip'), body.get('port')), body.get('ip'))
     except Exception as e:
         logger.exception(e)
 
-    resp = web.Response(text=json.dumps({'ok': True}))
+    resp = web.Response(text=json.dumps(format_anchors(await _get_anchors())))
 
     resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    resp.headers['Content-Type'] = 'application/json'
+
+    return resp
+
+
+async def handle_post_anchor_deletion(request):
+    body = await request.json()
+
+    logger.info(f'Deleting anchor: {body.get("ip")} {body.get("port")}')
+
+    try:
+        async with pg_conn.transaction():
+            await pg_conn.execute(
+                f"""delete from anchor 
+                where ip = \'{body.get("ip")}\' and port = \'{body.get('port')}\';""")
+    except Exception as e:
+        logger.exception(e)
+    else:
+        logger.info(f'Deleting anchor: {body.get("ip")} {body.get("port")} [Success]')
+
+    resp = web.Response(text=json.dumps(format_anchors(await _get_anchors())))
+
+    resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+    resp.headers['Content-Type'] = 'application/json'
 
     return resp
 
@@ -84,7 +124,9 @@ loop.run_until_complete(_connect())
 app = web.Application()
 app.add_routes([web.get('/anchors', handle_get_anchors),
                 web.post('/anchors/read_network_settings_command', handle_post_read_network_settings_command),
-                web.options('/anchors/read_network_settings_command', handle_options)])
+                web.options('/anchors/read_network_settings_command', handle_options),
+                web.post('/anchors/anchor_deletion', handle_post_anchor_deletion),
+                web.options('/anchors/anchor_deletion', handle_options)])
 
 if __name__ == '__main__':
     web.run_app(app, host='0.0.0.0', port=8000)
