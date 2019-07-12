@@ -10,6 +10,6 @@ export function requestDeleteAnchor(ip, port) {
   return { type: "anchorAdmin.requestDeleteAnchor", ip, port };
 }
 
-export function requestWriteNetworkSettings(ip, port) {
-  return { type: "anchorAdmin.requestWriteNetworkSettings", ip, port };
+export function requestWriteNetworkSettings(ip, port, payload) {
+  return { type: "anchorAdmin.requestWriteNetworkSettings", ip, port, payload };
 }

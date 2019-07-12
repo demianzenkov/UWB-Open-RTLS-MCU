@@ -103,10 +103,10 @@ function* watchRequestDeleteAnchor() {
   yield takeLatest("anchorAdmin.requestDeleteAnchor", requestDeleteAnchor);
 }
 
-function fetchRequestWriteNetworkSettings(ip, port) {
+function fetchRequestWriteNetworkSettings(ip, port, payload) {
   return fetch("http://localhost:8000/anchors/write_network_settings_command", {
     method: "POST",
-    body: JSON.stringify({ ip, port }),
+    body: JSON.stringify({ ip, port, payload }),
     headers: {
       "Content-Type": "application/json"
     }
@@ -121,7 +121,8 @@ function* requestWriteNetworkSettings(action) {
   const response = yield call(
     fetchRequestWriteNetworkSettings,
     action.ip,
-    action.port
+    action.port,
+    action.payload
   );
 
   if (response.status === 200) {

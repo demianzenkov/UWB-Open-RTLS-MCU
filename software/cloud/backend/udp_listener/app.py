@@ -130,7 +130,8 @@ def _handle_read_network_settings_command(data, address):
     _set_received_read_network_settings_command_response(address)
 
     fields = ('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask',
-              'is_waiting_for_read_network_settings_command_response')
+              'is_waiting_for_read_network_settings_command_response',
+              'is_waiting_for_write_network_settings_command_response')
     data = [dict(zip(fields, tuple(row))) for row in _get_anchors(fields=fields)]
 
     socket_payload = {
@@ -145,7 +146,34 @@ def _handle_read_network_settings_command(data, address):
 def _handle_write_network_settings_command(data, address):
     is_command_completed_successful = data[6:8]
 
+    cur = pg_conn.cursor()
+    try:
+        cur.execute(
+            f"""update anchor 
+                set is_waiting_for_write_network_settings_command_response = false 
+                where ip = \'{address[0]}\' and port = \'{address[1]}\';""")
+        logger.info(f'Updated {address} anchor. Full db status message: {cur.statusmessage}')
+        pg_conn.commit()
+    except Exception as e:
+        logger.exception(e)
+        cur.close()
+    finally:
+        cur.close()
+
     logger.info(f'Write network settings command returned code: {is_command_completed_successful}')
+
+    fields = ('id', 'ip', 'port', 'server_ip', 'server_port', 'subnet_mask',
+              'is_waiting_for_read_network_settings_command_response',
+              'is_waiting_for_write_network_settings_command_response')
+    data = [dict(zip(fields, tuple(row))) for row in _get_anchors(fields=fields)]
+
+    socket_payload = {
+        'type': 'anchors',
+        'data': data
+    }
+
+    socket_payload = json.dumps(socket_payload)
+    ws_sock.send(socket_payload.encode())
 
 
 def _handle_read_module_settings_command(data, address):

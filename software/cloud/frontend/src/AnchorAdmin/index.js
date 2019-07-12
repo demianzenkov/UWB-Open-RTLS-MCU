@@ -156,6 +156,9 @@ class AnchorAdmin extends Component {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <button
                   style={{ marginLeft: "0.25rem" }}
+                  disabled={
+                    a["is_waiting_for_write_network_settings_command_response"]
+                  }
                   onClick={() => {
                     if (!validatePayload(this.state[a.id])) {
                       this.setState({
@@ -164,6 +167,12 @@ class AnchorAdmin extends Component {
                           shouldDisplayWriteError: true
                         }
                       });
+                    } else {
+                      this.props.actions.requestWriteNetworkSettings(
+                        a.ip,
+                        a.port,
+                        this.state[a.id]
+                      );
                     }
                     setTimeout(() => {
                       this.setState({
@@ -173,16 +182,21 @@ class AnchorAdmin extends Component {
                         }
                       });
                     }, 5000);
-                    this.props.actions.requestWriteNetworkSettings(
-                      a.ip,
-                      a.port
-                    );
                   }}
                 >
                   Write network settings
                 </button>
                 {this.state[a.id]["shouldDisplayWriteError"] && (
-                  <div style={{ marginLeft: "0.25rem" }}>Wrong input!</div>
+                  <div style={{ marginLeft: "0.25rem", fontSize: "0.8rem" }}>
+                    Wrong input!
+                  </div>
+                )}
+                {a[
+                  "is_waiting_for_write_network_settings_command_response"
+                ] && (
+                  <div style={{ marginLeft: "0.25rem", fontSize: "0.8rem" }}>
+                    Waititng for response
+                  </div>
                 )}
                 <button
                   style={{ marginLeft: "0.25rem", marginTop: "0.25rem" }}

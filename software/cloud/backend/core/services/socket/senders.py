@@ -45,13 +45,15 @@ def send_read_network_settings_command(sock, receiver_address: tuple, network_ad
 
 
 def send_write_network_settings_command(sock, receiver_address: tuple, network_address: str, station_ip: str,
-                                        subnet_mask: str, server_ip: str, server_port: int):
+                                        server_ip: str, server_port: int, subnet_mask: str):
     operation_code = 0x07
     network_address = [int(i) for i in network_address.split('.')]
     station_ip = [int(i) for i in station_ip.split('.')]
     subnet_mask = [int(i) for i in subnet_mask.split('.')]
     server_ip = [int(i) for i in server_ip.split('.')]
-    body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code, station_ip, subnet_mask, server_ip, server_port]
+    server_port = int(server_port)
+    body = [_CLOUD_TO_STATION_PREFIX, *network_address, operation_code, *station_ip, *subnet_mask, *server_ip,
+            server_port]
     checksum = crc8(body)
     sock.sendto(bytes([*body, checksum]), receiver_address)
 

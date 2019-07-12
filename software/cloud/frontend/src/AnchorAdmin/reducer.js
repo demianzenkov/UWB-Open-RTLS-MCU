@@ -12,6 +12,7 @@ const reducer = (state = defaultState, action) => {
       return { ...state, isRequestingAnchors: false, anchors: action.data };
     case "anchorAdmin.requestReadNetworkSettings.success":
     case "anchorAdmin.requestDeleteAnchor.success":
+    case "anchorAdmin.requestWriteNetworkSettings.success":
       return { ...state, anchors: action.data };
     default:
       return state;
