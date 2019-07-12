@@ -3,6 +3,35 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as actionsModule from "./actions";
 
+function validateIPaddress(ipaddress) {
+  if (
+    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+      ipaddress
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function validatePayload(payload) {
+  var isValid = true;
+
+  if (
+    !validateIPaddress(payload["ip"]) ||
+    !validateIPaddress(payload["server ip"]) ||
+    !validateIPaddress(payload["subnet mask"])
+  ) {
+    isValid = false;
+  }
+
+  if (isNaN(Number(payload["port"])) || isNaN(Number(payload["server port"]))) {
+    isValid = false;
+  }
+
+  return isValid;
+}
+
 class AnchorAdmin extends Component {
   constructor(props) {
     super(props);
@@ -125,9 +154,36 @@ class AnchorAdmin extends Component {
                 />
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <button style={{ marginLeft: "0.25rem" }}>
+                <button
+                  style={{ marginLeft: "0.25rem" }}
+                  onClick={() => {
+                    if (!validatePayload(this.state[a.id])) {
+                      this.setState({
+                        [a.id]: {
+                          ...this.state[a.id],
+                          shouldDisplayWriteError: true
+                        }
+                      });
+                    }
+                    setTimeout(() => {
+                      this.setState({
+                        [a.id]: {
+                          ...this.state[a.id],
+                          shouldDisplayWriteError: false
+                        }
+                      });
+                    }, 5000);
+                    this.props.actions.requestWriteNetworkSettings(
+                      a.ip,
+                      a.port
+                    );
+                  }}
+                >
                   Write network settings
                 </button>
+                {this.state[a.id]["shouldDisplayWriteError"] && (
+                  <div style={{ marginLeft: "0.25rem" }}>Wrong input!</div>
+                )}
                 <button
                   style={{ marginLeft: "0.25rem", marginTop: "0.25rem" }}
                   onClick={() => {
