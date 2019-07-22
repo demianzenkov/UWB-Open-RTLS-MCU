@@ -191,10 +191,37 @@ def _handle_read_module_settings_command(data, address):
     # write to db
 
 
+def _handle_location_data(data, address):
+    tag_id = data[6:10]
+    message_id = data[10:14]
+    hardware_timestamp = data[14:22]
+
+    tag_id = int(tag_id, 16)
+    message_id = int(message_id, 16)
+    hardware_timestamp = int(hardware_timestamp, 16)
+
+    cur = pg_conn.cursor()
+    try:
+        cur.execute(
+            f"""insert into message 
+                (tag_id, message_id, hardware_timestamp)
+                values
+                (\'{tag_id}\', \'{message_id}\', {hardware_timestamp})
+                """)
+        logger.info(f'Inserted message from {address} anchor. Full db status message: {cur.statusmessage}')
+        pg_conn.commit()
+    except Exception as e:
+        logger.exception(e)
+        cur.close()
+    finally:
+        cur.close()
+
+
 operations_handlers = {
     '06': _handle_read_network_settings_command,
     '07': _handle_write_network_settings_command,
     '08': _handle_read_module_settings_command,
+    '0c': _handle_location_data,
 }
 
 
@@ -202,7 +229,7 @@ def parse(data, address):
     data = str(data)[2:-3]
     operation_code = data[4:6]
 
-    handler = operations_handlers.get(operation_code)
+    handler = operations_handlers.get(operation_code.lower())
     if not handler:
         logger.info(f'No handler found for operation code: {operation_code}')
         return

@@ -26,4 +26,21 @@ psql -a -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     ALTER TABLE anchor OWNER TO root;
 
     ALTER SEQUENCE anchor_id_seq OWNED BY anchor.id;
+
+    CREATE SEQUENCE message_id_seq;
+
+    alter sequence message_id_seq owner to root;
+
+    create table message (
+    id int primary key not null default nextval('message_id_seq'),
+    tag_id char(128),
+    message_id char (128),
+    hardware_timestamp int,
+    received_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
+    ALTER TABLE message OWNER TO root;
+
+    ALTER SEQUENCE message_id_seq OWNED BY message.id;
+
 EOSQL
