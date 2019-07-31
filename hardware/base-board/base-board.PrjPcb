@@ -173,14 +173,6 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=WGYTHCWC
 
-[GeneratedDocument1]
-DocumentPath=Project Outputs for base-board\base-board_v0.CSV
-DItemRevisionGUID=
-
-[GeneratedDocument2]
-DocumentPath=Project Outputs for base-board\Design Rule Check - base-board_v0.html
-DItemRevisionGUID=
-
 [Configuration1]
 Name=Sources
 ParameterCount=0
