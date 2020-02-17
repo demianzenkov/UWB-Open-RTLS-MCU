@@ -1,5 +1,0 @@
-Record=TopLevelDocument|FileName=base-board.SchDoc
-Record=SheetSymbol|SourceDocument=base-board.SchDoc|Designator=DWM|SchDesignator=DWM|FileName=dwm.SchDoc|SymbolType=Normal|RawFileName=dwm.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
-Record=SheetSymbol|SourceDocument=base-board.SchDoc|Designator=Ethernet|SchDesignator=Ethernet|FileName=ethernet.SchDoc|SymbolType=Normal|RawFileName=ethernet.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
-Record=SheetSymbol|SourceDocument=base-board.SchDoc|Designator=IMU|SchDesignator=IMU|FileName=imu.SchDoc|SymbolType=Normal|RawFileName=imu.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
-Record=SheetSymbol|SourceDocument=base-board.SchDoc|Designator=MCU|SchDesignator=MCU|FileName=mcu.SchDoc|SymbolType=Normal|RawFileName=mcu.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
