@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.1\common\bin\cspybat" -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\software\anchor\EWARM\settings\anchor.anchor.general.xcl" --backend -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\software\anchor\EWARM\settings\anchor.anchor.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.1\common\bin\cspybat" -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\anchor\EWARM\settings\anchor.anchor.general.xcl" --backend -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\anchor\EWARM\settings\anchor.anchor.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.1\common\bin\cspybat" -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\software\anchor\EWARM\settings\anchor.anchor.general.xcl" "--debug_file=%~1" --backend -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\software\anchor\EWARM\settings\anchor.anchor.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.1\common\bin\cspybat" -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\anchor\EWARM\settings\anchor.anchor.general.xcl" "--debug_file=%~1" --backend -f "\\Mac\Home\Documents\PROJECTS\UWB-RTLS\uwb-rtls\anchor\EWARM\settings\anchor.anchor.driver.xcl" 
 
 @echo off 
 :end

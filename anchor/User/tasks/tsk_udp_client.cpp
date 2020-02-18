@@ -15,20 +15,20 @@ TskUdpClient::~TskUdpClient()
 
 void TskUdpClient::createTask()
 { 
+  /* Create task semaphores */
   xSemLwipReady = xSemaphoreCreateBinary();
   xSemConnReady = xSemaphoreCreateBinary();
-  
+  /* Create task queues */
   xQueueUdpRx = xQueueCreate(_rxQueueSize, sizeof(SocketProtocol::queue_data_t));
   xQueueUdpTx = xQueueCreate(_txQueueSize, sizeof(SocketProtocol::queue_data_t));
-  
+  /* Create receive(echo) task */
   osThreadId udpEchoTaskHandle;
   osThreadDef(UDPEchoTask, tskUdpClient.udpEchoThread, osPriorityNormal, 0, 1024);
   udpEchoTaskHandle = osThreadCreate(osThread(UDPEchoTask), NULL);
-  
+  /* Create transmit task */
   osThreadId udpTxTaskHandle;
   osThreadDef(UDPTransmitTask, tskUdpClient.udpTransmitThread, osPriorityNormal, 0, 1024);
   udpTxTaskHandle = osThreadCreate(osThread(UDPTransmitTask), NULL);
-  
 }
 
 void TskUdpClient::udpEchoThread(void const *arg)

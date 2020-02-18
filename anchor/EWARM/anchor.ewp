@@ -371,6 +371,8 @@
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
                     <state>$PROJ_DIR$/../User/tasks</state>
                     <state>$PROJ_DIR$/../User/modules</state>
+                    <state>$PROJ_DIR$/../User/decawave/platform</state>
+                    <state>$PROJ_DIR$/../User/decawave/decadriver</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1059,6 +1061,60 @@
         </group>
         <group>
             <name>User</name>
+            <group>
+                <name>decawave</name>
+                <group>
+                    <name>driver</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_device.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_device_api.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_param_types.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_params_init.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_regs.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_types.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_version.h</name>
+                    </file>
+                </group>
+                <group>
+                    <name>platform</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_mutex.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_port.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_port.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_range_tables.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_sleep.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_spi.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_spi.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\sleep.h</name>
+                    </file>
+                </group>
+            </group>
             <group>
                 <name>modules</name>
                 <file>

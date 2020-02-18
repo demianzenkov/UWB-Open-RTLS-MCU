@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=/Users/demianzenkov/Documents/PROJECTS/UWB-RTLS/uwb-rtls/software/anchor/Inc
+HeaderPath=/Users/demianzenkov/Documents/PROJECTS/UWB-RTLS/uwb-rtls/anchor/Inc
 HeaderFiles=FreeRTOSConfig.h;lwip.h;lwipopts.h;ethernetif.h;stm32f2xx_it.h;stm32f2xx_hal_conf.h;main.h;
-SourcePath=/Users/demianzenkov/Documents/PROJECTS/UWB-RTLS/uwb-rtls/software/anchor/Src
+SourcePath=/Users/demianzenkov/Documents/PROJECTS/UWB-RTLS/uwb-rtls/anchor/Src
 SourceFiles=freertos.c;lwip.c;ethernetif.c;stm32f2xx_it.c;stm32f2xx_hal_msp.c;stm32f2xx_hal_timebase_tim.c;main.c;
 
 [PreviousLibFiles]
