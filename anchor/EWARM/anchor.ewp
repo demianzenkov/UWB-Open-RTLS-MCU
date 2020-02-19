@@ -1108,9 +1108,6 @@
                         <name>$PROJ_DIR$\..\User\decawave\platform\deca_spi.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_spi.h</name>
-                    </file>
-                    <file>
                         <name>$PROJ_DIR$\..\User\decawave\platform\sleep.h</name>
                     </file>
                 </group>

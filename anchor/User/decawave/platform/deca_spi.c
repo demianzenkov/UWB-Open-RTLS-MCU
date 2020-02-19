@@ -14,37 +14,11 @@
 #include "deca_spi.h"
 #include "deca_device_api.h"
 #include "deca_port.h"
-#include "stm32f1xx_hal_def.h"
+#include "stm32f2xx_hal_def.h"
 
-extern  SPI_HandleTypeDef hspi1;    /*clocked from 72MHz*/
+extern SPI_HandleTypeDef hspi1;    /*clocked from 72MHz*/
 
-/****************************************************************************//**
- *
- *                              DW1000 SPI section
- *
- *******************************************************************************/
-/*! ------------------------------------------------------------------------------------------------------------------
- * Function: openspi()
- *
- * Low level abstract function to open and initialise access to the SPI device.
- * returns 0 for success, or -1 for error
- */
-int openspi(/*SPI_TypeDef* SPIx*/)
-{
-    return 0;
-} // end openspi()
-
-/*! ------------------------------------------------------------------------------------------------------------------
- * Function: closespi()
- *
- * Low level abstract function to close the the SPI device.
- * returns 0 for success, or -1 for error
- */
-int closespi(void)
-{
-    return 0;
-} // end closespi()
-
+/* DW1000 SPI section */
 /*! ------------------------------------------------------------------------------------------------------------------
  * Function: writetospi()
  *
@@ -52,11 +26,11 @@ int closespi(void)
  * Takes two separate byte buffers for write header and write data
  * returns 0 for success
  */
-#pragma GCC optimize ("O3")
-int writetospi(uint16_t headerLength,
-               const    uint8_t *headerBuffer,
-               uint32_t bodyLength,
-               const    uint8_t *bodyBuffer)
+
+int writetospi(uint16 headerLength,
+               const    uint8 *headerBuffer,
+               uint32 bodyLength,
+               const    uint8 *bodyBuffer)
 {
     decaIrqStatus_t  stat ;
     stat = decamutexon() ;
@@ -84,11 +58,10 @@ int writetospi(uint16_t headerLength,
  * returns the offset into read buffer where first byte of read data may be found,
  * or returns 0
  */
-#pragma GCC optimize ("O3")
-int readfromspi(uint16_t headerLength,
-                const uint8_t *headerBuffer,
-                uint32_t readlength,
-                uint8_t *readBuffer)
+int readfromspi(uint16 headerLength,
+                const uint8 *headerBuffer,
+                uint32 readlength,
+                uint8 *readBuffer)
 {
     int i;
     decaIrqStatus_t  stat ;
@@ -102,7 +75,7 @@ int readfromspi(uint16_t headerLength,
     /* Send header */
     for(i=0; i<headerLength; i++)
     {
-        HAL_SPI_Transmit(&hsspi1, &headerBuffer[i], 1, HAL_MAX_DELAY); //No timeout
+        HAL_SPI_Transmit(&hspi1, (uint8_t*)&headerBuffer[i], 1, HAL_MAX_DELAY); //No timeout
     }
 
     /* for the data buffer use LL functions directly as the HAL SPI read function

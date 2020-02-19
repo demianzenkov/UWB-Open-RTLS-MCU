@@ -21,10 +21,10 @@ extern "C" {
 
 #include <stdint.h>
 #include <string.h>
-#include "compiler.h"
+//#include "compiler.h"
 
-#include "stm32f1xx.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f2xx.h"
+#include "stm32f2xx_hal.h"
 
 /* DW1000 IRQ (EXTI9_5_IRQ) handler type. */
 typedef void (*port_deca_isr_t)(void);
@@ -135,11 +135,7 @@ typedef enum
 #define TA_SW1_8                    GPIO_PIN_5
 #define TA_SW1_GPIO                 GPIOC
 
-/****************************************************************************//**
- *
- *                              MACRO function
- *
- *******************************************************************************/
+/* ***** MACRO Function ***** */
 
 #define GPIO_ResetBits(x,y)             HAL_GPIO_WritePin(x,y, RESET)
 #define GPIO_SetBits(x,y)               HAL_GPIO_WritePin(x,y, SET)
@@ -154,14 +150,11 @@ typedef enum
 #define port_SPIy_set_chip_select()     HAL_GPIO_WritePin(LCD_NSS_GPIO_Port, LCD_NSS_Pin, GPIO_PIN_SET)
 #define port_SPIy_clear_chip_select()   HAL_GPIO_WritePin(LCD_NSS_GPIO_Port, LCD_NSS_Pin, GPIO_PIN_RESET)
 
-/****************************************************************************//**
- *
- *                              port function prototypes
- *
- *******************************************************************************/
+
+/* ***** Port Function Prototypes ***** */
 
 void Sleep(uint32_t Delay);
-unsigned long portGetTickCnt(void);
+uint32_t portGetTickCnt(void);
 
 #define S1_SWITCH_ON  (1)
 #define S1_SWITCH_OFF (0)
