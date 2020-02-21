@@ -23,11 +23,11 @@ void TskUdpClient::createTask()
   xQueueUdpTx = xQueueCreate(_txQueueSize, sizeof(SocketProtocol::queue_data_t));
   /* Create receive(echo) task */
   osThreadId udpEchoTaskHandle;
-  osThreadDef(UDPEchoTask, tskUdpClient.udpEchoThread, osPriorityNormal, 0, 1024);
+  osThreadDef(UDPEchoTask, tskUdpClient.udpEchoThread, osPriorityNormal, 0, 512);
   udpEchoTaskHandle = osThreadCreate(osThread(UDPEchoTask), NULL);
   /* Create transmit task */
   osThreadId udpTxTaskHandle;
-  osThreadDef(UDPTransmitTask, tskUdpClient.udpTransmitThread, osPriorityNormal, 0, 1024);
+  osThreadDef(UDPTransmitTask, tskUdpClient.udpTransmitThread, osPriorityNormal, 0, 512);
   udpTxTaskHandle = osThreadCreate(osThread(UDPTransmitTask), NULL);
 }
 

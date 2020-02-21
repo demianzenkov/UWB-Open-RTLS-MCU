@@ -16,15 +16,15 @@
                 <debug>1</debug>
                 <option>
                     <name>ExePath</name>
-                    <state>base-board/Exe</state>
+                    <state>anchor/Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>base-board/Obj</state>
+                    <state>anchor/Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>base-board/List</state>
+                    <state>anchor/List</state>
                 </option>
                 <option>
                     <name>GEndianMode</name>
@@ -350,6 +350,10 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
+                    <state>$PROJ_DIR$/../User/tasks</state>
+                    <state>$PROJ_DIR$/../User/modules</state>
+                    <state>$PROJ_DIR$/../User/decawave/platform</state>
+                    <state>$PROJ_DIR$/../User/decawave/decadriver</state>
                     <state>$PROJ_DIR$/../Inc</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/system</state>
@@ -369,10 +373,6 @@
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include/posix/sys</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/system/arch</state>
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
-                    <state>$PROJ_DIR$/../User/tasks</state>
-                    <state>$PROJ_DIR$/../User/modules</state>
-                    <state>$PROJ_DIR$/../User/decawave/platform</state>
-                    <state>$PROJ_DIR$/../User/decawave/decadriver</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -634,7 +634,7 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state>$PROJ_DIR$\..//Inc</state>
+                    <state>$PROJ_DIR$\..\\Inc</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -664,11 +664,11 @@
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>base-board.hex</state>
+                    <state>anchor.hex</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -1123,6 +1123,9 @@
             </group>
             <group>
                 <name>tasks</name>
+                <file>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_dwm.cpp</name>
+                </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\tasks\tsk_udp_client.cpp</name>
                 </file>

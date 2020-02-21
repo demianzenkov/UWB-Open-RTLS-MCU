@@ -356,10 +356,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DWM_WKP_GPIO_Port, DWM_WKP_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DWM_RST_GPIO_Port, DWM_RST_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(DW_WUP_GPIO_Port, DW_WUP_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(MEM_CS_GPIO_Port, MEM_CS_Pin, GPIO_PIN_RESET);
@@ -367,25 +364,18 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED1_Pin|LED2_Pin|LED3_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : DWM_WKP_Pin */
-  GPIO_InitStruct.Pin = DWM_WKP_Pin;
+  /*Configure GPIO pin : DW_WUP_Pin */
+  GPIO_InitStruct.Pin = DW_WUP_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(DWM_WKP_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(DW_WUP_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : DWM_RST_Pin */
-  GPIO_InitStruct.Pin = DWM_RST_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(DWM_RST_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : DWM_IRQ_Pin */
-  GPIO_InitStruct.Pin = DWM_IRQ_Pin;
+  /*Configure GPIO pins : DW_RESET_Pin DW_IRQn_Pin */
+  GPIO_InitStruct.Pin = DW_RESET_Pin|DW_IRQn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(DWM_IRQ_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MEM_CS_Pin */
   GPIO_InitStruct.Pin = MEM_CS_Pin;
@@ -400,6 +390,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
 }
 

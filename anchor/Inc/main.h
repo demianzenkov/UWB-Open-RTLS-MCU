@@ -58,18 +58,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define DWM_WKP_Pin GPIO_PIN_2
-#define DWM_WKP_GPIO_Port GPIOE
-#define DWM_RST_Pin GPIO_PIN_3
-#define DWM_RST_GPIO_Port GPIOE
-#define DWM_IRQ_Pin GPIO_PIN_4
-#define DWM_IRQ_GPIO_Port GPIOE
-#define DWM_CS_Pin GPIO_PIN_4
-#define DWM_CS_GPIO_Port GPIOA
-#define DWM_SCK_Pin GPIO_PIN_5
-#define DWM_SCK_GPIO_Port GPIOA
-#define DWM_MISO_Pin GPIO_PIN_6
-#define DWM_MISO_GPIO_Port GPIOA
+#define DW_WUP_Pin GPIO_PIN_2
+#define DW_WUP_GPIO_Port GPIOE
+#define DW_RESET_Pin GPIO_PIN_3
+#define DW_RESET_GPIO_Port GPIOE
+#define DW_RESET_EXTI_IRQn EXTI3_IRQn
+#define DW_IRQn_Pin GPIO_PIN_4
+#define DW_IRQn_GPIO_Port GPIOE
+#define DW_IRQn_EXTI_IRQn EXTI4_IRQn
+#define DW_NSS_Pin GPIO_PIN_4
+#define DW_NSS_GPIO_Port GPIOA
+#define DW_SCK_Pin GPIO_PIN_5
+#define DW_SCK_GPIO_Port GPIOA
+#define DW_MISO_Pin GPIO_PIN_6
+#define DW_MISO_GPIO_Port GPIOA
 #define FLASH_SCK_Pin GPIO_PIN_10
 #define FLASH_SCK_GPIO_Port GPIOB
 #define FLASH_MISO_Pin GPIO_PIN_14
@@ -78,8 +80,8 @@ void Error_Handler(void);
 #define FLASH_MOSI_GPIO_Port GPIOB
 #define MEM_CS_Pin GPIO_PIN_8
 #define MEM_CS_GPIO_Port GPIOD
-#define DWM_MOSI_Pin GPIO_PIN_5
-#define DWM_MOSI_GPIO_Port GPIOB
+#define DW_MOSI_Pin GPIO_PIN_5
+#define DW_MOSI_GPIO_Port GPIOB
 #define LED1_Pin GPIO_PIN_6
 #define LED1_GPIO_Port GPIOB
 #define LED2_Pin GPIO_PIN_7

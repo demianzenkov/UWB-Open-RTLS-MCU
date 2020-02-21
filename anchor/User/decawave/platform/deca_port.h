@@ -30,7 +30,7 @@ extern "C" {
 typedef void (*port_deca_isr_t)(void);
 
 /* DW1000 IRQ handler declaration. */
-port_deca_isr_t port_deca_isr;
+extern port_deca_isr_t port_deca_isr;
 
 /*! ------------------------------------------------------------------------------------------------------------------
  * @fn port_set_deca_isr()
@@ -47,21 +47,6 @@ port_deca_isr_t port_deca_isr;
  * @return none
  */
 void port_set_deca_isr(port_deca_isr_t deca_isr);
-
-#define BUFFLEN     (64) //(4096+128)
-
-#define BUF_SIZE    (64)
-
-#define USB_SUPPORT
-
-typedef struct
-{
-    uint16_t        usblen;                 /**< for RX from USB */
-    uint8_t         usbbuf[BUF_SIZE*3];     /**< for RX from USB */
-}__packed app_t;
-
-
-extern app_t    app;
 
 
 /*****************************************************************************************************************//*
@@ -95,24 +80,10 @@ typedef enum
     LEDn
 } led_t;
 
-/****************************************************************************//**
- *
- *                              MACRO
- *
- *******************************************************************************/
+/* ***** MACRO ***** */
 
 
-#if !(EXTI9_5_IRQn)
-#define DECAIRQ_EXTI_IRQn       (23)
-#else
-#define DECAIRQ_EXTI_IRQn       (EXTI9_5_IRQn)
-#endif
-
-#if !(EXTI0_IRQn)
-#define EXTI0_IRQn      (6)
-#endif
-
-
+#define DECAIRQ_EXTI_IRQn       (EXTI4_IRQn)
 
 #define DW1000_RSTn                 DW_RESET_Pin
 #define DW1000_RSTn_GPIO            DW_RESET_GPIO_Port
@@ -120,20 +91,6 @@ typedef enum
 
 #define DECAIRQ                     DW_IRQn_Pin
 #define DECAIRQ_GPIO                DW_IRQn_GPIO_Port
-
-#define TA_BOOT1                    GPIO_PIN_2
-#define TA_BOOT1_GPIO               GPIOB
-
-#define TA_RESP_DLY                 GPIO_PIN_0
-#define TA_RESP_DLY_GPIO            GPIOC
-
-#define TA_SW1_3                    GPIO_PIN_0
-#define TA_SW1_4                    GPIO_PIN_1
-#define TA_SW1_5                    GPIO_PIN_2
-#define TA_SW1_6                    GPIO_PIN_3
-#define TA_SW1_7                    GPIO_PIN_4
-#define TA_SW1_8                    GPIO_PIN_5
-#define TA_SW1_GPIO                 GPIOC
 
 /* ***** MACRO Function ***** */
 
@@ -146,22 +103,11 @@ typedef enum
 #define port_SPIx_set_chip_select()     HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_SET)
 #define port_SPIx_clear_chip_select()   HAL_GPIO_WritePin(DW_NSS_GPIO_Port, DW_NSS_Pin, GPIO_PIN_RESET)
 
-/* NSS pin is SW controllable */
-#define port_SPIy_set_chip_select()     HAL_GPIO_WritePin(LCD_NSS_GPIO_Port, LCD_NSS_Pin, GPIO_PIN_SET)
-#define port_SPIy_clear_chip_select()   HAL_GPIO_WritePin(LCD_NSS_GPIO_Port, LCD_NSS_Pin, GPIO_PIN_RESET)
-
-
 /* ***** Port Function Prototypes ***** */
 
 void Sleep(uint32_t Delay);
 uint32_t portGetTickCnt(void);
 
-#define S1_SWITCH_ON  (1)
-#define S1_SWITCH_OFF (0)
-//when switch (S1) is 'on' the pin is low
-int port_is_boot1_on(uint16_t x);
-int port_is_switch_on(uint16_t GPIOpin);
-int port_is_boot1_low(void);
 
 void port_wakeup_dw1000(void);
 void port_wakeup_dw1000_fast(void);
@@ -182,12 +128,6 @@ void setup_DW1000RSTnIRQ(int enable);
 
 void reset_DW1000(void);
 
-
-void port_LCD_RS_set(void);
-void port_LCD_RS_clear(void);
-void port_LCD_RW_set(void);
-void port_LCD_RW_clear(void);
-
 ITStatus EXTI_GetITEnStatus(uint32_t x);
 
 uint32_t port_GetEXT_IRQStatus(void);
@@ -195,48 +135,10 @@ uint32_t port_CheckEXT_IRQ(void);
 void port_DisableEXT_IRQ(void);
 void port_EnableEXT_IRQ(void);
 extern uint32_t     HAL_GetTick(void);
-HAL_StatusTypeDef   flush_report_buff(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* PORT_H_ */
-/*
- * Taken from the Linux Kernel
- *
- */
-
-#ifndef _LINUX_CIRC_BUF_H
-#define _LINUX_CIRC_BUF_H 1
-
-struct circ_buf {
-    char *buf;
-    int head;
-    int tail;
-};
-
-/* Return count in buffer.  */
-#define CIRC_CNT(head,tail,size) (((head) - (tail)) & ((size)-1))
-
-/* Return space available, 0..size-1.  We always leave one free char
-   as a completely full buffer has head == tail, which is the same as
-   empty.  */
-#define CIRC_SPACE(head,tail,size) CIRC_CNT((tail),((head)+1),(size))
-
-/* Return count up to the end of the buffer.  Carefully avoid
-   accessing head and tail more than once, so they can change
-   underneath us without returning inconsistent results.  */
-#define CIRC_CNT_TO_END(head,tail,size) \
-    ({int end = (size) - (tail); \
-      int n = ((head) + end) & ((size)-1); \
-      n < end ? n : end;})
-
-/* Return space available up to the end of the buffer.  */
-#define CIRC_SPACE_TO_END(head,tail,size) \
-    ({int end = (size) - 1 - (head); \
-      int n = (end + (tail)) & ((size)-1); \
-      n <= end ? n : end+1;})
-
-#endif /* _LINUX_CIRC_BUF_H  */
 

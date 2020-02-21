@@ -1258,6 +1258,9 @@
             <group>
                 <name>tasks</name>
                 <file>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_dwm.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\User\tasks\tsk_udp_client.cpp</name>
                 </file>
             </group>

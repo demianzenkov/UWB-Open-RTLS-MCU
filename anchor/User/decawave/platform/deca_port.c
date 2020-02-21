@@ -17,7 +17,6 @@
 #include "main.h"
 #include "cmsis_os.h"
 
-//#include "usbd_cdc_if.h"
 
 /* APP global variables */
 extern SPI_HandleTypeDef hspi1;
@@ -34,7 +33,8 @@ static volatile uint32_t signalResetDone;
 * */
 uint32_t portGetTickCnt(void)
 {
-  return HAL_GetTick();
+  return xTaskGetTickCount();
+//  return HAL_GetTick();
 }
 
 
@@ -59,7 +59,6 @@ __INLINE void
 Sleep(uint32_t x)
 {
   osDelay(x);
-//  HAL_Delay(x);
 }
 
 /****************************************************************************//**
@@ -90,9 +89,6 @@ void spi_peripheral_init()
   
   /* SPI's has been initialized in the CubeMx code, see main.c */
   
-  port_LCD_RS_clear();
-  
-  port_LCD_RW_clear();
 }
 
 
@@ -145,8 +141,6 @@ void reset_DW1000(void)
   //put the pin back to output open-drain (not active)
   setup_DW1000RSTnIRQ(0);
   
-  
-  
   Sleep(2);
 }
 
@@ -185,97 +179,6 @@ void setup_DW1000RSTnIRQ(int enable)
   }
 }
 
-
-/* @fn      port_is_boot1_low
-* @brief   check the BOOT1 pin status.
-* @return  1 if ON and 0 for OFF
-* */
-int port_is_boot1_low(void)
-{
-  return ((GPIO_ReadInputDataBit(TA_BOOT1_GPIO, TA_BOOT1))?(0):(1));
-}
-
-/* @fn      port_is_boot1_low
-* @brief   check the BOOT1 pin status.
-* @return  1 if ON and 0 for OFF
-* */
-int port_is_boot1_on(uint16_t x)
-{
-  return ((GPIO_ReadInputDataBit(TA_BOOT1_GPIO, TA_BOOT1))?(0):(1));
-}
-
-/* @fn      port_is_switch_on
-* @brief   check the switch status.
-*          when switch (S1) is 'on' the pin is low
-* @return  1 if ON and 0 for OFF
-* */
-int port_is_switch_on(uint16_t GPIOpin)
-{
-  return ((GPIO_ReadInputDataBit(TA_SW1_GPIO, GPIOpin))?(0):(1));
-}
-
-
-/* @fn      led_off
-* @brief   switch off the led from led_t enumeration
-* */
-void led_off (led_t led)
-{
-  switch (led)
-  {
-  case LED_PC6:
-    GPIO_ResetBits(LED5_GPIO_Port, LED5_Pin);
-    break;
-  case LED_PC7:
-    GPIO_ResetBits(LED6_GPIO_Port, LED6_Pin);
-    break;
-  case LED_PC8:
-    GPIO_ResetBits(LED7_GPIO_Port, LED7_Pin);
-    break;
-  case LED_PC9:
-    GPIO_ResetBits(LED8_GPIO_Port, LED8_Pin);
-    break;
-  case LED_ALL:
-    GPIO_ResetBits(LED5_GPIO_Port, LED5_Pin);
-    GPIO_ResetBits(LED6_GPIO_Port, LED6_Pin);
-    GPIO_ResetBits(LED7_GPIO_Port, LED7_Pin);
-    GPIO_ResetBits(LED8_GPIO_Port, LED8_Pin);
-    break;
-  default:
-    // do nothing for undefined led number
-    break;
-  }
-}
-
-/* @fn      led_on
-* @brief   switch on the led from led_t enumeration
-* */
-void led_on (led_t led)
-{
-  switch (led)
-  {
-  case LED_PC6:
-    GPIO_SetBits(LED5_GPIO_Port, LED5_Pin);
-    break;
-  case LED_PC7:
-    GPIO_SetBits(LED6_GPIO_Port, LED6_Pin);
-    break;
-  case LED_PC8:
-    GPIO_SetBits(LED7_GPIO_Port, LED7_Pin);
-    break;
-  case LED_PC9:
-    GPIO_SetBits(LED8_GPIO_Port, LED8_Pin);
-    break;
-  case LED_ALL:
-    GPIO_SetBits(LED5_GPIO_Port, LED5_Pin);
-    GPIO_SetBits(LED6_GPIO_Port, LED6_Pin);
-    GPIO_SetBits(LED7_GPIO_Port, LED7_Pin);
-    GPIO_SetBits(LED8_GPIO_Port, LED8_Pin);
-    break;
-  default:
-    // do nothing for undefined led number
-    break;
-  }
-}
 
 
 /* @fn      port_wakeup_dw1000
@@ -428,8 +331,6 @@ __INLINE uint32_t port_CheckEXT_IRQ(void)
 {
   return HAL_GPIO_ReadPin(DECAIRQ_GPIO, DW_IRQn_Pin);
 }
-
-
 
 /* DW1000 IRQ handler definition. */
 port_deca_isr_t port_deca_isr = NULL;
