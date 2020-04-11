@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "tsk_udp_client.hpp"
+#include "tsk_dwm.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,7 +55,8 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 osThreadId initTaskHandle;
 /* USER CODE BEGIN PV */
 extern TskUdpClient tskUdpClient;
-uint32_t us_tick = 0;
+extern TskDWM tskDWM;
+volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,7 +112,6 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
-  tskUdpClient.createTask();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -131,6 +132,9 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
+  tskUdpClient.createTask();
+  tskDWM.createTask();
+  
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 128);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
 
@@ -215,8 +219,8 @@ static void MX_SPI1_Init(void)
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -287,9 +291,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 60;
+  htim6.Init.Prescaler = 6 - 1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 0;
+  htim6.Init.Period = 10-1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -302,7 +306,11 @@ static void MX_TIM6_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM6_Init 2 */
-
+  if(HAL_TIM_Base_Start_IT(&htim6) != HAL_OK)
+  {
+    /* Starting Error */
+    Error_Handler();
+  }
   /* USER CODE END TIM6_Init 2 */
 
 }
@@ -384,6 +392,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(DW_RESET_GPIO_Port, &GPIO_InitStruct);
   
+  /*Configure GPIO pin : DW_NSS_Pin */
+  GPIO_InitStruct.Pin = DW_NSS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(DW_NSS_GPIO_Port, &GPIO_InitStruct);
+  
   /*Configure GPIO pins : DW_IRQn_Pin */
   GPIO_InitStruct.Pin = DW_IRQn_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -435,12 +449,12 @@ void initTask(void const * argument)
   for(;;)
   {
     osDelay(1000);
-//    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+//    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
 //    HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
     osDelay(1000);
-//    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+//    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
 //    HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
   }
   /* USER CODE END 5 */ 
@@ -464,10 +478,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   }
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM6){
-    if (us_tick < 0xFFFFFFFF)
-      us_tick++;
-    else
-      us_tick = 0;
+    us_tick++;  
   }
   /* USER CODE END Callback 1 */
 }

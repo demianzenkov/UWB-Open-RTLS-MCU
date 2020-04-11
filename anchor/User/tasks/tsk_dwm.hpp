@@ -1,14 +1,20 @@
 #ifndef __TSK_DWM
 #define __TSK_DWM
 
+#include "main.h"
+#include "cmsis_os.h"
+#include "dwm1000.h"
+
 class TskDWM 
 {
 public:
   TskDWM();
   ~TskDWM();
   void createTask();
-  void task();
+  static void task(void const *arg);
   
+private:
+  DWM1000 dwm;
 };
 
 #endif

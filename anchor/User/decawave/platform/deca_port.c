@@ -44,10 +44,7 @@ uint32_t portGetTickCnt(void)
 int usleep(uint32_t usec)
 {
   uint32_t cur_tick = us_tick;
-  while (us_tick - cur_tick < usec)
-  {
-    __NOP();
-  }
+  while (us_tick - cur_tick < usec);
   return 0;
 }
 

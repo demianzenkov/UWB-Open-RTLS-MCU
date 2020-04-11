@@ -81,7 +81,7 @@ int dw_main(void)
      * For initialisation, DW1000 clocks must be temporarily set to crystal speed. After initialisation SPI rate can be increased for optimum
      * performance. */
     reset_DW1000(); /* Target specific drive of RSTn line into DW1000 low for a period. */
-    port_set_dw1000_slowrate();
+    port_set_dw1000_slowrate() ;
     if (dwt_initialise(DWT_LOADNONE) == DWT_ERROR)
     {
         lcd_display_str("INIT FAILED");

@@ -189,9 +189,12 @@ int dwt_initialise(int config)
 #endif
 
     // Read and validate device ID, return -1 if not recognised
-    if (DWT_DEVICE_ID != dwt_readdevid()) // MP IC ONLY (i.e. DW1000) FOR THIS CODE
-    {
-        return DWT_ERROR ;
+    for (int i=0; i<5; i++) {
+      if (DWT_DEVICE_ID != dwt_readdevid()) // MP IC ONLY (i.e. DW1000) FOR THIS CODE
+      {
+	return DWT_ERROR ;
+      }
+      osDelay(100);
     }
 
     if(!(DWT_DW_WAKE_UP & config)) // Don't reset the device if DWT_DW_WAKE_UP bit is set, e.g. when calling this API after wake up

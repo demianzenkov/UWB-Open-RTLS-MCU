@@ -1,5 +1,4 @@
 #include "tsk_udp_client.hpp"
-
 #include <vector>
 
 TskUdpClient tskUdpClient;
@@ -53,26 +52,26 @@ void TskUdpClient::udpEchoThread(void const *arg)
         err = netconn_recv(tskUdpClient.udp_recv_conn.conn,  &tskUdpClient.udp_recv_conn.buf);
         if (err == ERR_OK) 
         {
-          tskUdpClient.udp_recv_conn.addr = \
-            netbuf_fromaddr(tskUdpClient.udp_recv_conn.buf);
-          tskUdpClient.udp_recv_conn.port = \
-            netbuf_fromport(tskUdpClient.udp_recv_conn.buf);
-          
-          SocketProtocol::queue_data_t resp_queue;
-          
-          tskUdpClient.soc_proto.parseBuf((U08 *)tskUdpClient.udp_recv_conn.buf->p->payload, 
-                                          tskUdpClient.udp_recv_conn.buf->p->len,
-                                          &resp_queue);
-          if(resp_queue.len > 0)
-            xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &resp_queue, (TickType_t)0 );
+//          tskUdpClient.udp_recv_conn.addr = \
+//            netbuf_fromaddr(tskUdpClient.udp_recv_conn.buf);
+//          tskUdpClient.udp_recv_conn.port = \
+//            netbuf_fromport(tskUdpClient.udp_recv_conn.buf);
+//          
+//          SocketProtocol::queue_data_t resp_queue;
+//          
+//          tskUdpClient.soc_proto.parseBuf((U08 *)tskUdpClient.udp_recv_conn.buf->p->payload, 
+//                                          tskUdpClient.udp_recv_conn.buf->p->len,
+//                                          &resp_queue);
+//          if(resp_queue.len > 0)
+//            xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &resp_queue, (TickType_t)0 );
           
           /* Echo start */ 
-//          TskUdpClient::queue_data rx_queue;
-//          memcpy(rx_queue.data, 
-//                 tskUdpClient.udp_recv_conn.buf->p->payload,
-//                 tskUdpClient.udp_recv_conn.buf->p->len);
-//          rx_queue.len = tskUdpClient.udp_recv_conn.buf->p->len;
-//          xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &rx_queue, (TickType_t)0 );
+          SocketProtocol::queue_data_t rx_queue;
+          memcpy(rx_queue.data, 
+                 tskUdpClient.udp_recv_conn.buf->p->payload,
+                 tskUdpClient.udp_recv_conn.buf->p->len);
+          rx_queue.len = tskUdpClient.udp_recv_conn.buf->p->len;
+          xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &rx_queue, (TickType_t)0 );
           /* Echo end */
           
           netbuf_delete(tskUdpClient.udp_recv_conn.buf);
@@ -124,6 +123,14 @@ void TskUdpClient::udpTransmitThread(void const *arg)
       err = netconn_send(tskUdpClient.udp_send_conn.conn, tskUdpClient.udp_send_conn.buf);
       // clean netbuf
       netbuf_delete(tskUdpClient.udp_send_conn.buf);
+    }
+  }
+  else {
+    for (;;) {
+      osDelay(500);
+      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+      osDelay(500);
+      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
     }
   }
 }

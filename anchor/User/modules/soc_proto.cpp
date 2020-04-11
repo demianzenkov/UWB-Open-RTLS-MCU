@@ -21,7 +21,7 @@ err_te SocketProtocol::parseBuf(U08 * buf, U16 len, queue_data_t * resp_queue)
   rx_vect.assign(buf, buf + len);
   
   // check if packet is valid and make protocol structure from buf
-  if (toProtoBase(rx_vect, &rx_proto_packet) != ERR_NO)
+  if (toProtoBase(rx_vect, &rx_proto_packet) != NO_ERR)
   {
     return ERR_PROTO;
   }
@@ -30,7 +30,7 @@ err_te SocketProtocol::parseBuf(U08 * buf, U16 len, queue_data_t * resp_queue)
   // ...
   
   
-  return ERR_NO;
+  return NO_ERR;
 }
 
 err_te SocketProtocol::toProtoBase(std::vector<U08> packet, proto_base_t * proto_base)
@@ -56,5 +56,5 @@ err_te SocketProtocol::toProtoBase(std::vector<U08> packet, proto_base_t * proto
   
   proto_base->crc = packet[packet.size()-1];
   
-  return ERR_NO;
+  return NO_ERR;
 }

@@ -1249,6 +1249,9 @@
             <group>
                 <name>modules</name>
                 <file>
+                    <name>$PROJ_DIR$\..\User\modules\dwm1000.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\User\modules\net_conf.cpp</name>
                 </file>
                 <file>
