@@ -133,7 +133,7 @@ void reset_DW1000(void)
   //drive the RSTn pin low
   HAL_GPIO_WritePin(DW_RESET_GPIO_Port, DW_RESET_Pin, GPIO_PIN_RESET);
   
-  usleep(1);
+  Sleep(1);
   
   //put the pin back to output open-drain (not active)
   setup_DW1000RSTnIRQ(0);
@@ -217,7 +217,7 @@ void port_wakeup_dw1000_fast(void)
   port_SPIx_set_chip_select();    //CS high
   
   //it takes ~35us in total for the DW1000 to lock the PLL, download AON and go to IDLE state
-  usleep(35);
+  Sleep(1);
 }
 
 

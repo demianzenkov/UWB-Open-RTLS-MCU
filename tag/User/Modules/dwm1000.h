@@ -5,6 +5,9 @@
 #include "deca_spi.h"
 #include "deca_port.h"
 
+#define DEFAULT_AREA_ID 0x01
+#define DEFAULT_NODE_ID 0x01
+#define START_BLYNK_N	0x00
 
 /* UWB microsecond (uus) to device time unit (dtu, around 15.65 ps) conversion factor.
  * 1 uus = 512 / 499.2 µs and 1 µs = 499.2 * 128 dtu. */
@@ -27,6 +30,9 @@ private:
   uint32_t RX_ANT_DLY;
   uint32_t TX_ANT_DLY;
   
-  uint8 tx_msg[12] = {0xC5, 0, 'D', 'E', 'C', 'A', 'W', 'A', 'V', 'E', 0, 0};
-  uint8_t BLINK_FRAME_SN_IDX = 1;
+  uint8 tx_msg[7] = {'B', 'L', 'N', 'K', 
+  			DEFAULT_AREA_ID, 
+			DEFAULT_NODE_ID, 
+			START_BLYNK_N};
+  uint8_t BLINK_FRAME_SN_IDX = 6;
 };

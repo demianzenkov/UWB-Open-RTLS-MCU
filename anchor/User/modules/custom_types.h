@@ -36,14 +36,17 @@ typedef volatile S64		VS64;
 
 typedef enum {
   NO_ERR = 0,
-  ERR_CRC = -1,
-  ERR_INIT = -2,
-  ERR_DATA = -3,
-  ERR_CNT = -4,
-  ERR_VAR = -5,
-  ERR_PROTO = -6,
-  ERR_SOC = -7,
-  ERR_TYPE = -8,
+  ERR_DWM,
+  ERR_NODATA,
+  ERR_PACKET,
+  ERR_CRC,
+  ERR_INIT,
+  ERR_DATA,
+  ERR_CNT,
+  ERR_VAR,
+  ERR_PROTO,
+  ERR_SOC,
+  ERR_TYPE,
 } err_te;
 
 #endif
