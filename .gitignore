@@ -4,6 +4,7 @@
 .vscode
 
 Obj/
+Exe/
 reader
 writer
 test

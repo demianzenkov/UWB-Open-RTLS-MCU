@@ -363,6 +363,8 @@
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/portable/IAR/ARM_CM3</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include/netif/ppp</state>
+                    <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Core/Inc</state>
+                    <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</state>
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Device/ST/STM32F2xx/Include</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include/lwip</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include/lwip/apps</state>
@@ -634,7 +636,7 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state>$PROJ_DIR$\..\\Inc</state>
+                    <state>$PROJ_DIR$\..//Inc</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -1424,6 +1426,8 @@
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/src/include/posix/sys</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/system/arch</state>
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
+                    <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Core/Inc</state>
+                    <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2183,6 +2187,9 @@
                 <file>
                     <name>$PROJ_DIR$\..\User\tasks\tsk_udp_client.cpp</name>
                 </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_usb.cpp</name>
+                </file>
             </group>
             <file>
                 <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
@@ -2211,6 +2218,18 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\stm32f2xx_it.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\usb_device.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\usbd_cdc_if.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\usbd_conf.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\usbd_desc.c</name>
             </file>
         </group>
     </group>
@@ -2538,6 +2557,21 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Middlewares\Third_Party\LwIP\src\netif\ppp\vj.c</name>
+            </file>
+        </group>
+        <group>
+            <name>USB_Device_Library</name>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Src\usbd_cdc.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_core.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ctlreq.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\ST\STM32_USB_Device_Library\Core\Src\usbd_ioreq.c</name>
             </file>
         </group>
     </group>

@@ -40,10 +40,7 @@ public:
   
   proto_base_t proto_base;
   
-  typedef struct {
-    U08 data[64];
-    U08 len;
-  } queue_data_t;
+  
   
   
   

@@ -15,10 +15,6 @@
 #define START_SYNC_N	0x00
 #define START_BLYNK_N	0x00
 
-typedef enum {
-  SYNC = 0,
-  BLYNK,
-}packet_type_te;
 
 class DWM1000 
 {
@@ -26,6 +22,13 @@ public:
   DWM1000();
   ~DWM1000();
   
+  typedef enum {
+    NO_DATA = 0,
+    UNKNOWN, 
+    SYNC,
+    BLYNK,
+  } packet_type_te;
+
   err_te init();
   void resetConfig();
   void configDWM(dwt_config_t * config);
@@ -35,8 +38,8 @@ public:
   uint64 getTxTimestampU64(void);
   uint64 getRxTimestampU64(void);
   void sendSyncPacket();
-  err_te receivePacket(packet_type_te);
-  void collectSocketBuf(uint8_t * out_buf);
+  packet_type_te receivePacket(uint8_t * data_len = (uint8_t *)NULL);
+  uint16_t collectSocketBuf(uint8_t * out_buf);
 
 private:
   void checkRW();
@@ -48,14 +51,17 @@ private:
   uint32_t status_reg = 0;
   uint16_t frame_len = 0;
   
-  uint8 sync_msg[7] = {'S', 'Y', 'N', 'C', 
+  /* Test frames, last 2 bytes - crc set by DWM */
+  uint8 sync_msg[9] = {'S', 'Y', 'N', 'C', 
 			DEFAULT_AREA_ID, 
 			DEFAULT_NODE_ID, 
-			START_SYNC_N};
-  uint8 blynk_msg[7] = {'B', 'L', 'N', 'K', 
+			START_SYNC_N,
+  			0x00, 0x00};
+  uint8 blynk_msg[9] = {'B', 'L', 'N', 'K', 
 			DEFAULT_AREA_ID, 
 			DEFAULT_NODE_ID, 
-			START_BLYNK_N};
+			START_BLYNK_N,
+  			0x00, 0x00};
   
 public:
   uint8_t rx_buffer[FRAME_LEN_MAX];

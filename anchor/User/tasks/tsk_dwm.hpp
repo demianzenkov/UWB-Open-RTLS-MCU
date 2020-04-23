@@ -18,6 +18,9 @@ public:
   void createTask();
   static void task(void const *arg);
   
+public:
+  SemaphoreHandle_t xSemUSBReady;
+  
 private:
   DWM1000 dwm;
   

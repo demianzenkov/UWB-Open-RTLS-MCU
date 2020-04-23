@@ -36,7 +36,7 @@ void TskDWM::task(void const *arg)
   for(;;)
   {
     tskDWM.dwm.blink();
-    osDelay(100);
+    osDelay(1000);
     HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
   }
 }

@@ -1,8 +1,11 @@
 #include "tsk_dwm.hpp"
+#include "tsk_usb.hpp"
 #include "tsk_udp_client.hpp"
+#include "usbd_cdc_if.h"
 
 TskDWM tskDWM;
 extern TskUdpClient tskUdpClient;
+extern TskUSB tskUSB;
 
 TskDWM::TskDWM()
 {
@@ -16,6 +19,8 @@ TskDWM::~TskDWM()
 
 void TskDWM::createTask()
 {
+  xSemUSBReady = xSemaphoreCreateBinary();
+  
   /* Create transmit task */
   osThreadId dwmTaskHandle;
   osThreadDef(DWMTask, tskDWM.task, osPriorityNormal, 0, 512);
@@ -24,6 +29,9 @@ void TskDWM::createTask()
 
 void TskDWM::task(void const *arg)
 {
+  xSemaphoreTake(tskDWM.xSemUSBReady, portMAX_DELAY);
+  vSemaphoreDelete(tskDWM.xSemUSBReady);
+  
   if (tskDWM.dwm.init() != NO_ERR) {
     while(1) {
       HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
@@ -33,7 +41,7 @@ void TskDWM::task(void const *arg)
     }
   }
 #ifdef SYNC_NODE  
-  tskDWM.sync_period_ms = 100;
+  tskDWM.sync_period_ms = 1000;
 #endif
   
   for(;;)
@@ -45,27 +53,29 @@ void TskDWM::task(void const *arg)
     osDelay(tskDWM.sync_period_ms);
 #else
     /* TDOA anchor node routine */
-    switch(tskDWM.an_sm) {
-    case WAIT_SYNC:
-      if (tskDWM.dwm.receivePacket(SYNC) == NO_ERR){
-	tskDWM.dwm.sync_ts = tskDWM.dwm.getRxTimestampU64();
-	tskDWM.an_sm = WAIT_BLYNK;
-	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
-      }
-      break;
-    case WAIT_BLYNK:
-      if (tskDWM.dwm.receivePacket(BLYNK) == NO_ERR){
-	tskDWM.dwm.blynk_ts = tskDWM.dwm.getRxTimestampU64();
-	tskDWM.dwm.collectSocketBuf(tskDWM.udp_data_buf);
-	xQueueSend( tskUdpClient.xQueueUdpTx, (void *) tskDWM.udp_data_buf, (TickType_t)0 );
-	tskDWM.an_sm = WAIT_SYNC;
-	HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-      }
-      break;
-    default:
-      break;
+    U08 packet_len = 0;
+    U08 data_len=0;
+    DWM1000::packet_type_te packet_type = tskDWM.dwm.receivePacket(&packet_len);
+    if (packet_type == DWM1000::SYNC){
+      tskDWM.dwm.sync_ts = tskDWM.dwm.getRxTimestampU64();
+      data_len = 8;
+      memcpy(&tskUSB.tx_queue.data[packet_len], &tskDWM.dwm.sync_ts, sizeof(tskDWM.dwm.sync_ts));
+      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
     }
-    osDelay(1);
+    else if (packet_type == DWM1000::BLYNK){
+      tskDWM.dwm.blynk_ts = tskDWM.dwm.getRxTimestampU64();
+      data_len = 8;
+      memcpy(&tskUSB.tx_queue.data[packet_len], &tskDWM.dwm.blynk_ts, sizeof(tskDWM.dwm.blynk_ts));
+      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+    }
+    
+    if(packet_type != DWM1000::NO_DATA)
+    {
+      memcpy(tskUSB.tx_queue.data, tskDWM.dwm.rx_buffer, packet_len);
+      tskUSB.tx_queue.len = packet_len + data_len;
+      xQueueSend(tskUSB.xQueueUSBTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
+      xQueueSend(tskUdpClient.xQueueUdpTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
+    }
 #endif	// SYNC_NODE
     
     

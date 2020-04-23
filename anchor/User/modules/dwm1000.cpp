@@ -116,7 +116,7 @@ void DWM1000::sendSyncPacket()
   dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
   /* Write frame data to DW1000 and prepare transmission. See NOTE 4 below.*/
   dwt_writetxdata(sizeof(sync_msg), sync_msg, 0); /* Zero offset in TX buffer. */
-  dwt_writetxfctrl(sizeof(sync_msg), 0, 0); /* Zero offset in TX buffer, no ranging. */
+  dwt_writetxfctrl(sizeof(sync_msg), 0, 1); /* Zero offset in TX buffer, ranging. */
   sync_msg[6]++;
   /* Start transmission. */
   dwt_starttx(DWT_START_TX_IMMEDIATE);
@@ -131,15 +131,17 @@ void DWM1000::sendSyncPacket()
   dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
 }
 
-err_te DWM1000::receivePacket(packet_type_te packet_type) 
+DWM1000::packet_type_te DWM1000::receivePacket(uint8_t * data_len) 
 {
+  packet_type_te packet_type = NO_DATA;
+  
   memset(rx_buffer, 0, FRAME_LEN_MAX);
   if(receiveEnable() != DWT_SUCCESS) {
     HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
     osDelay(250);
     HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
     osDelay(250);
-    return ERR_DWM;
+    return packet_type;
   };
   
   /* Poll until a frame is properly received or an error/timeout occurs. See NOTE 4 below.
@@ -155,31 +157,24 @@ err_te DWM1000::receivePacket(packet_type_te packet_type)
     if (frame_len <= FRAME_LEN_MAX)
     {
       dwt_readrxdata(rx_buffer, frame_len, 0);
-      switch(packet_type) {
-      case SYNC:
-	if(memcmp(rx_buffer, sync_msg, 4) == 0) {
-	  sync_n = rx_buffer[6];
-	  return NO_ERR;
-	}
-	else {
-	  return ERR_PACKET;
-	}
-	break;
-      case BLYNK:
-	if(memcmp(rx_buffer, blynk_msg, 4) == 0) {
-	  tag_id = rx_buffer[5];
-	  blynk_n = rx_buffer[6];
-	  return NO_ERR;
-	}
-	else {
-	  return ERR_PACKET;
-	}
-	break;
-      default:
-	break;
+      
+      if(memcmp(rx_buffer, sync_msg, 4) == 0) {
+	sync_n = rx_buffer[6];
+	packet_type = SYNC;
+      }
+      
+      else if(memcmp(rx_buffer, blynk_msg, 4) == 0) {
+	tag_id = rx_buffer[5];
+	blynk_n = rx_buffer[6];
+	packet_type = BLYNK;
+      }
+      else {
+	packet_type = UNKNOWN;
+      }
+      if (data_len != NULL) {
+	*data_len = frame_len;
       }
     }
-    
     /* Clear good RX frame event in the DW1000 status register. */
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG);
   }
@@ -187,12 +182,12 @@ err_te DWM1000::receivePacket(packet_type_te packet_type)
   {
     /* Clear RX error events in the DW1000 status register. */
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_ALL_RX_ERR);
-    return ERR_NODATA;
+    return packet_type;
   }
-  return ERR_NODATA;
+  return packet_type;
 }
 
-void DWM1000::collectSocketBuf(uint8_t * out_buf)
+uint16_t DWM1000::collectSocketBuf(uint8_t * out_buf)
 {
   out_buf[0] = anchor_id;
   out_buf[1] = tag_id;
@@ -200,6 +195,7 @@ void DWM1000::collectSocketBuf(uint8_t * out_buf)
   out_buf[3] = blynk_n;
   memcpy(&out_buf[4], &sync_ts, sizeof(sync_ts));
   memcpy(&out_buf[12], &blynk_ts, sizeof(blynk_ts));
+  return 20;
 }
 
 void DWM1000::testReceive()

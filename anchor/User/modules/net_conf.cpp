@@ -4,11 +4,11 @@
 
 NetConfig::NetConfig()
 {
-  setDeviceIp(192, 168, 1, 154); 
-  setGatewayIp(192, 168, 1, 1);
-  setServerIp(192, 168, 1, 250);
+  setDeviceIp(10, 90, 0, 1); 
+  setGatewayIp(10, 90, 90, 90);
+  setServerIp(10, 90, 90, 99);
   setServerPort(30005);
-  setSubnetMask(255, 255, 255, 0);
+  setSubnetMask(255, 0, 0, 0);
 }
 
 NetConfig::~NetConfig()

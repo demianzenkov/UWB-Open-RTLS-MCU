@@ -49,4 +49,9 @@ typedef enum {
   ERR_TYPE,
 } err_te;
 
+typedef struct {
+  U08 data[64];
+  U08 len;
+} queue_data_t;
+
 #endif

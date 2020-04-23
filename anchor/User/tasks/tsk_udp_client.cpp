@@ -17,9 +17,10 @@ void TskUdpClient::createTask()
   /* Create task semaphores */
   xSemLwipReady = xSemaphoreCreateBinary();
   xSemConnReady = xSemaphoreCreateBinary();
+  
   /* Create task queues */
-  xQueueUdpRx = xQueueCreate(_rxQueueSize, sizeof(SocketProtocol::queue_data_t));
-  xQueueUdpTx = xQueueCreate(_txQueueSize, sizeof(SocketProtocol::queue_data_t));
+  xQueueUdpRx = xQueueCreate(_rxQueueSize, sizeof(queue_data_t));
+  xQueueUdpTx = xQueueCreate(_txQueueSize, sizeof(queue_data_t));
   /* Create receive(echo) task */
   osThreadId udpEchoTaskHandle;
   osThreadDef(UDPEchoTask, tskUdpClient.udpEchoThread, osPriorityNormal, 0, 512);
@@ -66,7 +67,7 @@ void TskUdpClient::udpEchoThread(void const *arg)
 //            xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &resp_queue, (TickType_t)0 );
           
           /* Echo start */ 
-          SocketProtocol::queue_data_t rx_queue;
+          queue_data_t rx_queue;
           memcpy(rx_queue.data, 
                  tskUdpClient.udp_recv_conn.buf->p->payload,
                  tskUdpClient.udp_recv_conn.buf->p->len);
@@ -90,6 +91,7 @@ void TskUdpClient::udpEchoThread(void const *arg)
 void TskUdpClient::udpTransmitThread(void const *arg)
 {
   xSemaphoreTake(tskUdpClient.xSemConnReady, portMAX_DELAY);
+  vSemaphoreDelete(tskUdpClient.xSemConnReady);
   
   tskUdpClient.udp_send_conn.conn = netconn_new(NETCONN_UDP);
   
@@ -105,11 +107,12 @@ void TskUdpClient::udpTransmitThread(void const *arg)
   
   if (err == ERR_OK)
   {
-    SocketProtocol::queue_data_t tx_queue;
+    queue_data_t tx_queue;
     for(;;)
     {
       // wait for data put in tx queue
-      if(xQueueReceive(tskUdpClient.xQueueUdpTx, &tx_queue, portMAX_DELAY));
+      if (!xQueueReceive(tskUdpClient.xQueueUdpTx, &tx_queue, portMAX_DELAY))
+	continue;
       // allocate netbuf
       tskUdpClient.udp_send_conn.buf = netbuf_new();
       void * buf_p = netbuf_alloc(tskUdpClient.udp_send_conn.buf, tx_queue.len);
