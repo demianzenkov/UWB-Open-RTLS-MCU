@@ -1120,6 +1120,12 @@
                 <file>
                     <name>$PROJ_DIR$\..\User\Modules\tm_stm32_ahrs_imu.c</name>
                 </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Modules\une_tdoa.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Modules\une_twr.cpp</name>
+                </file>
             </group>
             <group>
                 <name>tasks</name>

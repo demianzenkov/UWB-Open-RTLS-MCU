@@ -3,7 +3,7 @@
 
 TskDWM tskDWM;
 
-TskDWM::TskDWM()
+TskDWM::TskDWM(): une_tdoa(&dwm), une_twr(&dwm)
 {
   
 }
@@ -31,12 +31,13 @@ void TskDWM::task(void const *arg)
       osDelay(200);
     }
   }
-//  tskDWM.dwm.receiveEnable();
   
   for(;;)
   {
-    tskDWM.dwm.blink();
+    if (tskDWM.une_twr.twrInitiatorLoop() == NO_ERR){
+      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+    }
     osDelay(1000);
-    HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+    
   }
 }

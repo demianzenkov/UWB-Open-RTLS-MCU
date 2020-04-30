@@ -1,10 +1,10 @@
-#include "net_conf.hpp"
+#include "net_conf.h"
 #include <string.h>
 
 
 NetConfig::NetConfig()
 {
-  setDeviceIp(10, 90, 0, 1); 
+  setDeviceIp(10, 90, 0, 2); 
   setGatewayIp(10, 90, 90, 90);
   setServerIp(10, 90, 90, 99);
   setServerPort(30005);

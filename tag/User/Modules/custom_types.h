@@ -44,6 +44,7 @@ typedef enum {
   ERR_PROTO = -6,
   ERR_SOC = -7,
   ERR_TYPE = -8,
+  ERR_DWM = -9,
 } err_te;
 
 #endif

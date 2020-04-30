@@ -1,9 +1,11 @@
 #include "dwm1000.h"
+#include "une_twr.h"
+
+
 
 DWM1000::DWM1000() 
 {
-  TX_ANT_DLY = 16436;
-  RX_ANT_DLY = 16436;
+  
 }
 
 err_te DWM1000::init() 
@@ -22,6 +24,8 @@ err_te DWM1000::init()
   dwt_setrxantennadelay(RX_ANT_DLY);
   dwt_settxantennadelay(TX_ANT_DLY);
   
+  UNE_TWR::initDWM();
+    
   return NO_ERR;
 }
 
@@ -72,4 +76,35 @@ void DWM1000::resetConfig(dwt_config_t * config)
 void DWM1000::receiveEnable()
 {
   dwt_rxenable(DWT_START_RX_IMMEDIATE);
+}
+
+/*! ------------------------------------------------------------------------------------------------------------------
+* @fn getTimestampU64()
+*
+* @brief Get the RX and TX time-stamp in a 64-bit variable.
+*        /!\ This function assumes that length of time-stamps is 40 bits, for both TX and RX!
+*
+* @param  none
+*
+* @return  64-bit value of the read time-stamp.
+*/
+uint64 DWM1000::getTimestampU64(ts_type_te ts_type)
+{
+  uint8 ts_tab[5];
+  uint64 ts = 0;
+  int i;
+  if (ts_type == RX_TS) {
+    dwt_readrxtimestamp(ts_tab);
+  }
+  else if (ts_type == TX_TS) {
+    dwt_readtxtimestamp(ts_tab);
+  }
+  else 
+    return 0;
+  for (i = 4; i >= 0; i--)
+  {
+    ts <<= 8;
+    ts |= ts_tab[i];
+  }
+  return ts;
 }

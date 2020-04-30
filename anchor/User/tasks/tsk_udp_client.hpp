@@ -9,7 +9,7 @@
 #include "lwip/api.h"
 #include "lwip/netbuf.h"
 
-#include "net_conf.hpp"
+#include "net_conf.h"
 #include "soc_proto.h"
   
 class TskUdpClient 

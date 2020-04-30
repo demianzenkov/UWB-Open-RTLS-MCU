@@ -1,5 +1,5 @@
 #include "soc_proto.h"
-#include "net_conf.hpp"
+#include "net_conf.h"
 #include "crc.h"
 
 SocketProtocol soc_proto;
@@ -14,36 +14,36 @@ SocketProtocol::~SocketProtocol()
   
 }
 
-err_te SocketProtocol::parseBuf(U08 * buf, U16 len, queue_data_t * resp_queue)
+S08 SocketProtocol::parseBuf(U08 * buf, U16 len, queue_data_t * resp_queue)
 {
   proto_base_t rx_proto_packet;
   std::vector<U08> rx_vect;
   rx_vect.assign(buf, buf + len);
   
   // check if packet is valid and make protocol structure from buf
-  if (toProtoBase(rx_vect, &rx_proto_packet) != NO_ERR)
+  if (toProtoBase(rx_vect, &rx_proto_packet) != RC_ERR_NONE)
   {
-    return ERR_PROTO;
+    return RC_ERR_DATA;
   }
   
   // evaluate cmd and build response to server
   // ...
   
   
-  return NO_ERR;
+  return RC_ERR_NONE;
 }
 
-err_te SocketProtocol::toProtoBase(std::vector<U08> packet, proto_base_t * proto_base)
+S08 SocketProtocol::toProtoBase(std::vector<U08> packet, proto_base_t * proto_base)
 {
   if (packet.size()==0 || packet.size()<5)
-    return ERR_PROTO;
+    return RC_ERR_DATA;
   
   if (packet[0] != SOC_RX_PREF)
-    return ERR_PROTO;
+    return RC_ERR_DATA;
   proto_base->pref = packet[0];
   
   if (packet[1] != SocketProtocol::proto_base.addr)
-    return ERR_PROTO;
+    return RC_ERR_DATA;
   
   proto_base->cmd = (soc_cmd_t)packet[2];
   proto_base->data.clear();
@@ -52,9 +52,9 @@ err_te SocketProtocol::toProtoBase(std::vector<U08> packet, proto_base_t * proto
   
   U08 comp_crc = CRC_08(0xFF, packet.data(), packet.size()-1);
   if (packet[packet.size()-1] != comp_crc)
-    return ERR_CRC;
+    return RC_ERR_CRC;
   
   proto_base->crc = packet[packet.size()-1];
   
-  return NO_ERR;
+  return RC_ERR_NONE;
 }

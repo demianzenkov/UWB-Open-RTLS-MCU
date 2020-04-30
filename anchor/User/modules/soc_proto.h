@@ -2,7 +2,7 @@
 #define _SOC_PROTO
 
 #include <vector>
-#include "custom_types.h"
+#include "prj_defs.h"
 
 
 #define SOC_RX_PREF 0x94
@@ -45,8 +45,8 @@ public:
   
   
 public:
-  err_te parseBuf(U08 * buf, U16 len, queue_data_t *);
-  err_te toProtoBase(std::vector<U08> data, proto_base_t *);
+  S08 parseBuf(U08 * buf, U16 len, queue_data_t *);
+  S08 toProtoBase(std::vector<U08> data, proto_base_t *);
   
 };
 

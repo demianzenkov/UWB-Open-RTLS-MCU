@@ -1,5 +1,5 @@
-#ifndef _CUSTOM_TYPES
-#define _CUSTOM_TYPES
+#ifndef __PRJ_DEFS
+#define __PRJ_DEFS
 
 #define MAX_QUEUE_SIZE	64
 
@@ -63,4 +63,4 @@ typedef struct {
   U08 len;
 } queue_data_t;
 
-#endif
+#endif /* __PRJ_DEFS */

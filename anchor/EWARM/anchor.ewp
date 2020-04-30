@@ -350,6 +350,7 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
+                    <state>$PROJ_DIR$/../User/bsp</state>
                     <state>$PROJ_DIR$/../User/tasks</state>
                     <state>$PROJ_DIR$/../User/modules</state>
                     <state>$PROJ_DIR$/../User/decawave/platform</state>
@@ -2117,6 +2118,15 @@
         <group>
             <name>User</name>
             <group>
+                <name>bsp</name>
+                <file>
+                    <name>$PROJ_DIR$\..\User\bsp\bsp_os.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\bsp\bsp_spi.cpp</name>
+                </file>
+            </group>
+            <group>
                 <name>decawave</name>
                 <group>
                     <name>driver</name>
@@ -2173,10 +2183,37 @@
                     <name>$PROJ_DIR$\..\User\modules\dwm1000.cpp</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\User\modules\mx25.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\User\modules\net_conf.cpp</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\modules\soc_proto.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\modules\une_tdoa.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\modules\une_twr.cpp</name>
+                </file>
+            </group>
+            <group>
+                <name>net</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\freertos.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\lwip.c</name>
+                    <excluded>
+                        <configuration>anchor</configuration>
+                    </excluded>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\lwip.cpp</name>
                 </file>
             </group>
             <group>
@@ -2191,15 +2228,21 @@
                     <name>$PROJ_DIR$\..\User\tasks\tsk_usb.cpp</name>
                 </file>
             </group>
-            <file>
-                <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\freertos.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\lwip.c</name>
-            </file>
+            <group>
+                <name>usb</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usb_device.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usbd_cdc_if.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usbd_conf.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usbd_desc.c</name>
+                </file>
+            </group>
             <file>
                 <name>$PROJ_DIR$\..\Src\main.c</name>
                 <excluded>
@@ -2211,6 +2254,9 @@
                 <name>$PROJ_DIR$\..\Src\main.cpp</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\User\modules\prj_defs.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Src\stm32f2xx_hal_msp.c</name>
             </file>
             <file>
@@ -2218,18 +2264,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\stm32f2xx_it.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usb_device.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usbd_cdc_if.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usbd_conf.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usbd_desc.c</name>
             </file>
         </group>
     </group>

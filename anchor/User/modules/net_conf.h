@@ -1,7 +1,7 @@
 #ifndef _NET_CONFIG
 #define _NET_CONFIG
 
-#include "custom_types.h"
+#include "prj_defs.h"
 
 
 class NetConfig {

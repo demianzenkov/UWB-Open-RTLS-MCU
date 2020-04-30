@@ -54,33 +54,20 @@ extern TskUdpClient tskUdpClient;
   */
 void MX_LWIP_Init(void)
 {
-  /* IP addresses initialization */
-  IP_ADDRESS[0] = tskUdpClient.net_conf.ip_conf.device_ip[0];
-  IP_ADDRESS[1] = 90;
-  IP_ADDRESS[2] = 0;
-  IP_ADDRESS[3] = 1;
-  NETMASK_ADDRESS[0] = 255;
-  NETMASK_ADDRESS[1] = 0;
-  NETMASK_ADDRESS[2] = 0;
-  NETMASK_ADDRESS[3] = 0;
-  GATEWAY_ADDRESS[0] = 10;
-  GATEWAY_ADDRESS[1] = 90;
-  GATEWAY_ADDRESS[2] = 90;
-  GATEWAY_ADDRESS[3] = 99;
-  
   /* USER CODE BEGIN LWIP_INIT */
-  IP_ADDRESS[0] = 10;
-  IP_ADDRESS[1] = 90;
-  IP_ADDRESS[2] = 0;
-  IP_ADDRESS[3] = 1;
-  NETMASK_ADDRESS[0] = 255;
-  NETMASK_ADDRESS[1] = 0;
-  NETMASK_ADDRESS[2] = 0;
-  NETMASK_ADDRESS[3] = 0;
-  GATEWAY_ADDRESS[0] = 10;
-  GATEWAY_ADDRESS[1] = 90;
-  GATEWAY_ADDRESS[2] = 90;
-  GATEWAY_ADDRESS[3] = 99;
+  /* IP addresses initialization */
+  IP_ADDRESS[0] = tskUdpClient.net_conf.getDeviceIp()[0];
+  IP_ADDRESS[1] = tskUdpClient.net_conf.getDeviceIp()[1];
+  IP_ADDRESS[2] = tskUdpClient.net_conf.getDeviceIp()[2];
+  IP_ADDRESS[3] = tskUdpClient.net_conf.getDeviceIp()[3];
+  NETMASK_ADDRESS[0] = tskUdpClient.net_conf.getSubnetMask()[0];
+  NETMASK_ADDRESS[1] = tskUdpClient.net_conf.getSubnetMask()[1];
+  NETMASK_ADDRESS[2] = tskUdpClient.net_conf.getSubnetMask()[2];
+  NETMASK_ADDRESS[3] = tskUdpClient.net_conf.getSubnetMask()[3];
+  GATEWAY_ADDRESS[0] = tskUdpClient.net_conf.getGatewayIp()[0];
+  GATEWAY_ADDRESS[1] = tskUdpClient.net_conf.getGatewayIp()[1];
+  GATEWAY_ADDRESS[2] = tskUdpClient.net_conf.getGatewayIp()[2];
+  GATEWAY_ADDRESS[3] = tskUdpClient.net_conf.getGatewayIp()[3];
   /* USER CODE END LWIP_INIT */
   
   /* Initilialize the LwIP stack with RTOS */

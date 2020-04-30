@@ -1,15 +1,15 @@
 #include "dwm1000.h"
-#include "string.h"
+
 #include "main.h"
 #include "cmsis_os.h"
+#include "string.h"
+
 
 DWM1000::DWM1000() 
 {
-  TX_ANT_DLY = 16436;
-  RX_ANT_DLY = 16436;
 }
 
-err_te DWM1000::init() 
+S08 DWM1000::init() 
 {
 #ifdef SYNC_NODE
   is_sync_node = 1;
@@ -18,7 +18,7 @@ err_te DWM1000::init()
   reset_DW1000();
   if (dwt_initialise(DWT_LOADUCODE) == DWT_ERROR)
   {
-    return ERR_INIT;
+    return RC_ERR_HW;
   }
   resetConfig();
   configDWM(&config);
@@ -26,7 +26,9 @@ err_te DWM1000::init()
   dwt_setrxantennadelay(RX_ANT_DLY);
   dwt_settxantennadelay(TX_ANT_DLY);
   
-  return NO_ERR;
+  dwt_setpreambledetecttimeout(PRE_TIMEOUT);
+  
+  return RC_ERR_NONE;
 }
 
 void DWM1000::configDWM(dwt_config_t * config)
@@ -50,7 +52,7 @@ void DWM1000::resetConfig()
   };
 };
 
-err_te DWM1000::receiveEnable()
+S08 DWM1000::receiveEnable()
 {
   /*	
   Activate reception immediately.
@@ -58,51 +60,33 @@ err_te DWM1000::receiveEnable()
   optimise system's overall performance (e.g. timeout after a given time, automatic re-enabling of reception in case of errors, etc.).
   */
   if (dwt_rxenable(DWT_START_RX_IMMEDIATE) != DWT_SUCCESS)
-    return ERR_DWM;
-  return NO_ERR;
+    return RC_ERR_TIMEOUT;
+  return RC_ERR_NONE;
 }
 
-
 /*! ------------------------------------------------------------------------------------------------------------------
-* @fn getTxTimestampU64()
+* @fn getTimestampU64()
 *
-* @brief Get the TX time-stamp in a 64-bit variable.
+* @brief Get the RX and TX time-stamp in a 64-bit variable.
 *        /!\ This function assumes that length of time-stamps is 40 bits, for both TX and RX!
 *
 * @param  none
 *
 * @return  64-bit value of the read time-stamp.
 */
-uint64 DWM1000::getTxTimestampU64(void)
+uint64 DWM1000::getTimestampU64(ts_type_te ts_type)
 {
   uint8 ts_tab[5];
   uint64 ts = 0;
   int i;
-  dwt_readtxtimestamp(ts_tab);
-  for (i = 4; i >= 0; i--)
-  {
-    ts <<= 8;
-    ts |= ts_tab[i];
+  if (ts_type == RX_TS) {
+    dwt_readrxtimestamp(ts_tab);
   }
-  return ts;
-}
-
-/*! ------------------------------------------------------------------------------------------------------------------
-* @fn getRxTimestampU64()
-*
-* @brief Get the RX time-stamp in a 64-bit variable.
-*        /!\ This function assumes that length of time-stamps is 40 bits, for both TX and RX!
-*
-* @param  none
-*
-* @return  64-bit value of the read time-stamp.
-*/
-uint64 DWM1000::getRxTimestampU64(void)
-{
-  uint8 ts_tab[5];
-  uint64 ts = 0;
-  int i;
-  dwt_readrxtimestamp(ts_tab);
+  else if (ts_type == TX_TS) {
+    dwt_readtxtimestamp(ts_tab);
+  }
+  else 
+    return 0;
   for (i = 4; i >= 0; i--)
   {
     ts <<= 8;

@@ -78,8 +78,8 @@ void Error_Handler(void);
 #define FLASH_MISO_GPIO_Port GPIOB
 #define FLASH_MOSI_Pin GPIO_PIN_15
 #define FLASH_MOSI_GPIO_Port GPIOB
-#define MEM_CS_Pin GPIO_PIN_8
-#define MEM_CS_GPIO_Port GPIOD
+#define FLASH_CS_Pin GPIO_PIN_8
+#define FLASH_CS_GPIO_Port GPIOD
 #define DW_MOSI_Pin GPIO_PIN_5
 #define DW_MOSI_GPIO_Port GPIOB
 #define LED1_Pin GPIO_PIN_6

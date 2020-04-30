@@ -2,7 +2,6 @@
 #define TSK_USB
   
 #include "cmsis_os.h"
-#include "custom_types.h"
 #include "soc_proto.h"
 
 class TskUSB 

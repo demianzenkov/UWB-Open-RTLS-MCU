@@ -25,27 +25,19 @@
 #include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+
 #include "tsk_udp_client.hpp"
 #include "tsk_dwm.hpp"
 #include "tsk_usb.hpp"
 #include "usbd_cdc_if.h"
-/* USER CODE END Includes */
+#include "bsp_spi.h"
+#include "mx25.h"
 
 /* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
@@ -55,6 +47,9 @@ TIM_HandleTypeDef htim6;
 
 osThreadId initTaskHandle;
 /* USER CODE BEGIN PV */
+BSP_SPI spi2(&hspi2, 2);
+MX25 mx25;
+
 extern TskUdpClient tskUdpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
@@ -69,80 +64,36 @@ static void MX_SPI2_Init(void);
 static void MX_TIM6_Init(void);
 void initTask(void const * argument);
 
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
 /**
   * @brief  The application entry point.
   * @retval int
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-  
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM6_Init();
-  /* USER CODE BEGIN 2 */
 
-  /* USER CODE END 2 */
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
+  mx25.init(&spi2);
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
   tskUdpClient.createTask();
   tskDWM.createTask();
   tskUSB.createTask();
   
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 256);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
-
-  /* USER CODE BEGIN RTOS_THREADS */
   
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
   osKernelStart();
@@ -150,14 +101,9 @@ int main(void)
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -340,7 +286,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(DW_RESET_GPIO_Port, DW_RESET_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MEM_CS_GPIO_Port, MEM_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(FLASH_CS_GPIO_Port, FLASH_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED1_Pin|LED2_Pin|LED3_Pin, GPIO_PIN_RESET);
@@ -371,11 +317,11 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(DW_IRQn_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MEM_CS_Pin */
-  GPIO_InitStruct.Pin = MEM_CS_Pin;
+  GPIO_InitStruct.Pin = FLASH_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(MEM_CS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(FLASH_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED1_Pin LED2_Pin LED3_Pin */
   GPIO_InitStruct.Pin = LED1_Pin|LED2_Pin|LED3_Pin;
@@ -417,18 +363,15 @@ void initTask(void const * argument)
   
   xSemaphoreGive(tskDWM.xSemUSBReady);
   
+  mx25.detect();
+  
   /* Infinite loop */
   for(;;)
   {
     osDelay(1000);
     HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-    //    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
-    //    HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
     osDelay(1000);
     HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-    //    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
-    //    HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
-//    CDC_Transmit_FS((uint8_t *)"ping\r\n", 6);
   }
   /* USER CODE END 5 */ 
 }
