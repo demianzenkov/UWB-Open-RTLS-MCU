@@ -1,23 +1,20 @@
 .DS_Store
 *.pyc
 
+*.log
+
 .vscode
+.idea
 
 Obj/
 Exe/
+List/
+History/
+settings/
+
 reader
 writer
 test
 
-.idea
-
-*.log
-
 node_modules
 
-History/
-software/cloud/backend/udp_sender/test_udp.py
-docs/~$otocol_v0.docx
-
-Project Outputs for base-board/
-settings/

@@ -9,7 +9,6 @@
 #include "lwip/api.h"
 #include "lwip/netbuf.h"
 
-#include "net_conf.h"
 #include "soc_proto.h"
   
 class TskUdpClient 
@@ -33,8 +32,7 @@ public:
   
   struct_conn udp_recv_conn;
   struct_conn udp_send_conn;
-  
-  NetConfig net_conf;
+
   SocketProtocol soc_proto;
   
   SemaphoreHandle_t xSemLwipReady;

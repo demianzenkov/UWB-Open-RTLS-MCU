@@ -26,7 +26,7 @@
 #endif /* MDK ARM Compiler */
 
 /* USER CODE BEGIN 0 */
-#include "tsk_udp_client.hpp"
+#include "net_conf.h"
 /* USER CODE END 0 */
 /* Private function prototypes -----------------------------------------------*/
 /* ETH Variables initialization ----------------------------------------------*/
@@ -46,7 +46,8 @@ uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
 
 /* USER CODE BEGIN 2 */
-extern TskUdpClient tskUdpClient;
+extern NetConfig net_conf;
+
 /* USER CODE END 2 */
 
 /**
@@ -56,18 +57,18 @@ void MX_LWIP_Init(void)
 {
   /* USER CODE BEGIN LWIP_INIT */
   /* IP addresses initialization */
-  IP_ADDRESS[0] = tskUdpClient.net_conf.getDeviceIp()[0];
-  IP_ADDRESS[1] = tskUdpClient.net_conf.getDeviceIp()[1];
-  IP_ADDRESS[2] = tskUdpClient.net_conf.getDeviceIp()[2];
-  IP_ADDRESS[3] = tskUdpClient.net_conf.getDeviceIp()[3];
-  NETMASK_ADDRESS[0] = tskUdpClient.net_conf.getSubnetMask()[0];
-  NETMASK_ADDRESS[1] = tskUdpClient.net_conf.getSubnetMask()[1];
-  NETMASK_ADDRESS[2] = tskUdpClient.net_conf.getSubnetMask()[2];
-  NETMASK_ADDRESS[3] = tskUdpClient.net_conf.getSubnetMask()[3];
-  GATEWAY_ADDRESS[0] = tskUdpClient.net_conf.getGatewayIp()[0];
-  GATEWAY_ADDRESS[1] = tskUdpClient.net_conf.getGatewayIp()[1];
-  GATEWAY_ADDRESS[2] = tskUdpClient.net_conf.getGatewayIp()[2];
-  GATEWAY_ADDRESS[3] = tskUdpClient.net_conf.getGatewayIp()[3];
+  IP_ADDRESS[0] = net_conf.getDeviceIp()[0];
+  IP_ADDRESS[1] = net_conf.getDeviceIp()[1];
+  IP_ADDRESS[2] = net_conf.getDeviceIp()[2];
+  IP_ADDRESS[3] = net_conf.getDeviceIp()[3];
+  NETMASK_ADDRESS[0] = net_conf.getSubnetMask()[0];
+  NETMASK_ADDRESS[1] = net_conf.getSubnetMask()[1];
+  NETMASK_ADDRESS[2] = net_conf.getSubnetMask()[2];
+  NETMASK_ADDRESS[3] = net_conf.getSubnetMask()[3];
+  GATEWAY_ADDRESS[0] = net_conf.getGatewayIp()[0];
+  GATEWAY_ADDRESS[1] = net_conf.getGatewayIp()[1];
+  GATEWAY_ADDRESS[2] = net_conf.getGatewayIp()[2];
+  GATEWAY_ADDRESS[3] = net_conf.getGatewayIp()[3];
   /* USER CODE END LWIP_INIT */
   
   /* Initilialize the LwIP stack with RTOS */

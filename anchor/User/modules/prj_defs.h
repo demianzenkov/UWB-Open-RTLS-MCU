@@ -1,7 +1,7 @@
 #ifndef __PRJ_DEFS
 #define __PRJ_DEFS
 
-#define MAX_QUEUE_SIZE	64
+#define MAX_QUEUE_SIZE	128
 
 /* S08 Return Codes */
 #define RC_ERR_NONE	(0)

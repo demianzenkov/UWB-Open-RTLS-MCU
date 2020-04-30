@@ -1,7 +1,9 @@
 #include "tsk_udp_client.hpp"
+#include "net_conf.h"
 #include <vector>
 
 TskUdpClient tskUdpClient;
+extern NetConfig net_conf;
 
 TskUdpClient::TskUdpClient() 
 {
@@ -45,7 +47,7 @@ void TskUdpClient::udpEchoThread(void const *arg)
   {
     xSemaphoreGive(tskUdpClient.xSemConnReady);
     
-    err = netconn_bind(tskUdpClient.udp_recv_conn.conn, IP_ADDR_ANY, tskUdpClient.net_conf.getServerPort());
+    err = netconn_bind(tskUdpClient.udp_recv_conn.conn, IP_ADDR_ANY, net_conf.getServerPort());
     if (err == ERR_OK)
     {
       for (;;) 
@@ -95,10 +97,9 @@ void TskUdpClient::udpTransmitThread(void const *arg)
   
   tskUdpClient.udp_send_conn.conn = netconn_new(NETCONN_UDP);
   
-  tskUdpClient.udp_send_conn.addr->addr = \
-    tskUdpClient.net_conf.ipArrToHex(tskUdpClient.net_conf.getServerIp());
+  tskUdpClient.udp_send_conn.addr->addr = net_conf.ipArrToHex(net_conf.getServerIp());
   
-  tskUdpClient.udp_send_conn.port = tskUdpClient.net_conf.getServerPort();
+  tskUdpClient.udp_send_conn.port = net_conf.getServerPort();
   
   // connect to server 
   err_t err = netconn_connect(tskUdpClient.udp_send_conn.conn, 
@@ -120,8 +121,8 @@ void TskUdpClient::udpTransmitThread(void const *arg)
       memcpy (buf_p, &tx_queue, tx_queue.len);
       // fill netbuf with server ip and port
       tskUdpClient.udp_send_conn.buf->addr.addr = \
-    	tskUdpClient.net_conf.ipArrToHex(tskUdpClient.net_conf.getServerIp());
-      tskUdpClient.udp_send_conn.buf->port = tskUdpClient.net_conf.getServerPort();
+    	net_conf.ipArrToHex(net_conf.getServerIp());
+      tskUdpClient.udp_send_conn.buf->port = net_conf.getServerPort();
       // send data
       err = netconn_send(tskUdpClient.udp_send_conn.conn, tskUdpClient.udp_send_conn.buf);
       // clean netbuf

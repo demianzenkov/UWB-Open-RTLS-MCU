@@ -11,9 +11,9 @@
 #define MX25_CMD_RD_SREG                0x05
 #define MX25Q_CMD_WR_ENABLE             0x06
 #define MX25Q_CMD_PAGE_FAST_READ        0x0B
-#define MX25Q_CMD_SUBSECTOR_ERASE       0x20
+#define MX25Q_CMD_SECTOR_ERASE       	0x20
 #define MX25_CMD_RDID                  	0x9F
-#define MX25Q_CMD_SECTOR_ERASE          0xD8
+#define MX25Q_CMD_BLOCK_ERASE          	0xD8
 
 #define MX25_SREG_BUSY                  (1 << 0)
 #define MX25_SREG_LATCH_EN              (1 << 1)
@@ -23,17 +23,18 @@
 #define MX25_16MB_DENSITY             	(0x15)
 
 #define MX25_PAGE_SIZE                  (0x100UL)
-#define MX25_SUBSECTOR_SIZE             (0x1000UL)
-#define MX25_SUBSECTOR_MASK             (0xFFFUL)
-#define MX25_SECTOR_SIZE                (0x10000UL)
+#define MX25_SECTOR_SIZE                (0x1000UL)
+#define MX25_BLOCK_SIZE             	(0x10000UL)
+#define MX25_UNIT_SIZE              	(MX25_SECTOR_SIZE)
 
 #define MX25_16MB_SECTOR_START          (0)
-#define MX25_16MB_SECTOR_END            (255)
+#define MX25_16MB_SECTOR_END            (511)
 
-#define MX25_UNIT_SIZE              	(MX25_SECTOR_SIZE)
-#define MX25_16MB_CONFIG_SECTOR_FIRST 	(MX25_16MB_SECTOR_END-2)
-#define MX25_16MB_CONFIG_SECTOR_LAST	(MX25_16MB_SECTOR_END)
+#define MX25_16MB_SETT_SECTOR_FIRST 	(MX25_16MB_SECTOR_END-2)
+#define MX25_16MB_SETT_SECTOR_LAST	(MX25_16MB_SECTOR_END)
 
+#define MX25_16MB_SETT_ADDR_FIRST 	(MX25_16MB_SETT_SECTOR_FIRST*MX25_SECTOR_SIZE)
+#define MX25_16MB_SETT_ADDR_LAST	(MX25_16MB_SECTOR_END*MX25_SECTOR_SIZE)
 
 typedef enum
 {
@@ -44,7 +45,7 @@ typedef enum
 typedef enum
 {
   PARTNUM_EMPTY = -1,
-  PARTNUM_CONFIG = 0,
+  PARTNUM_SETTINGS = 0,
 } mem_part_num_te;
 
 typedef struct
@@ -56,14 +57,16 @@ typedef struct
 
 typedef struct
 {
-  U16 unit_first;	// first page/sector address
-  U16 unit_last;	// last page/sector address
+  U16 unit_first;	// first sector num
+  U16 unit_last;	// last sector num
+  U32 addr_first;	// first section address
+  U32 addr_last;	// last section address
   U32 mem_size;		// size of memory for the partition
   flash_hw_te hw_type;	// type of memory
   mem_part_num_te pn;	// section number
   U32 unit_size;	// sector size
   U32 page_size;	// page size
-  U32 subsector_size;	// subsector size
+  U32 block_size;	// subsector size
 } mem_part;
 
 
@@ -77,10 +80,10 @@ public:
   S08 get_dev_inf (flash_id_ts* p_inf);
   S08 read (U32 addr, U08* p_buf, U16 len);
   S08 wr_page (U32 addr, U08* p_buf, U16 len);
-  S08 subsect_erase (U32 addr);
   S08 sector_erase (U32 addr);
+  S08 block_erase (U32 addr);
   S08 detect (void);
-  const mem_part* get_partition(mem_part_num_te part);
+  const mem_part* partition(mem_part_num_te part);
   
   inline S08 lock (void);
   inline S08 unlock (void);

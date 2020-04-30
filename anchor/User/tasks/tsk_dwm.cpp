@@ -2,10 +2,13 @@
 #include "tsk_usb.hpp"
 #include "tsk_udp_client.hpp"
 #include "usbd_cdc_if.h"
+#include "monitoring_pb.h"
 
 TskDWM tskDWM;
 extern TskUdpClient tskUdpClient;
 extern TskUSB tskUSB;
+
+extern MonitoringPB pb_monitoring;
 
 TskDWM::TskDWM() : une_tdoa(&dwm), une_twr(&dwm)
 {

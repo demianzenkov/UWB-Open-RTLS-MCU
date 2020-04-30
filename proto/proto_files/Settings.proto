@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message Settings {
+    uint32 DeviceID = 1;
+    uint32 DeviceIp = 2;
+    uint32 GatewayIp = 3;
+    uint32 ServerIp = 4;
+    uint32 ConnectionPort = 5;
+    uint32 NodeID = 6;
+    uint32 NodeType = 7;
+    /*
+        0 - None
+        1 - ANCHOR
+        2 - SYNC_NODE
+        3 - TAG
+    */
+    uint32 RTLSMode = 8;
+    /*
+        0 - None
+        1 - TWR
+        2 - TDOA
+    */
+}

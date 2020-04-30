@@ -32,7 +32,12 @@ public:
   U08 * getSubnetMask(void);
   void  setSubnetMask(U08 a, U08 b, U08 c, U08 d);
   
-  U32 ipArrToHex(U08 * ip);
+  U32 getDeviceIp32(void);
+  U32 getGatewayIp32(void);
+  U32 getServerIp32(void);
+  U32 getSubnetMask32(void);
+    
+  static U32 ipArrToHex(U08 * ip);
   
 private:
   ip_conf_t ip_conf;

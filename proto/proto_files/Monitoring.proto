@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message Monitoring {
+    uint32 twr_nn = 1;
+    uint32 twr_message_type = 2;
+    /*
+        0 - None
+        1 - TWR Ranging
+    */
+    uint32 twr_distance = 3;
+    uint32 twr_ts = 4;
+}

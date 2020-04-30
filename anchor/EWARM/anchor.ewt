@@ -2451,6 +2451,9 @@
                     <name>$PROJ_DIR$\..\User\modules\net_conf.cpp</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\User\modules\settings.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\User\modules\soc_proto.cpp</name>
                 </file>
                 <file>
@@ -2473,6 +2476,24 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Src\lwip.cpp</name>
+                </file>
+            </group>
+            <group>
+                <name>proto</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\proto\proto_files\Monitoring.pb.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\proto\monitoring_pb.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\proto\proto_files\Settings.pb.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\proto\settings_pb.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\proto\virtual_pb.cpp</name>
                 </file>
             </group>
             <group>
@@ -2846,6 +2867,18 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Middlewares\Third_Party\LwIP\src\netif\ppp\vj.c</name>
+            </file>
+        </group>
+        <group>
+            <name>Nanopb</name>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\Third_Party\Nanopb\pb_common.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\Third_Party\Nanopb\pb_decode.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\Third_Party\Nanopb\pb_encode.c</name>
             </file>
         </group>
         <group>

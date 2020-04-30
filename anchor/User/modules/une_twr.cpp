@@ -8,6 +8,9 @@
 #include "tsk_usb.hpp"
 #include "tsk_udp_client.hpp"
 
+#include "monitoring_pb.h"
+
+
 /* UWB microsecond (uus) to device time unit (dtu, around 15.65 ps) conversion factor.
  * 1 uus = 512 / 499.2 µs and 1 µs = 499.2 * 128 dtu. */
 #define UUS_TO_DWT_TIME 65536
@@ -19,14 +22,13 @@
 #define RESP_TX_TO_FINAL_RX_DLY_UUS 500		//500
 /* Receive final timeout. See NOTE 5 below. */
 #define FINAL_RX_TIMEOUT_UUS 3700
-
 /* Speed of light in air, in metres per second. */
 #define SPEED_OF_LIGHT 299702547
 
 
 extern TskUdpClient tskUdpClient;
 extern TskUSB tskUSB;
-
+extern MonitoringPB pb_monitoring;
 
 UNE_TWR::UNE_TWR(DWM1000 * dwm)
 {
@@ -36,6 +38,11 @@ UNE_TWR::UNE_TWR(DWM1000 * dwm)
 
 S08 UNE_TWR::twrResponderLoop()
 {
+  
+  uint8_t buffer[128];
+  U16 message_length;
+  bool status;
+  
   /* Clear reception timeout to start next ranging process. */
   dwt_setrxtimeout(0);
   
@@ -151,8 +158,20 @@ S08 UNE_TWR::twrResponderLoop()
 	  distance = tof * SPEED_OF_LIGHT;
 	  
 	  memcpy(&upd_ranging_msg[6], &distance, sizeof(distance));
+	  
 	  memcpy(tskUSB.tx_queue.data, upd_ranging_msg, sizeof(upd_ranging_msg));
-	  tskUSB.tx_queue.len = sizeof(upd_ranging_msg);
+	  
+	  pb_monitoring.clearMessage();
+	  pb_monitoring.message.twr_nn = resp_frame_seq_nb;
+	  pb_monitoring.message.twr_message_type = PB_TWR_MSGTYPE_RANGING;
+	  memcpy(&pb_monitoring.message.twr_distance, &distance, 4);
+	  pb_monitoring.message.twr_ts = xTaskGetTickCount();
+	  
+	  U16 msg_len;
+	  pb_monitoring.encode(&pb_monitoring.message, pb_monitoring.temp_buf, &msg_len);
+	  tskUSB.tx_queue.len = msg_len;
+	  memcpy(tskUSB.tx_queue.data, pb_monitoring.temp_buf, msg_len);
+	  
 	  xQueueSend(tskUSB.xQueueUSBTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
 	  xQueueSend(tskUdpClient.xQueueUdpTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
 	  
@@ -186,6 +205,7 @@ S08 UNE_TWR::twrResponderLoop()
     memset(dwm->rx_buffer, 0, sizeof(dwm->rx_buffer));
     return RC_ERR_TIMEOUT;
   }
+  return RC_ERR_TIMEOUT;
 }
 
 /*! ------------------------------------------------------------------------------------------------------------------

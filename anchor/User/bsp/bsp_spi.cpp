@@ -100,8 +100,15 @@ S08 BSP_SPI::command (U08 cmd, U32 addr, U08 n_dummy, U08 rw, U08* p_buf, U16 le
       return RC_ERR_HW;
   
   if(addr)
-    if (HAL_SPI_Transmit(p_hspi, (U08 *)&addr, 3, MAX_DELAY_SPI) != HAL_OK)
+  {
+    U08 tmp_adr[3];
+    tmp_adr[0] = (addr >> 16) & 0xFF;
+    tmp_adr[1] = (addr >> 8) & 0xFF;
+    tmp_adr[2] = addr & 0xFF;
+     
+    if (HAL_SPI_Transmit(p_hspi, tmp_adr, 3, MAX_DELAY_SPI) != HAL_OK)
       return RC_ERR_HW;
+  }
   
   if(n_dummy)
     for (int i=0; i<n_dummy; i++)

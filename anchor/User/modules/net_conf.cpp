@@ -1,6 +1,7 @@
 #include "net_conf.h"
 #include <string.h>
 
+NetConfig net_conf;
 
 NetConfig::NetConfig()
 {
@@ -23,9 +24,16 @@ U32 NetConfig::ipArrToHex(U08 * ip)
 	 ( (U32) ((ip[1]) & 0xff) << 8)  | \
 	 ( (U32) ((ip[0]) & 0xff) << 0);
 }
+
+
 U08 * NetConfig::getDeviceIp(void)
 {
   return ip_conf.device_ip;
+}
+
+U32 NetConfig::getDeviceIp32(void)
+{
+  return ipArrToHex(ip_conf.device_ip);
 }
 
 
@@ -42,6 +50,13 @@ U08 * NetConfig::getGatewayIp(void)
 {
   return ip_conf.gw_ip;
 }
+
+U32 NetConfig::getGatewayIp32(void)
+{
+  return ipArrToHex(ip_conf.gw_ip);
+}
+
+
 void NetConfig::setGatewayIp(U08 a, U08 b, U08 c, U08 d) 
 {
   ip_conf.gw_ip[0] = a;
@@ -55,6 +70,12 @@ U08 * NetConfig::getServerIp(void)
 {
   return ip_conf.server_ip;
 }
+
+U32 NetConfig::getServerIp32(void)
+{
+  return ipArrToHex(ip_conf.server_ip);
+}
+
 void NetConfig::setServerIp(U08 a, U08 b, U08 c, U08 d) 
 {
   ip_conf.server_ip[0] = a;
@@ -67,6 +88,12 @@ U08 * NetConfig::getSubnetMask(void)
 {
   return ip_conf.subnet_mask;
 }
+
+U32 NetConfig::getSubnetMask32(void)
+{
+  return ipArrToHex(ip_conf.subnet_mask);
+}
+
 void NetConfig::setSubnetMask(U08 a, U08 b, U08 c, U08 d) 
 {
   ip_conf.subnet_mask[0] = a;

@@ -1,16 +1,19 @@
 #include "mx25.h"
 #include "string.h"
 
+MX25 mx25;
 
-static const mem_part mx25_config = {
-  .unit_first = MX25_16MB_CONFIG_SECTOR_FIRST,
-  .unit_last  = MX25_16MB_CONFIG_SECTOR_LAST,
-  .mem_size   = MX25_UNIT_SIZE * (MX25_16MB_CONFIG_SECTOR_LAST - MX25_16MB_CONFIG_SECTOR_FIRST + 1),
+static const mem_part mx25_settings = {
+  .unit_first = MX25_16MB_SETT_SECTOR_FIRST,
+  .unit_last  = MX25_16MB_SETT_SECTOR_LAST,
+  .addr_first = MX25_16MB_SETT_ADDR_FIRST,
+  .addr_last = MX25_16MB_SETT_ADDR_LAST,
+  .mem_size   = MX25_UNIT_SIZE * (MX25_16MB_SETT_SECTOR_LAST - MX25_16MB_SETT_SECTOR_FIRST + 1),
   .hw_type    = FL_TYPE_MX25_16MB,
-  .pn         = PARTNUM_CONFIG,
+  .pn         = PARTNUM_SETTINGS,
   .unit_size  = MX25_SECTOR_SIZE,
   .page_size  = MX25_PAGE_SIZE,
-  .subsector_size = MX25_SUBSECTOR_SIZE
+  .block_size = MX25_BLOCK_SIZE
 };
 
 
@@ -56,7 +59,6 @@ S08 MX25::lock (void)
   
 }
 
-
 S08 MX25::unlock (void)
 {
   if ((sem == 0) ||  (&sem == 0)) {
@@ -81,16 +83,14 @@ S08 MX25::get_dev_inf(flash_id_ts * p_inf)
   return sErr;
 }
 
-
-
 S08 MX25::read (U32 addr, U08* p_buf, U16 len)
 {
-  S08 sErr;
-  
   if (bsp_spi == 0)
     return RC_ERR_ACCESS;
   if (p_buf == 0)
     return RC_ERR_PARAM;
+ 
+  S08 sErr;
   
   lock();
   bsp_spi->select();
@@ -103,12 +103,15 @@ S08 MX25::read (U32 addr, U08* p_buf, U16 len)
 
 S08 MX25::wr_page (U32 addr, U08* p_buf, U16 len)
 {
+  if (bsp_spi == 0)
+    return RC_ERR_ACCESS;
+  if (p_buf == 0)
+    return RC_ERR_PARAM;
+  
   S08 sErr;
   
   lock();
-  bsp_spi->select();
   wr_enable();
-  
   U08 reg = rd_sreg();
   if (!(reg & MX25_SREG_LATCH_EN))
   {
@@ -116,7 +119,10 @@ S08 MX25::wr_page (U32 addr, U08* p_buf, U16 len)
     return RC_ERR_HW;
   }
   
+  bsp_spi->select();
   sErr = bsp_spi->command(MX25_CMD_PAGE_PROG, addr, 0, SPI_WRITE, p_buf, len);
+  bsp_spi->unselect();
+  
   if (sErr != RC_ERR_NONE)
   {
     unlock();
@@ -125,51 +131,43 @@ S08 MX25::wr_page (U32 addr, U08* p_buf, U16 len)
   
   sErr = wait_prog();
   
-  bsp_spi->unselect();
   unlock();
   
   return sErr;
 }
 
-
-S08 MX25::subsect_erase (U32 addr)
+S08 MX25::block_erase (U32 addr)
 {
   S08 sErr;
   
   lock();
-  bsp_spi->select();
-  
   wr_enable();
-  
   U08 reg = rd_sreg();
   if (!(reg & MX25_SREG_LATCH_EN))
   {
     unlock();
     return RC_ERR_HW;
   }
-  
-  sErr = bsp_spi->command(MX25Q_CMD_SUBSECTOR_ERASE, addr, 0, SPI_CMD);
+  bsp_spi->select();
+  sErr = bsp_spi->command(MX25Q_CMD_BLOCK_ERASE, addr, 0, SPI_CMD);
+  bsp_spi->unselect();
   if (sErr != RC_ERR_NONE)
   {
     unlock();
     return RC_ERR_DATA;
   }
-  
-  sErr = wait_prog();
-  
-  bsp_spi->unselect();
+  sErr = wait_prog();  
   unlock();
   
   return sErr;
 }
-
 
 S08 MX25::sector_erase (U32 addr)
 {
   S08 sErr;
   
   lock();
-  bsp_spi->select();
+  
   
   wr_enable();
   
@@ -180,7 +178,10 @@ S08 MX25::sector_erase (U32 addr)
     return RC_ERR_HW;
   }
   
+  bsp_spi->select();
   sErr = bsp_spi->command(MX25Q_CMD_SECTOR_ERASE, addr, 0, SPI_CMD);
+  bsp_spi->unselect();
+  
   if (sErr != RC_ERR_NONE)
   {
     unlock();
@@ -189,7 +190,6 @@ S08 MX25::sector_erase (U32 addr)
   
   sErr = wait_prog();
   
-  bsp_spi->unselect();
   unlock();
   
   return sErr;
@@ -232,7 +232,7 @@ U08 MX25::rd_sreg (void)
   bsp_spi->select();
   S08 sErr = bsp_spi->command(MX25_CMD_RD_SREG, 0, 0, SPI_READ, temp_buf, 1);
   bsp_spi->unselect();
-  
+
   if (sErr != RC_ERR_NONE)
   {
     return 0xFF;
@@ -240,7 +240,6 @@ U08 MX25::rd_sreg (void)
   
   return temp_buf[0];
 }
-
 
 S08 MX25::detect (void) 
 {
@@ -261,10 +260,10 @@ S08 MX25::detect (void)
   return FALSE;
 }
 
-const mem_part* MX25::get_partition(mem_part_num_te part)
+const mem_part* MX25::partition(mem_part_num_te part)
 {
-  if (part == PARTNUM_CONFIG)    
-    return &mx25_config;
+  if (part == PARTNUM_SETTINGS)    
+    return &mx25_settings;
   
   return 0;
 }

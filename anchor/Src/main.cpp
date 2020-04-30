@@ -32,6 +32,9 @@
 #include "usbd_cdc_if.h"
 #include "bsp_spi.h"
 #include "mx25.h"
+#include "settings_pb.h"
+#include "monitoring_pb.h"
+#include "settings.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -48,11 +51,12 @@ TIM_HandleTypeDef htim6;
 osThreadId initTaskHandle;
 /* USER CODE BEGIN PV */
 BSP_SPI spi2(&hspi2, 2);
-MX25 mx25;
 
+extern MX25 mx25;
 extern TskUdpClient tskUdpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
+extern DeviceSettings settings;
 volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
 
@@ -85,7 +89,8 @@ int main(void)
   MX_TIM6_Init();
 
   mx25.init(&spi2);
-
+  settings.init();
+  
   /* Create the thread(s) */
   tskUdpClient.createTask();
   tskDWM.createTask();
@@ -152,13 +157,6 @@ void SystemClock_Config(void)
 static void MX_SPI1_Init(void)
 {
 
-  /* USER CODE BEGIN SPI1_Init 0 */
-
-  /* USER CODE END SPI1_Init 0 */
-
-  /* USER CODE BEGIN SPI1_Init 1 */
-
-  /* USER CODE END SPI1_Init 1 */
   /* SPI1 parameter configuration*/
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
@@ -176,9 +174,6 @@ static void MX_SPI1_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN SPI1_Init 2 */
-
-  /* USER CODE END SPI1_Init 2 */
 
 }
 
@@ -189,14 +184,6 @@ static void MX_SPI1_Init(void)
   */
 static void MX_SPI2_Init(void)
 {
-
-  /* USER CODE BEGIN SPI2_Init 0 */
-
-  /* USER CODE END SPI2_Init 0 */
-
-  /* USER CODE BEGIN SPI2_Init 1 */
-
-  /* USER CODE END SPI2_Init 1 */
   /* SPI2 parameter configuration*/
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_MASTER;
@@ -205,7 +192,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -214,10 +201,6 @@ static void MX_SPI2_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN SPI2_Init 2 */
-
-  /* USER CODE END SPI2_Init 2 */
-
 }
 
 /**
@@ -227,10 +210,6 @@ static void MX_SPI2_Init(void)
   */
 static void MX_TIM6_Init(void)
 {
-
-  /* USER CODE BEGIN TIM6_Init 0 */
-
-  /* USER CODE END TIM6_Init 0 */
 
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
@@ -252,14 +231,6 @@ static void MX_TIM6_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM6_Init 2 */
-//  if(HAL_TIM_Base_Start_IT(&htim6) != HAL_OK)
-//  {
-//    /* Starting Error */
-//    Error_Handler();
-//  }
-  /* USER CODE END TIM6_Init 2 */
-
 }
 
 /**
@@ -339,9 +310,6 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 }
 
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
 /**
@@ -351,7 +319,9 @@ static void MX_GPIO_Init(void)
   */
 /* USER CODE END Header_StartDefaultTask */
 void initTask(void const * argument)
-{             
+{
+  
+  
   /* init code for LWIP */
   MX_LWIP_Init();
 

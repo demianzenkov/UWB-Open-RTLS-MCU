@@ -5,7 +5,7 @@
 #include "prj_defs.h"
 #include "bsp_os.h"
 
-#define MAX_DELAY_SPI  1000
+#define MAX_DELAY_SPI  3000
 
 #define SPI_READ          0UL
 #define SPI_WRITE         1UL
