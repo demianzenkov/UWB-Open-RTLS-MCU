@@ -26,7 +26,7 @@
 #endif /* MDK ARM Compiler */
 
 /* USER CODE BEGIN 0 */
-#include "tsk_udp_client.hpp"
+#include "tsk_udp_client.h"
 /* USER CODE END 0 */
 /* Private function prototypes -----------------------------------------------*/
 /* ETH Variables initialization ----------------------------------------------*/

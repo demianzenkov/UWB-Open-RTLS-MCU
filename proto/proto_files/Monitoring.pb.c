@@ -9,4 +9,8 @@
 PB_BIND(Monitoring, Monitoring, AUTO)
 
 
+PB_BIND(Monitoring_msg_TWR, Monitoring_msg_TWR, AUTO)
+
+
+
 

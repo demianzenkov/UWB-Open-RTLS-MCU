@@ -27,6 +27,9 @@
 /* USER CODE BEGIN Includes */
 #include "tsk_dwm.hpp"
 #include "tsk_lsm.hpp"
+#include "tsk_usb.hpp"
+#include "settings.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +59,8 @@ osThreadId initTaskHandle;
 /* USER CODE BEGIN PV */
 extern TskDWM tskDWM;
 extern TskLSM tskLSM;
-
+extern TskUSB tskUSB;
+extern DeviceSettings settings;
 volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
 
@@ -102,7 +106,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -112,7 +116,7 @@ int main(void)
   MX_USART1_UART_Init();
 //  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-
+  settings.init();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -139,6 +143,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   tskDWM.createTask();
+  tskUSB.createTask();
 //  tskLSM.createTask();
   /* USER CODE END RTOS_THREADS */
 

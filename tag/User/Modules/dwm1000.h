@@ -1,7 +1,7 @@
 #ifndef __DWM1000
 #define __DWM1000
 
-#include "custom_types.h"
+#include "prj_defs.h"
 
 #include "deca_device_api.h"
 #include "deca_regs.h"
@@ -36,7 +36,7 @@ public:
   } ts_type_te;
   
   
-  err_te init();
+  S08 init();
   void resetConfig(dwt_config_t * config);
   void configDWM(dwt_config_t * config);
   void receiveEnable();

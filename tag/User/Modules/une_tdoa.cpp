@@ -7,8 +7,8 @@ UNE_TDOA::UNE_TDOA(DWM1000 * dwm)
 }
 
 /* TDOA anchor node routine */
-err_te UNE_TDOA::tdoaTagRoutine()
+S08 UNE_TDOA::tdoaTagRoutine()
 {
   dwm->blink();
-  return NO_ERR;
+  return RC_ERR_NONE;
 }

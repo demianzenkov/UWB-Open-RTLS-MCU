@@ -1,14 +1,15 @@
-#include "tsk_dwm.hpp"
-#include "tsk_usb.hpp"
-#include "tsk_udp_client.hpp"
+#include "tsk_dwm.h"
+#include "tsk_usb.h"
+#include "tsk_udp_client.h"
 #include "usbd_cdc_if.h"
 #include "monitoring_pb.h"
+#include "settings.h"
 
 TskDWM tskDWM;
 extern TskUdpClient tskUdpClient;
 extern TskUSB tskUSB;
-
 extern MonitoringPB pb_monitoring;
+extern DeviceSettings settings;
 
 TskDWM::TskDWM() : une_tdoa(&dwm), une_twr(&dwm)
 {
@@ -45,12 +46,14 @@ void TskDWM::task(void const *arg)
   }  
   for(;;)
   {
-    tskDWM.une_twr.twrResponderLoop();
+    switch(settings.pb_settings.message.RTLSMode) {
+    case Settings_rtls_mode_MODE_TWR:
+      if (tskDWM.une_twr.twrResponderLoop() == RC_ERR_NONE)
+       HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+      break;
+    default:
+      break;
+    }
     osDelay(1);
-#ifndef SYNC_NODE 
-    
-#endif	// SYNC_NODE
-    
-    
   }
 }

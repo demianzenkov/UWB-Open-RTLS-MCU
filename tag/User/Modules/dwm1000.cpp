@@ -8,13 +8,13 @@ DWM1000::DWM1000()
   
 }
 
-err_te DWM1000::init() 
+S08 DWM1000::init() 
 {
   reset_DW1000();
   port_set_dw1000_slowrate();
   if (dwt_initialise(DWT_LOADUCODE) == DWT_ERROR)
   {
-    return ERR_INIT;
+    return RC_ERR_HW;
   }
   port_set_dw1000_fastrate();
   
@@ -26,7 +26,7 @@ err_te DWM1000::init()
   
   UNE_TWR::initDWM();
     
-  return NO_ERR;
+  return RC_ERR_NONE;
 }
 
 void DWM1000::blink()

@@ -1,15 +1,9 @@
 #include "net_conf.h"
 #include <string.h>
 
-NetConfig net_conf;
-
 NetConfig::NetConfig()
 {
-  setDeviceIp(10, 90, 0, 2); 
-  setGatewayIp(10, 90, 90, 90);
-  setServerIp(10, 90, 90, 99);
-  setServerPort(30005);
-  setSubnetMask(255, 0, 0, 0);
+  setDefaultSettings();
 }
 
 NetConfig::~NetConfig()
@@ -25,15 +19,52 @@ U32 NetConfig::ipArrToHex(U08 * ip)
 	 ( (U32) ((ip[0]) & 0xff) << 0);
 }
 
-
-U08 * NetConfig::getDeviceIp(void)
+void NetConfig::setDefaultSettings()
 {
-  return ip_conf.device_ip;
+  memcpy(ip_conf.device_ip, default_ip_conf.device_ip, 4);
+  memcpy(ip_conf.gw_ip, default_ip_conf.gw_ip, 4);
+  memcpy(ip_conf.server_ip, default_ip_conf.server_ip, 4);
+  memcpy(ip_conf.subnet_mask, default_ip_conf.subnet_mask, 4);
+  ip_conf.server_port = default_ip_conf.server_port;
 }
 
-U32 NetConfig::getDeviceIp32(void)
+const U08 * NetConfig::getDefaultDeviceIp(void) 
 {
-  return ipArrToHex(ip_conf.device_ip);
+  return default_ip_conf.device_ip;
+}
+const U08 * NetConfig::getDefaultSubnetMask(void) 
+{
+  return default_ip_conf.subnet_mask;
+}
+const U08 * NetConfig::getDefaultGatewayIp(void) 
+{
+  return default_ip_conf.gw_ip;
+}
+const U08 * NetConfig::getDefaultServerIp(void)
+{
+  return default_ip_conf.server_ip;
+}
+U16 NetConfig::getDefaultServerPort(void) 
+{
+  return default_ip_conf.server_port;
+}
+
+
+U32 NetConfig::getDefaultDeviceIp32(void) 
+{
+  return ipArrToHex((U08*)default_ip_conf.device_ip);
+}
+U32 NetConfig::getDefaultSubnetMask32(void) 
+{
+  return ipArrToHex((U08*)default_ip_conf.subnet_mask);
+}
+U32 NetConfig::getDefaultGatewayIp32(void) 
+{
+  return ipArrToHex((U08*)default_ip_conf.gw_ip);
+}
+U32 NetConfig::getDefaultServerIp32(void)
+{
+  return ipArrToHex((U08*)default_ip_conf.server_ip);
 }
 
 
@@ -44,19 +75,6 @@ void NetConfig::setDeviceIp(U08 a, U08 b, U08 c, U08 d)
   ip_conf.device_ip[2] = c;
   ip_conf.device_ip[3] = d;
 }
-
-
-U08 * NetConfig::getGatewayIp(void)
-{
-  return ip_conf.gw_ip;
-}
-
-U32 NetConfig::getGatewayIp32(void)
-{
-  return ipArrToHex(ip_conf.gw_ip);
-}
-
-
 void NetConfig::setGatewayIp(U08 a, U08 b, U08 c, U08 d) 
 {
   ip_conf.gw_ip[0] = a;
@@ -64,18 +82,6 @@ void NetConfig::setGatewayIp(U08 a, U08 b, U08 c, U08 d)
   ip_conf.gw_ip[2] = c;
   ip_conf.gw_ip[3] = d;
 }
-
-
-U08 * NetConfig::getServerIp(void)
-{
-  return ip_conf.server_ip;
-}
-
-U32 NetConfig::getServerIp32(void)
-{
-  return ipArrToHex(ip_conf.server_ip);
-}
-
 void NetConfig::setServerIp(U08 a, U08 b, U08 c, U08 d) 
 {
   ip_conf.server_ip[0] = a;
@@ -83,17 +89,6 @@ void NetConfig::setServerIp(U08 a, U08 b, U08 c, U08 d)
   ip_conf.server_ip[2] = c;
   ip_conf.server_ip[3] = d;
 }
-
-U08 * NetConfig::getSubnetMask(void)
-{
-  return ip_conf.subnet_mask;
-}
-
-U32 NetConfig::getSubnetMask32(void)
-{
-  return ipArrToHex(ip_conf.subnet_mask);
-}
-
 void NetConfig::setSubnetMask(U08 a, U08 b, U08 c, U08 d) 
 {
   ip_conf.subnet_mask[0] = a;
@@ -101,13 +96,53 @@ void NetConfig::setSubnetMask(U08 a, U08 b, U08 c, U08 d)
   ip_conf.subnet_mask[2] = c;
   ip_conf.subnet_mask[3] = d;
 }
+void NetConfig::setServerPort(U16 port) 
+{
+  ip_conf.server_port = port;
+}
 
+
+U08 * NetConfig::getDeviceIp(void)
+{
+  return ip_conf.device_ip;
+}
+U08 * NetConfig::getGatewayIp(void)
+{
+  return ip_conf.gw_ip;
+}
+U08 * NetConfig::getSubnetMask(void)
+{
+  return ip_conf.subnet_mask;
+}
+U08 * NetConfig::getServerIp(void)
+{
+  return ip_conf.server_ip;
+}
 U16 NetConfig::getServerPort(void)
 {
   return ip_conf.server_port;
 }
 
-void NetConfig::setServerPort(U16 port) 
+
+U32 NetConfig::getDeviceIp32(void)
 {
-  ip_conf.server_port = port;
+  return ipArrToHex(ip_conf.device_ip);
 }
+U32 NetConfig::getSubnetMask32(void)
+{
+  return ipArrToHex(ip_conf.subnet_mask);
+}
+U32 NetConfig::getGatewayIp32(void)
+{
+  return ipArrToHex(ip_conf.gw_ip);
+}
+U32 NetConfig::getServerIp32(void)
+{
+  return ipArrToHex(ip_conf.server_ip);
+}
+
+
+
+
+
+

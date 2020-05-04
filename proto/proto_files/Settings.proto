@@ -1,23 +1,38 @@
 syntax = "proto3";
 
 message Settings {
+    /* General */
     uint32 DeviceID = 1;
+
+    /* Network */
     uint32 DeviceIp = 2;
-    uint32 GatewayIp = 3;
-    uint32 ServerIp = 4;
-    uint32 ConnectionPort = 5;
-    uint32 NodeID = 6;
-    uint32 NodeType = 7;
-    /*
-        0 - None
-        1 - ANCHOR
-        2 - SYNC_NODE
-        3 - TAG
-    */
-    uint32 RTLSMode = 8;
-    /*
-        0 - None
-        1 - TWR
-        2 - TDOA
-    */
+    uint32 SubnetMask = 3;
+    uint32 GatewayIp = 4;
+    uint32 ServerIp = 5;
+    uint32 ConnectionPort = 6;
+
+    /* DWM */
+    uint32 NodeID = 7;
+
+    enum node_type {
+        TYPE_NONE = 0;
+        TYPE_UNDEF = 1;
+        TYPE_ANCHOR = 2;
+        TYPE_SYNC_NODE = 3;
+        TYPE_TAG = 4;
+    };
+    node_type NodeType = 8;
+
+    enum rtls_mode {
+        MODE_NONE = 0;
+        MODE_OFF = 1;
+        MODE_TWR = 2;
+        MODE_TDOA = 3;
+    };
+    rtls_mode RTLSMode = 9;
+
+
+    float PositionX = 10;
+    float PositionY = 11;
+    float PositionZ = 12;
 }

@@ -358,12 +358,17 @@
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/include</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/portable/IAR/ARM_CM0</state>
+                    <state>$PROJ_DIR$/../Middlewares/Third_Party/Nanopb</state>
+                    <state>$PROJ_DIR$/../User</state>
                     <state>$PROJ_DIR$/../User/Modules</state>
                     <state>$PROJ_DIR$/../User/Tasks</state>
+                    <state>$PROJ_DIR$/../User/Proto</state>
+                    <state>$PROJ_DIR$/../User/BSP</state>
                     <state>$PROJ_DIR$/../User/Decawave/platform</state>
                     <state>$PROJ_DIR$/../User/Decawave/decadriver</state>
                     <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Core/Inc</state>
                     <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</state>
+                    <state>$PROJ_DIR$/../../proto/proto_files</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1053,6 +1058,15 @@
         <group>
             <name>User</name>
             <group>
+                <name>bsp</name>
+                <file>
+                    <name>$PROJ_DIR$\..\User\BSP\bsp_nvm.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\BSP\bsp_os.cpp</name>
+                </file>
+            </group>
+            <group>
                 <name>decawave</name>
                 <group>
                     <name>driver</name>
@@ -1118,6 +1132,9 @@
                     <name>$PROJ_DIR$\..\User\Modules\lsm6ds3tr_c_reg.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\User\Modules\settings.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\User\Modules\tm_stm32_ahrs_imu.c</name>
                 </file>
                 <file>
@@ -1125,6 +1142,24 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Modules\une_twr.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Modules\wake.cpp</name>
+                </file>
+            </group>
+            <group>
+                <name>proto</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\proto\proto_files\Monitoring.pb.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\proto\proto_files\Settings.pb.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Proto\settings_pb.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Proto\virtual_pb.cpp</name>
                 </file>
             </group>
             <group>
@@ -1134,6 +1169,295 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_lsm.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Tasks\tsk_usb.cpp</name>
+                </file>
+            </group>
+            <group>
+                <name>usb</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usb_device.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usbd_cdc_if.c</name>
+                    <configuration>
+                        <name>tag</name>
+                        <settings>
+                            <name>ICCARM</name>
+                            <data>
+                                <version>34</version>
+                                <wantNonLocal>0</wantNonLocal>
+                                <debug>1</debug>
+                                <option>
+                                    <name>CCOptimizationNoSizeConstraints</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCDefines</name>
+                                    <state>USE_HAL_DRIVER</state>
+                                    <state>STM32L072xx</state>
+                                </option>
+                                <option>
+                                    <name>CCPreprocFile</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCPreprocComments</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCPreprocLine</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCListCFile</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCListCMnemonics</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCListCMessages</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCListAssFile</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCListAssSource</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCEnableRemarks</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCDiagSuppress</name>
+                                    <state></state>
+                                </option>
+                                <option>
+                                    <name>CCDiagRemark</name>
+                                    <state></state>
+                                </option>
+                                <option>
+                                    <name>CCDiagWarning</name>
+                                    <state></state>
+                                </option>
+                                <option>
+                                    <name>CCDiagError</name>
+                                    <state></state>
+                                </option>
+                                <option>
+                                    <name>CCObjPrefix</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCAllowList</name>
+                                    <version>1</version>
+                                    <state>00000000</state>
+                                </option>
+                                <option>
+                                    <name>CCDebugInfo</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>IEndianMode</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>IProcessor</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>IExtraOptionsCheck</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IExtraOptions</name>
+                                    <state></state>
+                                </option>
+                                <option>
+                                    <name>CCLangConformance</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCSignedPlainChar</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCRequirePrototypes</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCDiagWarnAreErr</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCCompilerRuntimeInfo</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IFpuProcessor</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>OutputFile</name>
+                                    <state>$FILE_BNAME$.o</state>
+                                </option>
+                                <option>
+                                    <name>CCLibConfigHeader</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>PreInclude</name>
+                                    <state></state>
+                                </option>
+                                <option>
+                                    <name>CompilerMisraOverride</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCIncludePath2</name>
+                                    <state>$PROJ_DIR$/../Inc</state>
+                                    <state>$PROJ_DIR$/../Drivers/STM32L0xx_HAL_Driver/Inc</state>
+                                    <state>$PROJ_DIR$/../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy</state>
+                                    <state>$PROJ_DIR$/../Drivers/CMSIS/Device/ST/STM32L0xx/Include</state>
+                                    <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
+                                    <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/include</state>
+                                    <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS</state>
+                                    <state>$PROJ_DIR$/../Middlewares/Third_Party/FreeRTOS/Source/portable/IAR/ARM_CM0</state>
+                                    <state>$PROJ_DIR$/../Middlewares/Third_Party/Nanopb</state>
+                                    <state>$PROJ_DIR$/../User</state>
+                                    <state>$PROJ_DIR$/../User/Modules</state>
+                                    <state>$PROJ_DIR$/../User/Tasks</state>
+                                    <state>$PROJ_DIR$/../User/Proto</state>
+                                    <state>$PROJ_DIR$/../User/BSP</state>
+                                    <state>$PROJ_DIR$/../User/Decawave/platform</state>
+                                    <state>$PROJ_DIR$/../User/Decawave/decadriver</state>
+                                    <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Core/Inc</state>
+                                    <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</state>
+                                    <state>$PROJ_DIR$/../../proto/proto_files</state>
+                                </option>
+                                <option>
+                                    <name>CCStdIncCheck</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCCodeSection</name>
+                                    <state>.text</state>
+                                </option>
+                                <option>
+                                    <name>IProcessorMode2</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCOptLevel</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCOptStrategy</name>
+                                    <version>0</version>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCOptLevelSlave</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CompilerMisraRules98</name>
+                                    <version>0</version>
+                                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
+                                </option>
+                                <option>
+                                    <name>CompilerMisraRules04</name>
+                                    <version>0</version>
+                                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
+                                </option>
+                                <option>
+                                    <name>CCPosIndRopi</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCPosIndRwpi</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCPosIndNoDynInit</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IccLang</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>IccCDialect</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>IccAllowVLA</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IccStaticDestr</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IccCppInlineSemantics</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IccCmsis</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>IccFloatSemantics</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCNoLiteralPool</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCOptStrategySlave</name>
+                                    <version>0</version>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCEncSource</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCEncOutput</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>CCEncOutputBom</name>
+                                    <state>1</state>
+                                </option>
+                                <option>
+                                    <name>CCEncInput</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IccExceptions2</name>
+                                    <state>0</state>
+                                </option>
+                                <option>
+                                    <name>IccRTTI2</name>
+                                    <state>0</state>
+                                </option>
+                            </data>
+                        </settings>
+                    </configuration>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usbd_conf.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\usbd_desc.c</name>
                 </file>
             </group>
             <file>
@@ -1156,18 +1480,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\stm32l0xx_it.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usb_device.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usbd_cdc_if.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usbd_conf.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Src\usbd_desc.c</name>
             </file>
         </group>
     </group>
@@ -1282,6 +1594,18 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Middlewares\Third_Party\FreeRTOS\Source\timers.c</name>
+            </file>
+        </group>
+        <group>
+            <name>Nanopb</name>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\Third_Party\Nanopb\pb_common.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\Third_Party\Nanopb\pb_decode.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Middlewares\Third_Party\Nanopb\pb_encode.c</name>
             </file>
         </group>
         <group>

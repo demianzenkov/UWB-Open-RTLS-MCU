@@ -1,12 +1,17 @@
 syntax = "proto3";
 
 message Monitoring {
-    uint32 twr_nn = 1;
-    uint32 twr_message_type = 2;
-    /*
-        0 - None
-        1 - TWR Ranging
-    */
-    uint32 twr_distance = 3;
-    uint32 twr_ts = 4;
+    enum message_type {
+        MSG_NONE = 0;
+        MSG_TWR = 1;
+        MSG_TDOA = 2;
+    }
+    message msg_TWR {
+        message_type MessageType = 1;
+        uint32 NN = 2;
+        float Distance = 3;
+        uint32 Timestamp = 4;
+    }
+
+    msg_TWR TWR = 1;
 }

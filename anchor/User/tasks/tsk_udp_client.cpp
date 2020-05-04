@@ -1,9 +1,10 @@
-#include "tsk_udp_client.hpp"
-#include "net_conf.h"
-#include <vector>
+#include "tsk_udp_client.h"
+#include "tsk_une.h"
+#include "settings.h"
 
 TskUdpClient tskUdpClient;
-extern NetConfig net_conf;
+extern TskUNE tskUNE;
+extern DeviceSettings settings;
 
 TskUdpClient::TskUdpClient() 
 {
@@ -47,34 +48,21 @@ void TskUdpClient::udpEchoThread(void const *arg)
   {
     xSemaphoreGive(tskUdpClient.xSemConnReady);
     
-    err = netconn_bind(tskUdpClient.udp_recv_conn.conn, IP_ADDR_ANY, net_conf.getServerPort());
+    err = netconn_bind(tskUdpClient.udp_recv_conn.conn, IP_ADDR_ANY, settings.net_conf.getServerPort());
     if (err == ERR_OK)
     {
       for (;;) 
       {  
         err = netconn_recv(tskUdpClient.udp_recv_conn.conn,  &tskUdpClient.udp_recv_conn.buf);
         if (err == ERR_OK) 
-        {
-//          tskUdpClient.udp_recv_conn.addr = \
-//            netbuf_fromaddr(tskUdpClient.udp_recv_conn.buf);
-//          tskUdpClient.udp_recv_conn.port = \
-//            netbuf_fromport(tskUdpClient.udp_recv_conn.buf);
-//          
-//          SocketProtocol::queue_data_t resp_queue;
-//          
-//          tskUdpClient.soc_proto.parseBuf((U08 *)tskUdpClient.udp_recv_conn.buf->p->payload, 
-//                                          tskUdpClient.udp_recv_conn.buf->p->len,
-//                                          &resp_queue);
-//          if(resp_queue.len > 0)
-//            xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &resp_queue, (TickType_t)0 );
-          
+        { 
           /* Echo start */ 
           queue_data_t rx_queue;
           memcpy(rx_queue.data, 
                  tskUdpClient.udp_recv_conn.buf->p->payload,
                  tskUdpClient.udp_recv_conn.buf->p->len);
           rx_queue.len = tskUdpClient.udp_recv_conn.buf->p->len;
-          xQueueSend( tskUdpClient.xQueueUdpTx, (void *) &rx_queue, (TickType_t)0 );
+          xQueueSend( tskUNE.xQueueNetworkRx, (void *) &rx_queue, (TickType_t)0 );
           /* Echo end */
           
           netbuf_delete(tskUdpClient.udp_recv_conn.buf);
@@ -97,9 +85,9 @@ void TskUdpClient::udpTransmitThread(void const *arg)
   
   tskUdpClient.udp_send_conn.conn = netconn_new(NETCONN_UDP);
   
-  tskUdpClient.udp_send_conn.addr->addr = net_conf.ipArrToHex(net_conf.getServerIp());
+  tskUdpClient.udp_send_conn.addr->addr = settings.net_conf.ipArrToHex(settings.net_conf.getServerIp());
   
-  tskUdpClient.udp_send_conn.port = net_conf.getServerPort();
+  tskUdpClient.udp_send_conn.port = settings.net_conf.getServerPort();
   
   // connect to server 
   err_t err = netconn_connect(tskUdpClient.udp_send_conn.conn, 
@@ -121,8 +109,8 @@ void TskUdpClient::udpTransmitThread(void const *arg)
       memcpy (buf_p, &tx_queue, tx_queue.len);
       // fill netbuf with server ip and port
       tskUdpClient.udp_send_conn.buf->addr.addr = \
-    	net_conf.ipArrToHex(net_conf.getServerIp());
-      tskUdpClient.udp_send_conn.buf->port = net_conf.getServerPort();
+    	settings.net_conf.ipArrToHex(settings.net_conf.getServerIp());
+      tskUdpClient.udp_send_conn.buf->port = settings.net_conf.getServerPort();
       // send data
       err = netconn_send(tskUdpClient.udp_send_conn.conn, tskUdpClient.udp_send_conn.buf);
       // clean netbuf
@@ -132,9 +120,42 @@ void TskUdpClient::udpTransmitThread(void const *arg)
   else {
     for (;;) {
       osDelay(500);
-      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
       osDelay(500);
-      HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
     }
   }
+}
+
+S08 TskUdpClient::lock (void)
+{
+  if (sem)
+  {
+    S08 sErr = BSP_OS::semWait (&sem, 10.0 * BSP_TICKS_PER_SEC);
+    return sErr;
+  }
+  else
+    return RC_ERR_COMMON;
+}
+
+
+S08 TskUdpClient::unlock (void)
+{
+  if (sem)
+  {
+    S08 sErr = BSP_OS::semPost (&sem);
+    return sErr;
+  }
+  else
+    return RC_ERR_COMMON;
+}
+
+
+void TskUdpClient::transmit(U08 * buf, U16 len)
+{
+  lock();
+  tx_queue.len = len;
+  memcpy(tx_queue.data, buf, len);
+  xQueueSend(xQueueUdpTx, (void *)&tx_queue, (TickType_t)0);
+  unlock();
 }

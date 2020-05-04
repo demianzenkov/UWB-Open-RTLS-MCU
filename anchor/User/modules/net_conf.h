@@ -3,12 +3,19 @@
 
 #include "prj_defs.h"
 
-
 class NetConfig {
 
 public:
   NetConfig();
   ~NetConfig();
+  
+  typedef const struct {
+    U08 device_ip[4] = {10, 90, 0, 2};
+    U08 gw_ip[4] = {10, 90, 90, 90};
+    U08 server_ip[4] = {10, 90, 90, 99};
+    U16 server_port = 30005;
+    U08 subnet_mask[4] = {255, 0, 0, 0};
+  } default_ip_conf_t;
   
   typedef struct {
     U08 device_ip[4];
@@ -19,28 +26,44 @@ public:
   } ip_conf_t;
   
 public:
+  U32 ipArrToHex(U08 * ip);
+  void setDefaultSettings();
+  
   ip_conf_t getIpSettings(void);
   void  setIpSettings(ip_conf_t ip_conf);
-  U08 * getDeviceIp(void);
+  
   void  setDeviceIp(U08 a, U08 b, U08 c, U08 d);
-  U08 * getGatewayIp(void);
   void  setGatewayIp(U08 a, U08 b, U08 c, U08 d);
-  U08 * getServerIp(void);
   void  setServerIp(U08 a, U08 b, U08 c, U08 d);
-  U16   getServerPort(void);
   void  setServerPort(U16 port);
-  U08 * getSubnetMask(void);
   void  setSubnetMask(U08 a, U08 b, U08 c, U08 d);
   
+  U08 * getDeviceIp(void);
+  U08 * getSubnetMask(void);
+  U08 * getGatewayIp(void);
+  U08 * getServerIp(void);
+  U16   getServerPort(void);
+  
   U32 getDeviceIp32(void);
+  U32 getSubnetMask32(void);
   U32 getGatewayIp32(void);
   U32 getServerIp32(void);
-  U32 getSubnetMask32(void);
-    
-  static U32 ipArrToHex(U08 * ip);
+  
+  const U08 * getDefaultDeviceIp(void);
+  const U08 * getDefaultSubnetMask(void);
+  const U08 * getDefaultGatewayIp(void);
+  const U08 * getDefaultServerIp(void);
+  U16 getDefaultServerPort(void);
+  
+  U32 getDefaultDeviceIp32(void);
+  U32 getDefaultSubnetMask32(void);
+  U32 getDefaultGatewayIp32(void);
+  U32 getDefaultServerIp32(void);
+  
   
 private:
   ip_conf_t ip_conf;
+  const default_ip_conf_t default_ip_conf;
 };
 
 #endif

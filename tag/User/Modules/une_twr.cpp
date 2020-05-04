@@ -34,7 +34,7 @@ void UNE_TWR::initDWM()
 *	The companion "DS TWR responder" example application works out the time-of-flight over-the-air and, thus, the estimated distance between the two devices.
 * */
 
-err_te UNE_TWR::twrInitiatorLoop()
+S08 UNE_TWR::twrInitiatorLoop()
 {
   
   /* Write frame data to DW1000 and prepare transmission. See NOTE 8 below. */
@@ -114,7 +114,7 @@ err_te UNE_TWR::twrInitiatorLoop()
 	/* Increment frame sequence number after transmission of the final message (modulo 256). */
 	poll_frame_seq_nb++;
 	
-	return NO_ERR;
+	return RC_ERR_NONE;
       }
     }
   }
@@ -127,7 +127,7 @@ err_te UNE_TWR::twrInitiatorLoop()
     /* Reset RX to properly reinitialise LDE operation. */
     dwt_rxreset();
   }
-  return ERR_DWM;
+  return RC_ERR_HW;
 }
 
 /*! ------------------------------------------------------------------------------------------------------------------

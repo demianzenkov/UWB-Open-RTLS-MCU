@@ -1,15 +1,13 @@
 #include "une_twr.h"
-
 #include "deca_device_api.h"
 #include "deca_regs.h"
 #include "deca_spi.h"
 #include "deca_port.h"
-
-#include "tsk_usb.hpp"
-#include "tsk_udp_client.hpp"
-
+#include "tsk_usb.h"
+#include "tsk_udp_client.h"
 #include "monitoring_pb.h"
-
+#include "settings.h"
+#include "wake.h"
 
 /* UWB microsecond (uus) to device time unit (dtu, around 15.65 ps) conversion factor.
  * 1 uus = 512 / 499.2 µs and 1 µs = 499.2 * 128 dtu. */
@@ -29,6 +27,7 @@
 extern TskUdpClient tskUdpClient;
 extern TskUSB tskUSB;
 extern MonitoringPB pb_monitoring;
+extern DeviceSettings settings;
 
 UNE_TWR::UNE_TWR(DWM1000 * dwm)
 {
@@ -37,12 +36,7 @@ UNE_TWR::UNE_TWR(DWM1000 * dwm)
 
 
 S08 UNE_TWR::twrResponderLoop()
-{
-  
-  uint8_t buffer[128];
-  U16 message_length;
-  bool status;
-  
+{ 
   /* Clear reception timeout to start next ranging process. */
   dwt_setrxtimeout(0);
   
@@ -157,28 +151,31 @@ S08 UNE_TWR::twrResponderLoop()
 	  tof = tof_dtu * DWT_TIME_UNITS;
 	  distance = tof * SPEED_OF_LIGHT;
 	  
-	  memcpy(&upd_ranging_msg[6], &distance, sizeof(distance));
-	  
-	  memcpy(tskUSB.tx_queue.data, upd_ranging_msg, sizeof(upd_ranging_msg));
-	  
 	  pb_monitoring.clearMessage();
-	  pb_monitoring.message.twr_nn = resp_frame_seq_nb;
-	  pb_monitoring.message.twr_message_type = PB_TWR_MSGTYPE_RANGING;
-	  memcpy(&pb_monitoring.message.twr_distance, &distance, 4);
-	  pb_monitoring.message.twr_ts = xTaskGetTickCount();
-	  
+	  pb_monitoring.message.TWR.NN = resp_frame_seq_nb;
+	  pb_monitoring.message.TWR.MessageType = Monitoring_message_type_MSG_TWR;
+	  pb_monitoring.message.TWR.Distance = distance;
+	  pb_monitoring.message.TWR.Timestamp = xTaskGetTickCount();
+	  pb_monitoring.message.has_TWR = true;
+	 
 	  U16 msg_len;
+	  U16 wake_buf_len;
+	  /* Encode message to wake.dbuf for encoding to wake */
 	  pb_monitoring.encode(&pb_monitoring.message, pb_monitoring.temp_buf, &msg_len);
-	  tskUSB.tx_queue.len = msg_len;
-	  memcpy(tskUSB.tx_queue.data, pb_monitoring.temp_buf, msg_len);
 	  
-	  xQueueSend(tskUSB.xQueueUSBTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
-	  xQueueSend(tskUdpClient.xQueueUdpTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
+	  
+	  tskUSB.wake.prepareBuf(pb_monitoring.temp_buf, 
+				 msg_len, 
+				 CMD_TWR_RANGING, 
+				 pb_monitoring.temp_buf,
+				 &wake_buf_len);
+	  pb_monitoring.temp_buf[wake_buf_len++] = '\n';
+	  
+	  
+	  tskUdpClient.transmit(pb_monitoring.temp_buf, wake_buf_len-1);
 	  
 	  return RC_ERR_NONE;
-	  //sprintf(dist_str, "Anchor ID=%i, Lat=%2.6f, Lon=%2.6f, Distance=%3.2f m \n\n\r", anchor_id, anchor_lat, anchor_lon, distance);
-	  //sprintf(dist_str, "Distance to initiator: %3.2f m \n\r", distance);
-	  //dbg_PutString(dist_str);
+
 	}
       }
       else

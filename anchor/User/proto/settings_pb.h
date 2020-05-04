@@ -6,6 +6,7 @@
 #include "virtual_pb.h"
 #include "Settings.pb.h"
 
+
 class SettingsPB : VirtualPB
 {
 public:
@@ -15,14 +16,9 @@ public:
     return decode_base(buffer, len, out_msg, Settings_fields);
   };
   
-//  S08 encode(void * in_msg, U08 * buffer, U16 * len) {
-//    return encode_base(in_msg, buffer, len, Settings_fields, Settings_size);
-//  };
-  
   S08 encode(void * in_msg, U08 * buffer, U16 * len);
   
   S08 init();
-  S08 setDefaults();
   void clearMessage();
   
 public:

@@ -26,9 +26,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 
-#include "tsk_udp_client.hpp"
-#include "tsk_dwm.hpp"
-#include "tsk_usb.hpp"
+#include "tsk_udp_client.h"
+#include "tsk_dwm.h"
+#include "tsk_usb.h"
+#include "tsk_une.h"
 #include "usbd_cdc_if.h"
 #include "bsp_spi.h"
 #include "mx25.h"
@@ -56,6 +57,7 @@ extern MX25 mx25;
 extern TskUdpClient tskUdpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
+extern TskUNE tskUNE;
 extern DeviceSettings settings;
 volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
@@ -95,6 +97,7 @@ int main(void)
   tskUdpClient.createTask();
   tskDWM.createTask();
   tskUSB.createTask();
+  tskUNE.createTask();
   
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 256);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
@@ -320,8 +323,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_StartDefaultTask */
 void initTask(void const * argument)
 {
-  
-  
   /* init code for LWIP */
   MX_LWIP_Init();
 

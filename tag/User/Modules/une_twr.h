@@ -1,7 +1,7 @@
 #ifndef __UNE_TWR
 #define __UNE_TWR
 
-#include "custom_types.h"
+#include "prj_defs.h"
 #include "dwm1000.h"
 
 
@@ -46,7 +46,7 @@ public:
   ~UNE_TWR();
   
   static void initDWM();
-  err_te twrInitiatorLoop();
+  S08 twrInitiatorLoop();
   static void final_msg_set_ts(uint8 *ts_field, uint64 ts);
   static void final_msg_get_ts(const uint8 *ts_field, uint32 *ts);
 private:
