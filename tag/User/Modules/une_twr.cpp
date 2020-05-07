@@ -4,7 +4,9 @@
 #include "deca_regs.h"
 #include "deca_spi.h"
 #include "deca_port.h"
+#include "settings.h"
 
+extern DeviceSettings settings;
 
 UNE_TWR::UNE_TWR(DWM1000 * dwm)
 {
@@ -34,13 +36,17 @@ void UNE_TWR::initDWM()
 *	The companion "DS TWR responder" example application works out the time-of-flight over-the-air and, thus, the estimated distance between the two devices.
 * */
 
-S08 UNE_TWR::twrInitiatorLoop()
+S08 UNE_TWR::twrInitiatorLoop(U08 an_id)
 {
-  
+  U08 node_id = settings.pb_settings.message.NodeID;
   /* Write frame data to DW1000 and prepare transmission. See NOTE 8 below. */
-  //    poll_msg[ALL_MSG_SN_IDX] = frame_seq_nb;
-  dwt_writetxdata(sizeof(poll_msg), poll_msg, 0); /* Zero offset in TX buffer. */
-  dwt_writetxfctrl(sizeof(poll_msg), 0, 1); /* Zero offset in TX buffer, ranging. */
+  poll_msg[MSG_AN_IDX] = an_id;
+  poll_msg[MSG_TAG_IDX] = node_id;
+  poll_msg[MSG_POLL_H_IDX] = (poll_frame_seq_nb >> 8) & 0xFF;
+  poll_msg[MSG_POLL_L_IDX] = poll_frame_seq_nb & 0xFF;
+  
+  dwt_writetxdata(POLL_MSG_SIZE, poll_msg, 0); /* Zero offset in TX buffer. */
+  dwt_writetxfctrl(POLL_MSG_SIZE, 0, 1); /* Zero offset in TX buffer, ranging. */
   
   /* Start transmission, indicating that a response is expected so that reception is enabled automatically after the frame is sent and the delay
   * set by dwt_setrxaftertxdelay() has elapsed. */
@@ -56,8 +62,7 @@ S08 UNE_TWR::twrInitiatorLoop()
   
   if (dwm->status_reg & SYS_STATUS_RXFCG)
   {
-    //dbg_PutString("Received answer for poll request.\n\r");
-    
+    /* RESPONSE RECEIVED */
     /* Clear good RX frame event and TX frame sent in the DW1000 status register. */
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG | SYS_STATUS_TXFRS);
     
@@ -68,15 +73,28 @@ S08 UNE_TWR::twrInitiatorLoop()
       dwt_readrxdata(dwm->rx_buffer, dwm->frame_len, 0);
     }
     
-    /* Check that the frame is the expected response from the companion "DS TWR responder" example.
-    * As the sequence number field of the frame is not relevant, it is cleared to simplify the validation of the frame. */
-    //      dwm->rx_buffer[ALL_MSG_SN_IDX] = 0;
-    if (memcmp(dwm->rx_buffer, resp_msg, DW_MSG_PREAMBLE_LEN) == 0)
+    /* Check that the frame is valid */
+    if ((memcmp(dwm->rx_buffer, resp_msg, DW_MSG_PREAMBLE_LEN) == 0) &&
+	(dwm->rx_buffer[MSG_POLL_H_IDX] == poll_msg[MSG_POLL_H_IDX]) && 
+	 (dwm->rx_buffer[MSG_POLL_L_IDX] == poll_msg[MSG_POLL_L_IDX]) )
     {
-      //	dbg_PutString("Received response frame is correct.\n\r");
-      
+      /* RESPONSE IS CORRECT */   
       uint32 final_tx_time;
       int ret;
+      
+      final_msg[MSG_TAG_IDX] = node_id;
+      final_msg[MSG_AN_IDX] = poll_msg[MSG_AN_IDX];
+      
+      final_msg[MSG_POLL_H_IDX] = dwm->rx_buffer[MSG_POLL_H_IDX];
+      final_msg[MSG_POLL_L_IDX] = dwm->rx_buffer[MSG_POLL_L_IDX];
+      
+      final_msg[MSG_RESP_H_IDX] = dwm->rx_buffer[MSG_RESP_H_IDX];
+      final_msg[MSG_RESP_L_IDX] = dwm->rx_buffer[MSG_RESP_L_IDX];
+      
+      final_msg[MSG_FINAL_H_IDX] = (final_frame_seq_nb >> 8) & 0xFF;
+      final_msg[MSG_FINAL_L_IDX] = final_frame_seq_nb & 0xFF;
+      
+      final_frame_seq_nb++;
       
       /* Retrieve poll transmission and response reception timestamp. */
       poll_tx_ts = DWM1000::getTimestampU64(DWM1000::TX_TS);
@@ -96,9 +114,9 @@ S08 UNE_TWR::twrInitiatorLoop()
       final_msg_set_ts(&final_msg[FINAL_MSG_FINAL_TX_TS_IDX], final_tx_ts);
       
       /* Write and send final message. See NOTE 8 below. */
-      //	tx_final_msg[ALL_MSG_SN_IDX] = frame_seq_nb;
-      dwt_writetxdata(sizeof(final_msg), final_msg, 0); /* Zero offset in TX buffer. */
-      dwt_writetxfctrl(sizeof(final_msg), 0, 1); /* Zero offset in TX buffer, ranging. */
+      dwt_writetxdata(FINAL_MSG_SIZE, final_msg, 0); /* Zero offset in TX buffer. */
+      dwt_writetxfctrl(FINAL_MSG_SIZE, 0, 1); /* Zero offset in TX buffer, ranging. */
+      
       ret = dwt_starttx(DWT_START_TX_DELAYED);
       
       /* If dwt_starttx() returns an error, abandon this ranging exchange and proceed to the next one. See NOTE 12 below. */
@@ -110,9 +128,6 @@ S08 UNE_TWR::twrInitiatorLoop()
 	
 	/* Clear TXFRS event. */
 	dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
-	
-	/* Increment frame sequence number after transmission of the final message (modulo 256). */
-	poll_frame_seq_nb++;
 	
 	return RC_ERR_NONE;
       }

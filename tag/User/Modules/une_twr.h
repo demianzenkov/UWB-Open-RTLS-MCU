@@ -4,7 +4,9 @@
 #include "prj_defs.h"
 #include "dwm1000.h"
 
-
+#define POLL_MSG_SIZE	10
+#define RESP_MSG_SIZE	12
+#define FINAL_MSG_SIZE	29
 
 #define DW_MSG_PREAMBLE_LEN	4
 
@@ -15,12 +17,23 @@
 #define START_POLL_N_L	0
 #define START_RESP_N_H	0
 #define START_RESP_N_L	0
+#define START_FINAL_N_H	0
+#define START_FINAL_N_L	0
 
 #define FINAL_MSG_TS_LEN 		5
 
-#define FINAL_MSG_POLL_TX_TS_IDX	9
-#define FINAL_MSG_RESP_RX_TS_IDX	14
-#define FINAL_MSG_FINAL_TX_TS_IDX	19
+#define FINAL_MSG_POLL_TX_TS_IDX	12
+#define FINAL_MSG_RESP_RX_TS_IDX	17
+#define FINAL_MSG_FINAL_TX_TS_IDX	22
+
+#define MSG_TAG_IDX		4
+#define MSG_AN_IDX		5
+#define MSG_POLL_H_IDX		6
+#define MSG_POLL_L_IDX		7
+#define MSG_RESP_H_IDX		8
+#define MSG_RESP_L_IDX		9
+#define MSG_FINAL_H_IDX		10
+#define MSG_FINAL_L_IDX		11
 
 /* Delay between frames, in UWB microseconds. See NOTE 4 below. */
 /* This is the delay from the end of the frame transmission to the enable of the receiver, 
@@ -46,27 +59,30 @@ public:
   ~UNE_TWR();
   
   static void initDWM();
-  S08 twrInitiatorLoop();
+  S08 twrInitiatorLoop(U08 an_id);
   static void final_msg_set_ts(uint8 *ts_field, uint64 ts);
   static void final_msg_get_ts(const uint8 *ts_field, uint32 *ts);
 private:
   DWM1000 * dwm;
   
   U16 poll_frame_seq_nb;
+  U16 resp_frame_seq_nb;
+  U16 final_frame_seq_nb;
   
   U64 poll_tx_ts;
   U64 resp_rx_ts;
   U64 final_tx_time;
   U64 final_tx_ts;
   
-  U08 poll_msg[9] = {'T', 'W', 'R', 'P',
+  U08 poll_msg[POLL_MSG_SIZE] = {'T', 'W', 'R', 'P',
 			DEFAULT_TAG_ID,
+			DEFAULT_ANCHOR_ID,
 			START_POLL_N_H,
 			START_POLL_N_L,
   			0, 0};		// CRC
   
-  U08 resp_msg[12] = {'T', 'W', 'R', 'R', 
-  			DEFAULT_AREA_ID,
+  U08 resp_msg[RESP_MSG_SIZE] = {'T', 'W', 'R', 'R', 
+  			DEFAULT_TAG_ID,
 			DEFAULT_ANCHOR_ID,
 			START_POLL_N_H,
 			START_POLL_N_L,
@@ -74,12 +90,15 @@ private:
 			START_RESP_N_L,
   			0, 0};		// CRC
   
-  U08 final_msg[26] = {'T', 'W', 'R', 'F', 
+  U08 final_msg[FINAL_MSG_SIZE] = {'T', 'W', 'R', 'F', 
 			DEFAULT_TAG_ID,
+			DEFAULT_ANCHOR_ID,
 			START_POLL_N_H,
 			START_POLL_N_L,
 			START_RESP_N_H,
 			START_RESP_N_L,
+			START_FINAL_N_H,
+			START_FINAL_N_L,
 			0,0,0,0,0,	// POLL TX
 			0,0,0,0,0,	// RESP RX
 			0,0,0,0,0,	// FINAL TX	

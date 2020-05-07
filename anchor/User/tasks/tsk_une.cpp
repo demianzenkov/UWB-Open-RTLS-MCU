@@ -1,11 +1,12 @@
 #include "tsk_une.h"
+#include "tsk_event.h"
 #include "tsk_udp_client.h"
 #include "settings.h"
 
 TskUNE tskUNE;
+extern TskEvent tskEvent;
 extern DeviceSettings settings;
 extern TskUdpClient tskUdpClient;
-
 
 TskUNE::TskUNE() 
 {
@@ -22,7 +23,7 @@ void TskUNE::createTask()
   xQueueNetworkRx = xQueueCreate(_rxQueueSize, sizeof(queue_data_t));
   
   osThreadId UNETaskHandle;
-  osThreadDef(UNETask, tskUNE.task, osPriorityNormal, 0, 256);
+  osThreadDef(UNETask, tskUNE.task, osPriorityNormal, 0, 512);
   UNETaskHandle = osThreadCreate(osThread(UNETask), NULL);
 }
 
@@ -36,7 +37,7 @@ void TskUNE::task(void const *arg)
   for(;;) 
   {
     /* Wait data from udp task */
-    if (xQueueReceive(tskUNE.xQueueNetworkRx, &tskUNE.net_rx_queue, 5)) {
+    if (xQueueReceive(tskUNE.xQueueNetworkRx, &tskUNE.net_rx_queue, 10)) {
       for (int i=0; i<tskUNE.net_rx_queue.len; i++) {
 	S08 ret;
 	ret = tskUNE.wake.rxHandler(tskUNE.net_rx_queue.data[i]); 
@@ -69,6 +70,7 @@ void TskUNE::task(void const *arg)
 				   CMD_SET_SETTINGS_RESP, 
 				   tskUNE.net_tx_queue.data, 
 				   &tskUNE.net_tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
 	  case CMD_SET_DEF_SETTINGS_REQ:
 	    sErr = settings.setDefaultSettings();
@@ -79,6 +81,7 @@ void TskUNE::task(void const *arg)
 				   CMD_SET_DEF_SETTINGS_RESP, 
 				   tskUNE.net_tx_queue.data, 
 				   &tskUNE.net_tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
 	  default:
 	    break;

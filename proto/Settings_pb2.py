@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0eSettings.proto\"\xbc\x03\n\x08Settings\x12\x10\n\x08\x44\x65viceID\x18\x01 \x01(\r\x12\x10\n\x08\x44\x65viceIp\x18\x02 \x01(\r\x12\x12\n\nSubnetMask\x18\x03 \x01(\r\x12\x11\n\tGatewayIp\x18\x04 \x01(\r\x12\x10\n\x08ServerIp\x18\x05 \x01(\r\x12\x16\n\x0e\x43onnectionPort\x18\x06 \x01(\r\x12\x0e\n\x06NodeID\x18\x07 \x01(\r\x12%\n\x08NodeType\x18\x08 \x01(\x0e\x32\x13.Settings.node_type\x12%\n\x08RTLSMode\x18\t \x01(\x0e\x32\x13.Settings.rtls_mode\x12\x11\n\tPositionX\x18\n \x01(\x02\x12\x11\n\tPositionY\x18\x0b \x01(\x02\x12\x11\n\tPositionZ\x18\x0c \x01(\x02\"]\n\tnode_type\x12\r\n\tTYPE_NONE\x10\x00\x12\x0e\n\nTYPE_UNDEF\x10\x01\x12\x0f\n\x0bTYPE_ANCHOR\x10\x02\x12\x12\n\x0eTYPE_SYNC_NODE\x10\x03\x12\x0c\n\x08TYPE_TAG\x10\x04\"E\n\trtls_mode\x12\r\n\tMODE_NONE\x10\x00\x12\x0c\n\x08MODE_OFF\x10\x01\x12\x0c\n\x08MODE_TWR\x10\x02\x12\r\n\tMODE_TDOA\x10\x03\x62\x06proto3'
+  serialized_pb=b'\n\x0eSettings.proto\"\xa9\x04\n\x08Settings\x12%\n\x08NodeType\x18\x01 \x01(\x0e\x32\x13.Settings.node_type\x12\x10\n\x08\x44\x65viceID\x18\x02 \x01(\r\x12%\n\x08RTLSMode\x18\x03 \x01(\x0e\x32\x13.Settings.rtls_mode\x12\x0e\n\x06NodeID\x18\x04 \x01(\r\x12\x10\n\x08\x44\x65viceIp\x18\x05 \x01(\r\x12\x12\n\nSubnetMask\x18\x06 \x01(\r\x12\x11\n\tGatewayIp\x18\x07 \x01(\r\x12\x10\n\x08ServerIp\x18\x08 \x01(\r\x12\x16\n\x0e\x43onnectionPort\x18\t \x01(\r\x12\x11\n\tPositionX\x18\n \x01(\x02\x12\x11\n\tPositionY\x18\x0b \x01(\x02\x12\x11\n\tPositionZ\x18\x0c \x01(\x02\x12\x14\n\x0c\x44WRxAntDelay\x18\r \x01(\r\x12\x14\n\x0c\x44WTxAntDelay\x18\x0e \x01(\r\x12\x18\n\x10\x43onnectedAnchors\x18\x0f \x03(\r\x12\x12\n\nPollPeriod\x18\x10 \x01(\r\x12\x11\n\tPollDelay\x18\x11 \x01(\x05\"]\n\tnode_type\x12\r\n\tTYPE_NONE\x10\x00\x12\x0e\n\nTYPE_UNDEF\x10\x01\x12\x0f\n\x0bTYPE_ANCHOR\x10\x02\x12\x12\n\x0eTYPE_SYNC_NODE\x10\x03\x12\x0c\n\x08TYPE_TAG\x10\x04\"E\n\trtls_mode\x12\r\n\tMODE_NONE\x10\x00\x12\x0c\n\x08MODE_OFF\x10\x01\x12\x0c\n\x08MODE_TWR\x10\x02\x12\r\n\tMODE_TDOA\x10\x03\x62\x06proto3'
 )
 
 
@@ -52,8 +52,8 @@ _SETTINGS_NODE_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=299,
-  serialized_end=392,
+  serialized_start=408,
+  serialized_end=501,
 )
 _sym_db.RegisterEnumDescriptor(_SETTINGS_NODE_TYPE)
 
@@ -82,8 +82,8 @@ _SETTINGS_RTLS_MODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=394,
-  serialized_end=463,
+  serialized_start=503,
+  serialized_end=572,
 )
 _sym_db.RegisterEnumDescriptor(_SETTINGS_RTLS_MODE)
 
@@ -96,64 +96,64 @@ _SETTINGS = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='DeviceID', full_name='Settings.DeviceID', index=0,
-      number=1, type=13, cpp_type=3, label=1,
+      name='NodeType', full_name='Settings.NodeType', index=0,
+      number=1, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='DeviceIp', full_name='Settings.DeviceIp', index=1,
+      name='DeviceID', full_name='Settings.DeviceID', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='SubnetMask', full_name='Settings.SubnetMask', index=2,
-      number=3, type=13, cpp_type=3, label=1,
+      name='RTLSMode', full_name='Settings.RTLSMode', index=2,
+      number=3, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='GatewayIp', full_name='Settings.GatewayIp', index=3,
+      name='NodeID', full_name='Settings.NodeID', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ServerIp', full_name='Settings.ServerIp', index=4,
+      name='DeviceIp', full_name='Settings.DeviceIp', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ConnectionPort', full_name='Settings.ConnectionPort', index=5,
+      name='SubnetMask', full_name='Settings.SubnetMask', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='NodeID', full_name='Settings.NodeID', index=6,
+      name='GatewayIp', full_name='Settings.GatewayIp', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='NodeType', full_name='Settings.NodeType', index=7,
-      number=8, type=14, cpp_type=8, label=1,
+      name='ServerIp', full_name='Settings.ServerIp', index=7,
+      number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='RTLSMode', full_name='Settings.RTLSMode', index=8,
-      number=9, type=14, cpp_type=8, label=1,
+      name='ConnectionPort', full_name='Settings.ConnectionPort', index=8,
+      number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -179,6 +179,41 @@ _SETTINGS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='DWRxAntDelay', full_name='Settings.DWRxAntDelay', index=12,
+      number=13, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='DWTxAntDelay', full_name='Settings.DWTxAntDelay', index=13,
+      number=14, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ConnectedAnchors', full_name='Settings.ConnectedAnchors', index=14,
+      number=15, type=13, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='PollPeriod', full_name='Settings.PollPeriod', index=15,
+      number=16, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='PollDelay', full_name='Settings.PollDelay', index=16,
+      number=17, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -194,7 +229,7 @@ _SETTINGS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=19,
-  serialized_end=463,
+  serialized_end=572,
 )
 
 _SETTINGS.fields_by_name['NodeType'].enum_type = _SETTINGS_NODE_TYPE

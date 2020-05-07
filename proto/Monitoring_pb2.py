@@ -18,69 +18,64 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x10Monitoring.proto\"\xd2\x01\n\nMonitoring\x12 \n\x03TWR\x18\x01 \x01(\x0b\x32\x13.Monitoring.msg_TWR\x1ai\n\x07msg_TWR\x12-\n\x0bMessageType\x18\x01 \x01(\x0e\x32\x18.Monitoring.message_type\x12\n\n\x02NN\x18\x02 \x01(\r\x12\x10\n\x08\x44istance\x18\x03 \x01(\x02\x12\x11\n\tTimestamp\x18\x04 \x01(\r\"7\n\x0cmessage_type\x12\x0c\n\x08MSG_NONE\x10\x00\x12\x0b\n\x07MSG_TWR\x10\x01\x12\x0c\n\x08MSG_TDOA\x10\x02\x62\x06proto3'
+  serialized_pb=b'\n\x10Monitoring.proto\"\xbb\x01\n\nMonitoring\x12$\n\x03TWR\x18\x01 \x01(\x0b\x32\x17.Monitoring.TWR_message\x1a\x86\x01\n\x0bTWR_message\x12\x0e\n\x06NodeID\x18\x01 \x01(\r\x12\r\n\x05TagID\x18\x02 \x01(\r\x12\x10\n\x08\x44istance\x18\x03 \x01(\x02\x12\x11\n\tNodeTicks\x18\x04 \x01(\r\x12\x0e\n\x06PollNN\x18\x05 \x01(\r\x12\x12\n\nResponseNN\x18\x07 \x01(\r\x12\x0f\n\x07\x46inalNN\x18\x06 \x01(\rb\x06proto3'
 )
 
 
 
-_MONITORING_MESSAGE_TYPE = _descriptor.EnumDescriptor(
-  name='message_type',
-  full_name='Monitoring.message_type',
-  filename=None,
-  file=DESCRIPTOR,
-  values=[
-    _descriptor.EnumValueDescriptor(
-      name='MSG_NONE', index=0, number=0,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='MSG_TWR', index=1, number=1,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='MSG_TDOA', index=2, number=2,
-      serialized_options=None,
-      type=None),
-  ],
-  containing_type=None,
-  serialized_options=None,
-  serialized_start=176,
-  serialized_end=231,
-)
-_sym_db.RegisterEnumDescriptor(_MONITORING_MESSAGE_TYPE)
 
-
-_MONITORING_MSG_TWR = _descriptor.Descriptor(
-  name='msg_TWR',
-  full_name='Monitoring.msg_TWR',
+_MONITORING_TWR_MESSAGE = _descriptor.Descriptor(
+  name='TWR_message',
+  full_name='Monitoring.TWR_message',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='MessageType', full_name='Monitoring.msg_TWR.MessageType', index=0,
-      number=1, type=14, cpp_type=8, label=1,
+      name='NodeID', full_name='Monitoring.TWR_message.NodeID', index=0,
+      number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='NN', full_name='Monitoring.msg_TWR.NN', index=1,
+      name='TagID', full_name='Monitoring.TWR_message.TagID', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='Distance', full_name='Monitoring.msg_TWR.Distance', index=2,
+      name='Distance', full_name='Monitoring.TWR_message.Distance', index=2,
       number=3, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='Timestamp', full_name='Monitoring.msg_TWR.Timestamp', index=3,
+      name='NodeTicks', full_name='Monitoring.TWR_message.NodeTicks', index=3,
       number=4, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='PollNN', full_name='Monitoring.TWR_message.PollNN', index=4,
+      number=5, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ResponseNN', full_name='Monitoring.TWR_message.ResponseNN', index=5,
+      number=7, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FinalNN', full_name='Monitoring.TWR_message.FinalNN', index=6,
+      number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -97,8 +92,8 @@ _MONITORING_MSG_TWR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=69,
-  serialized_end=174,
+  serialized_start=74,
+  serialized_end=208,
 )
 
 _MONITORING = _descriptor.Descriptor(
@@ -118,9 +113,8 @@ _MONITORING = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_MONITORING_MSG_TWR, ],
+  nested_types=[_MONITORING_TWR_MESSAGE, ],
   enum_types=[
-    _MONITORING_MESSAGE_TYPE,
   ],
   serialized_options=None,
   is_extendable=False,
@@ -129,22 +123,20 @@ _MONITORING = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=21,
-  serialized_end=231,
+  serialized_end=208,
 )
 
-_MONITORING_MSG_TWR.fields_by_name['MessageType'].enum_type = _MONITORING_MESSAGE_TYPE
-_MONITORING_MSG_TWR.containing_type = _MONITORING
-_MONITORING.fields_by_name['TWR'].message_type = _MONITORING_MSG_TWR
-_MONITORING_MESSAGE_TYPE.containing_type = _MONITORING
+_MONITORING_TWR_MESSAGE.containing_type = _MONITORING
+_MONITORING.fields_by_name['TWR'].message_type = _MONITORING_TWR_MESSAGE
 DESCRIPTOR.message_types_by_name['Monitoring'] = _MONITORING
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Monitoring = _reflection.GeneratedProtocolMessageType('Monitoring', (_message.Message,), {
 
-  'msg_TWR' : _reflection.GeneratedProtocolMessageType('msg_TWR', (_message.Message,), {
-    'DESCRIPTOR' : _MONITORING_MSG_TWR,
+  'TWR_message' : _reflection.GeneratedProtocolMessageType('TWR_message', (_message.Message,), {
+    'DESCRIPTOR' : _MONITORING_TWR_MESSAGE,
     '__module__' : 'Monitoring_pb2'
-    # @@protoc_insertion_point(class_scope:Monitoring.msg_TWR)
+    # @@protoc_insertion_point(class_scope:Monitoring.TWR_message)
     })
   ,
   'DESCRIPTOR' : _MONITORING,
@@ -152,7 +144,7 @@ Monitoring = _reflection.GeneratedProtocolMessageType('Monitoring', (_message.Me
   # @@protoc_insertion_point(class_scope:Monitoring)
   })
 _sym_db.RegisterMessage(Monitoring)
-_sym_db.RegisterMessage(Monitoring.msg_TWR)
+_sym_db.RegisterMessage(Monitoring.TWR_message)
 
 
 # @@protoc_insertion_point(module_scope)

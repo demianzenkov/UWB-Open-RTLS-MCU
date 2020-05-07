@@ -3,6 +3,12 @@
 
 #include "settings_pb.h"
 
+#define DEFAULT_DEVICE_ID_U32	0xAABBDDCC
+#define DEFAULT_TWR_ANCHOR_CNT	4
+#define DEFAULT_TWR_TAG_DELAY	1000
+#define DEFAULT_TX_ANT_DLY 	16436
+#define DEFAULT_RX_ANT_DLY 	16436
+
 class DeviceSettings
 {
 public:

@@ -368,7 +368,7 @@
                     <state>$PROJ_DIR$/../User/Decawave/decadriver</state>
                     <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Core/Inc</state>
                     <state>$PROJ_DIR$/../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</state>
-                    <state>$PROJ_DIR$/../../proto/proto_files</state>
+                    <state>$PROJ_DIR$/../../proto</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1150,10 +1150,10 @@
             <group>
                 <name>proto</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\proto\proto_files\Monitoring.pb.c</name>
+                    <name>$PROJ_DIR$\..\..\proto\Monitoring.pb.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\proto\proto_files\Settings.pb.c</name>
+                    <name>$PROJ_DIR$\..\..\proto\Settings.pb.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Proto\settings_pb.cpp</name>

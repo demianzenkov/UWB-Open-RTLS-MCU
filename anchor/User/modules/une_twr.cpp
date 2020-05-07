@@ -51,8 +51,6 @@ S08 UNE_TWR::twrResponderLoop()
   
   if (dwm->status_reg & SYS_STATUS_RXFCG)
   {
-    //dbg_PutString("Received Poll.\n\r");
- 
     /* Clear good RX frame event in the DW1000 status register. */
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG | SYS_STATUS_TXFRS);
     
@@ -66,10 +64,23 @@ S08 UNE_TWR::twrResponderLoop()
     
     /* Check that the frame is a poll sent by tag in "TWR-Initiator" mode.
     * As the sequence number field of the frame is not relevant, it is cleared to simplify the validation of the frame. */
-    if (memcmp(dwm->rx_buffer, poll_msg, DW_MSG_PREAMBLE_LEN) == 0)
+    if ((memcmp(dwm->rx_buffer, poll_msg, DW_MSG_PREAMBLE_LEN) == 0) &&
+	(dwm->rx_buffer[MSG_AN_IDX] == settings.pb_settings.message.NodeID))
     {
-      //dbg_PutString("Correct Poll frame.\n\r");
       /* POLL MESSAGE IS CORRECT */
+      tag_id =  dwm->rx_buffer[MSG_TAG_IDX];
+	
+      resp_msg[MSG_TAG_IDX] = tag_id;
+      resp_msg[MSG_AN_IDX] = dwm->rx_buffer[MSG_AN_IDX];
+      
+      resp_msg[MSG_POLL_H_IDX] = dwm->rx_buffer[MSG_POLL_H_IDX];
+      resp_msg[MSG_POLL_L_IDX] = dwm->rx_buffer[MSG_POLL_L_IDX];
+      
+      resp_msg[MSG_RESP_H_IDX] = (resp_frame_seq_nb >> 8) & 0xFF;
+      resp_msg[MSG_RESP_L_IDX] = resp_frame_seq_nb & 0xFF;
+	
+      resp_frame_seq_nb++;
+       
       uint32 resp_tx_time;
       int ret;
       
@@ -85,9 +96,8 @@ S08 UNE_TWR::twrResponderLoop()
       dwt_setrxtimeout(FINAL_RX_TIMEOUT_UUS);
       
       /* WRITE AND SEND RESPONSE MESSAGE. See NOTE 10 below.*/
-//      resp_msg[ALL_MSG_SN_IDX] = frame_seq_nb;
-      dwt_writetxdata(sizeof(resp_msg), resp_msg, 0); /* Zero offset in TX buffer. */
-      dwt_writetxfctrl(sizeof(resp_msg), 0, 1); /* Zero offset in TX buffer, ranging. */
+      dwt_writetxdata(RESP_MSG_SIZE, resp_msg, 0); /* Zero offset in TX buffer. */
+      dwt_writetxfctrl(RESP_MSG_SIZE, 0, 1); /* Zero offset in TX buffer, ranging. */
       ret = dwt_starttx(DWT_START_TX_DELAYED | DWT_RESPONSE_EXPECTED);
       
       /* If dwt_starttx() returns an error, abandon this ranging exchange and proceed to the next one. See NOTE 11 below. */
@@ -96,20 +106,15 @@ S08 UNE_TWR::twrResponderLoop()
 	return RC_ERR_HW;
       }
       
-      //dbg_PutString("Response message sent.\n\r");
-      //dbg_PutString("Waiting for Final message.\n\r");
       /* Poll for reception of expected "final" frame or error/timeout. See NOTE 8 below. */
       while (!((dwm->status_reg = dwt_read32bitreg(SYS_STATUS_ID)) & (SYS_STATUS_RXFCG | SYS_STATUS_ALL_RX_TO | SYS_STATUS_ALL_RX_ERR)))
       { };
       
       /* Increment frame sequence number after transmission of the response message (modulo 256). */
-      resp_frame_seq_nb++;
       
       if (dwm->status_reg & SYS_STATUS_RXFCG)
       {
-	/* FINAL MESSAGE RECEIVED */
-	//dbg_PutString("Final message received.\n\r");
-	
+	/* FINAL RECEIVED */
 	/* Clear good RX frame event and TX frame sent in the DW1000 status register. */
 	dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG | SYS_STATUS_TXFRS);
 	
@@ -120,17 +125,20 @@ S08 UNE_TWR::twrResponderLoop()
 	  dwt_readrxdata(dwm->rx_buffer, dwm->frame_len, 0);
 	}
 	
-	/* Check that the frame is a final message sent by "DS TWR initiator" example.
-	* As the sequence number field of the frame is not used in this example, it can be zeroed to ease the validation of the frame. */
-//	rx_buffer[ALL_MSG_SN_IDX] = 0;
-	if (memcmp(dwm->rx_buffer, final_msg, DW_MSG_PREAMBLE_LEN) == 0)
+	/* Check FINAL frame is valid */
+	if ((memcmp(dwm->rx_buffer, final_msg, DW_MSG_PREAMBLE_LEN) == 0) &&
+	    (dwm->rx_buffer[MSG_TAG_IDX] == resp_msg[MSG_TAG_IDX]) &&
+	      (dwm->rx_buffer[MSG_AN_IDX] == resp_msg[MSG_AN_IDX]) &&
+	    	(dwm->rx_buffer[MSG_RESP_H_IDX] == resp_msg[MSG_RESP_H_IDX]) && 
+	      	(dwm->rx_buffer[MSG_RESP_L_IDX] == resp_msg[MSG_RESP_L_IDX]) )
 	{
-	  
-	  //dbg_PutString("Final message correct! Computing distance...\n\r");
-	  
+	  /* FINAL IS CORRECT */
 	  U64 poll_tx_ts=0, resp_rx_ts=0, final_tx_ts=0;
 	  double Ra, Rb, Da, Db;
 	  S64 tof_dtu;
+	  
+	  poll_frame_seq_nb = (dwm->rx_buffer[MSG_POLL_H_IDX] << 8) + dwm->rx_buffer[MSG_POLL_L_IDX];
+	  final_frame_seq_nb = (dwm->rx_buffer[MSG_FINAL_H_IDX] << 8) + dwm->rx_buffer[MSG_FINAL_L_IDX];
 	  
 	  /* Retrieve response transmission and final reception timestamps. */
 	  resp_tx_ts = DWM1000::getTimestampU64(DWM1000::TX_TS);
@@ -139,7 +147,7 @@ S08 UNE_TWR::twrResponderLoop()
 	  /* Get timestamps embedded in the final message. */
 	  final_msg_get_ts(&dwm->rx_buffer[FINAL_MSG_POLL_TX_TS_IDX], &poll_tx_ts);
 	  final_msg_get_ts(&dwm->rx_buffer[FINAL_MSG_RESP_RX_TS_IDX], &resp_rx_ts);
-	  final_msg_get_ts(&dwm->rx_buffer[FINAL_MSG_FINAL_TX_TS_IDX], &final_tx_ts);  
+	  final_msg_get_ts(&dwm->rx_buffer[FINAL_MSG_FINAL_TX_TS_IDX], &final_tx_ts);
 	  /* Compute time of flight. 32-bit subtractions give correct answers even if clock has wrapped. See NOTE 12 below. */
 	  
 	  Ra = (double)(resp_rx_ts - poll_tx_ts);
@@ -152,12 +160,15 @@ S08 UNE_TWR::twrResponderLoop()
 	  distance = tof * SPEED_OF_LIGHT;
 	  
 	  pb_monitoring.clearMessage();
-	  pb_monitoring.message.TWR.NN = resp_frame_seq_nb;
-	  pb_monitoring.message.TWR.MessageType = Monitoring_message_type_MSG_TWR;
-	  pb_monitoring.message.TWR.Distance = distance;
-	  pb_monitoring.message.TWR.Timestamp = xTaskGetTickCount();
+	  
 	  pb_monitoring.message.has_TWR = true;
-	 
+	  pb_monitoring.message.TWR.NodeID = settings.pb_settings.message.NodeID;
+	  pb_monitoring.message.TWR.Distance = distance;
+	  pb_monitoring.message.TWR.NodeTicks = xTaskGetTickCount();
+	  pb_monitoring.message.TWR.PollNN = poll_frame_seq_nb;
+	  pb_monitoring.message.TWR.ResponseNN = resp_frame_seq_nb;
+	  pb_monitoring.message.TWR.FinalNN = final_frame_seq_nb;
+	  
 	  U16 msg_len;
 	  U16 wake_buf_len;
 	  /* Encode message to wake.dbuf for encoding to wake */
@@ -173,6 +184,7 @@ S08 UNE_TWR::twrResponderLoop()
 	  
 	  
 	  tskUdpClient.transmit(pb_monitoring.temp_buf, wake_buf_len-1);
+	  
 	  
 	  return RC_ERR_NONE;
 

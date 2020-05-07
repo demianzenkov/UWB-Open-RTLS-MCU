@@ -372,7 +372,7 @@
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/LwIP/system/arch</state>
                     <state>$PROJ_DIR$/../Middlewares/Third_Party/Nanopb</state>
                     <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
-                    <state>$PROJ_DIR$/../../proto/proto_files</state>
+                    <state>$PROJ_DIR$/../../proto</state>
                     <state>$PROJ_DIR$/../User</state>
                     <state>$PROJ_DIR$/../User/BSP</state>
                     <state>$PROJ_DIR$/../User/Tasks</state>
@@ -2226,13 +2226,13 @@
             <group>
                 <name>proto</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\proto\proto_files\Monitoring.pb.c</name>
+                    <name>$PROJ_DIR$\..\..\proto\Monitoring.pb.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Proto\monitoring_pb.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\proto\proto_files\Settings.pb.c</name>
+                    <name>$PROJ_DIR$\..\..\proto\Settings.pb.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Proto\settings_pb.cpp</name>
@@ -2245,6 +2245,9 @@
                 <name>tasks</name>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_dwm.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Tasks\tsk_event.cpp</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_udp_client.cpp</name>

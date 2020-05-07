@@ -22,7 +22,7 @@ public:
   void clearMessage();
   
 public:
-  Settings message = Settings_init_zero;
+  Settings message;
   U08 temp_buf[Settings_size + 4];	// + U16 len
   U16 buf_len;
 };  

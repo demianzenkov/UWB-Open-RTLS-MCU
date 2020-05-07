@@ -1,5 +1,5 @@
-#ifndef TSK_UDP_CLIENT
-#define TSK_UDP_CLIENT
+#ifndef __TSK_UDP_CLIENT
+#define __TSK_UDP_CLIENT
   
 #include "cmsis_os.h"
 #include "prj_defs.h"
@@ -56,4 +56,4 @@ private:
 };
 
 
-#endif //TSK_UDP_CLIENT
+#endif /* __TSK_UDP_CLIENT */

@@ -1,10 +1,13 @@
 #include "tsk_usb.h"
+#include "tsk_event.h"
 #include "usbd_cdc_if.h"
 #include "settings.h"
+#include "main.h"
+
 
 TskUSB tskUSB;
 extern DeviceSettings settings;
-
+extern TskEvent tskEvent;
 
 TskUSB::TskUSB() 
 {
@@ -46,7 +49,7 @@ void TskUSB::task(void const *arg) {
 	ret = tskUSB.wake.rxHandler(tskUSB.rx_queue.data[i]); 
 	if (ret == TRUE) {
 	  tskUSB.tx_queue.len = 0;
-	  
+	  bool reset = false;
 	  /* If found valid WAKE command */
 	  switch(tskUSB.wake.wake.cmd) {
 	  case CMD_GET_SETTINGS_REQ:
@@ -73,6 +76,7 @@ void TskUSB::task(void const *arg) {
 				   CMD_SET_SETTINGS_RESP, 
 				   tskUSB.tx_queue.data, 
 				   &tskUSB.tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
 	  case CMD_SET_DEF_SETTINGS_REQ:
 	    sErr = settings.setDefaultSettings();
@@ -83,6 +87,7 @@ void TskUSB::task(void const *arg) {
 				   CMD_SET_DEF_SETTINGS_RESP, 
 				   tskUSB.tx_queue.data, 
 				   &tskUSB.tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
 	  default:
 	    break;

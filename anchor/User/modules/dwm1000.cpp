@@ -3,7 +3,9 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "string.h"
+#include "settings.h"
 
+extern DeviceSettings settings;
 
 DWM1000::DWM1000() 
 {
@@ -23,8 +25,14 @@ S08 DWM1000::init()
   resetConfig();
   configDWM(&config);
   
-  dwt_setrxantennadelay(RX_ANT_DLY);
-  dwt_settxantennadelay(TX_ANT_DLY);
+  
+  dwt_setrxantennadelay(settings.pb_settings.message.DWRxAntDelay ? 
+			settings.pb_settings.message.DWRxAntDelay :
+			  DEFAULT_RX_ANT_DLY);
+  
+  dwt_settxantennadelay(settings.pb_settings.message.DWTxAntDelay ? 
+			settings.pb_settings.message.DWTxAntDelay :
+			  DEFAULT_TX_ANT_DLY);
   
   dwt_setpreambledetecttimeout(PRE_TIMEOUT);
   

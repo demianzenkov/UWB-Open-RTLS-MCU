@@ -1288,10 +1288,10 @@
             <group>
                 <name>proto</name>
                 <file>
-                    <name>$PROJ_DIR$\..\..\proto\proto_files\Monitoring.pb.c</name>
+                    <name>$PROJ_DIR$\..\..\proto\Monitoring.pb.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\proto\proto_files\Settings.pb.c</name>
+                    <name>$PROJ_DIR$\..\..\proto\Settings.pb.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Proto\settings_pb.cpp</name>
@@ -1319,6 +1319,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Src\usbd_cdc_if.c</name>
+                    <configuration>
+                        <name>tag</name>
+                    </configuration>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Src\usbd_conf.c</name>

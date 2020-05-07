@@ -6,6 +6,7 @@ TskUdpClient tskUdpClient;
 extern TskUNE tskUNE;
 extern DeviceSettings settings;
 
+
 TskUdpClient::TskUdpClient() 
 {
   
@@ -17,6 +18,10 @@ TskUdpClient::~TskUdpClient()
 
 void TskUdpClient::createTask()
 { 
+  /* Create task semaphores */ 
+  if (sem == NULL)
+    BSP_OS::semCreate (&sem, 1, (char*)"sem_udp");
+  
   /* Create task semaphores */
   xSemLwipReady = xSemaphoreCreateBinary();
   xSemConnReady = xSemaphoreCreateBinary();
@@ -47,8 +52,13 @@ void TskUdpClient::udpEchoThread(void const *arg)
   if (tskUdpClient.udp_recv_conn.conn != NULL)
   {
     xSemaphoreGive(tskUdpClient.xSemConnReady);
+    ip4_addr_t server_ip;
+    U08 * srv_ip_p = settings.net_conf.getServerIp();
+    IP4_ADDR(&server_ip, srv_ip_p[0], srv_ip_p[1], srv_ip_p[2], srv_ip_p[3]);
+    err = netconn_bind(tskUdpClient.udp_recv_conn.conn, 
+		       IP_ADDR_ANY, //&server_ip, 
+		       settings.net_conf.getServerPort());
     
-    err = netconn_bind(tskUdpClient.udp_recv_conn.conn, IP_ADDR_ANY, settings.net_conf.getServerPort());
     if (err == ERR_OK)
     {
       for (;;) 
@@ -71,10 +81,16 @@ void TskUdpClient::udpEchoThread(void const *arg)
     }
     else {
       printf("can not bind netconn");
+      for(;;) {
+	osDelay(1000);
+      }
     }
   }
   else {
     printf("can create new UDP netconn");
+    for(;;) {
+	osDelay(1000);
+      }
   }
 }
 

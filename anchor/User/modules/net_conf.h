@@ -2,6 +2,7 @@
 #define _NET_CONFIG
 
 #include "prj_defs.h"
+#include "Settings.pb.h"
 
 class NetConfig {
 
@@ -26,6 +27,7 @@ public:
   } ip_conf_t;
   
 public:
+  void init(Settings * settings);
   U32 ipArrToHex(U08 * ip);
   void setDefaultSettings();
   
@@ -37,6 +39,11 @@ public:
   void  setServerIp(U08 a, U08 b, U08 c, U08 d);
   void  setServerPort(U16 port);
   void  setSubnetMask(U08 a, U08 b, U08 c, U08 d);
+  
+  void setDeviceIp32(U32 ip);
+  void setGatewayIp32(U32 ip);
+  void setServerIp32(U32 ip);
+  void setSubnetMask32(U32 ip);
   
   U08 * getDeviceIp(void);
   U08 * getSubnetMask(void);
@@ -60,7 +67,9 @@ public:
   U32 getDefaultGatewayIp32(void);
   U32 getDefaultServerIp32(void);
   
-  
+private:
+  static void setIp32 (U08 * buf, U32 ip);
+    
 private:
   ip_conf_t ip_conf;
   const default_ip_conf_t default_ip_conf;

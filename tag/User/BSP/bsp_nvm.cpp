@@ -74,7 +74,8 @@ S08 BSP_NVM::write(U32 addr, U08* buf, U16 len)
   
   lock();
   HAL_FLASH_Unlock();
-  for(int i=0; i<word_cnt-1;i++)
+  U08 cnt = left_cnt ? word_cnt : word_cnt;
+  for(int i=0; i<word_cnt; i++)
   {
     U32 block = buf[i*4]+(buf[i*4+1]<<8)+(buf[i*4+2]<<16)+(buf[i*4+3]<<24);
     if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr+i*4, block) != HAL_OK)
@@ -84,24 +85,13 @@ S08 BSP_NVM::write(U32 addr, U08* buf, U16 len)
       return RC_ERR_HW;
     }
   }
-  if(!left_cnt) {
-    U32 block = buf[(word_cnt-1)*4]+
-		     (buf[(word_cnt-1)*4+1]<<8)+
-		       (buf[(word_cnt-1)*4+2]<<16)+
-			 (buf[(word_cnt-1)*4+3]<<24);
-    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr+(word_cnt-1)*4, block) != HAL_OK)
-    {
-      HAL_FLASH_Lock();
-      unlock();
-      return RC_ERR_HW;
-    }
-  }
-  else {
+  if(left_cnt) {
     U32 last_block = 0;
     for(int i=0; i<left_cnt; i++){
       last_block |= ((U32)buf[len-1-i] << (3-i)*8);
     }
-    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr+(word_cnt-1)*4, last_block) != HAL_OK)
+    last_block = last_block >> 8*(4-left_cnt);
+    if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr+(word_cnt)*4, last_block) != HAL_OK)
     {
       HAL_FLASH_Lock();
       unlock();

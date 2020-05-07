@@ -30,7 +30,9 @@
 #include "tsk_dwm.h"
 #include "tsk_usb.h"
 #include "tsk_une.h"
+#include "tsk_event.h"
 #include "usbd_cdc_if.h"
+#include "bsp_os.h"
 #include "bsp_spi.h"
 #include "mx25.h"
 #include "settings_pb.h"
@@ -52,12 +54,12 @@ TIM_HandleTypeDef htim6;
 osThreadId initTaskHandle;
 /* USER CODE BEGIN PV */
 BSP_SPI spi2(&hspi2, 2);
-
 extern MX25 mx25;
 extern TskUdpClient tskUdpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
 extern TskUNE tskUNE;
+extern TskEvent tskEvent;
 extern DeviceSettings settings;
 volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
@@ -98,6 +100,7 @@ int main(void)
   tskDWM.createTask();
   tskUSB.createTask();
   tskUNE.createTask();
+  tskEvent.createTask();
   
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 256);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
@@ -111,6 +114,30 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
+  }
+}
+
+/* USER CODE END Header_StartDefaultTask */
+void initTask(void const * argument)
+{ 
+  /* init code for LWIP */
+  MX_LWIP_Init();
+
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
+
+  xSemaphoreGive(tskUdpClient.xSemLwipReady);
+  
+  xSemaphoreGive(tskDWM.xSemUSBReady);
+  
+  mx25.detect();
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1000);
+    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+    osDelay(1000);
+    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET); 
   }
 }
 
@@ -314,38 +341,7 @@ static void MX_GPIO_Init(void)
 }
 
 
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used 
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void initTask(void const * argument)
-{
-  /* init code for LWIP */
-  MX_LWIP_Init();
 
-  /* init code for USB_DEVICE */
-  MX_USB_DEVICE_Init();
-
-  /* USER CODE BEGIN 5 */
-  xSemaphoreGive(tskUdpClient.xSemLwipReady);
-  
-  xSemaphoreGive(tskDWM.xSemUSBReady);
-  
-  mx25.detect();
-  
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-    osDelay(1000);
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-  }
-  /* USER CODE END 5 */ 
-}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

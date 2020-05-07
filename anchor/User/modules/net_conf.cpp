@@ -11,6 +11,15 @@ NetConfig::~NetConfig()
   
 }
 
+void NetConfig::init(Settings * settings)
+{
+  setDeviceIp32(settings->DeviceIp);
+  setGatewayIp32(settings->GatewayIp);
+  setServerIp32(settings->ServerIp);
+  setSubnetMask32(settings->SubnetMask);
+  setServerPort(settings->ConnectionPort);
+}
+
 U32 NetConfig::ipArrToHex(U08 * ip)
 {
   return ( (U32) ((ip[3]) & 0xff) << 24) | \
@@ -101,6 +110,31 @@ void NetConfig::setServerPort(U16 port)
   ip_conf.server_port = port;
 }
 
+
+void NetConfig::setDeviceIp32(U32 ip) 
+{
+  setIp32(ip_conf.device_ip, ip);
+}
+void NetConfig::setGatewayIp32(U32 ip) 
+{
+  setIp32(ip_conf.gw_ip, ip);
+}
+void NetConfig::setServerIp32(U32 ip)
+{
+  setIp32(ip_conf.server_ip, ip);
+}
+void NetConfig::setSubnetMask32(U32 ip)
+{
+  setIp32(ip_conf.subnet_mask, ip);
+}
+
+void NetConfig::setIp32(U08 * buf, U32 ip)
+{
+  buf[0] = ip & 0xFF;
+  buf[1] = (ip >> 8) & 0xFF;
+  buf[2] = (ip >> 16) & 0xFF;
+  buf[3] = (ip >>24) & 0xFF;
+}
 
 U08 * NetConfig::getDeviceIp(void)
 {

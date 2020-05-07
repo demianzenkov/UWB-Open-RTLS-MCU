@@ -4,6 +4,10 @@
 #include "settings_pb.h"
 #include "net_conf.h"
 
+#define DEFAULT_DEVICE_ID_U32	0xAABBDDCC
+#define DEFAULT_TX_ANT_DLY 	16436
+#define DEFAULT_RX_ANT_DLY 	16436
+
 class DeviceSettings
 {
 public:
@@ -21,8 +25,6 @@ private:
 public:
   SettingsPB pb_settings;
   NetConfig net_conf;
-  
-
   
 };
 

@@ -15,9 +15,6 @@
 #define START_SYNC_N	0x00
 #define START_BLYNK_N	0x00
 
-#define TX_ANT_DLY 	16436
-#define RX_ANT_DLY 	16436
-
 /* Preamble timeout, in multiple of PAC size. See NOTE 6. */
 #define PRE_TIMEOUT 8
 

@@ -1,7 +1,7 @@
 #include "settings.h"
 #include "bsp_nvm.h"
 
-#define DEFAULT_DEVICE_ID_U32	0xAABBDDCC
+
 
 DeviceSettings settings;
 extern BSP_NVM bsp_nvm;
@@ -33,9 +33,15 @@ S08 DeviceSettings::setDefaultSettings()
   pb_settings.message.NodeType = Settings_node_type_TYPE_TAG;
   pb_settings.message.RTLSMode = Settings_rtls_mode_MODE_TWR;
   
-  pb_settings.message.PositionX = 0;
-  pb_settings.message.PositionY = 0;
-  pb_settings.message.PositionZ = 0;
+  pb_settings.message.ConnectedAnchors_count = DEFAULT_TWR_ANCHOR_CNT;
+  for(int i=0; i<DEFAULT_TWR_ANCHOR_CNT; i++) 
+    pb_settings.message.ConnectedAnchors[i] = i+1;
+ 
+  pb_settings.message.PollPeriod = 1000;
+  pb_settings.message.PollDelay = -1;
+  
+  pb_settings.message.DWRxAntDelay = DEFAULT_RX_ANT_DLY;
+  pb_settings.message.DWTxAntDelay = DEFAULT_TX_ANT_DLY;
   
   S08 sErr = pb_settings.encode(&pb_settings.message, 
 				pb_settings.temp_buf, 
@@ -120,7 +126,6 @@ S08 DeviceSettings::writeSettingsToFlash(U08 * buf, U16 len)
 	       pb_settings.temp_buf, 
 	       Settings_size+4);
   U16 tmp_len = (pb_settings.temp_buf[2] << 8) + pb_settings.temp_buf[3];
-  
   
   sErr = pb_settings.decode(&pb_settings.temp_buf[4], 
 			    tmp_len, 

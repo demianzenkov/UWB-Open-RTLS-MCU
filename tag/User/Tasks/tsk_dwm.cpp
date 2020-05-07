@@ -1,6 +1,7 @@
 #include "tsk_dwm.hpp"
 #include "cmsis_os.h"
 #include "settings.h"
+#include "usbd_cdc_if.h"
 
 TskDWM tskDWM;
 extern DeviceSettings settings;
@@ -36,12 +37,20 @@ void TskDWM::task(void const *arg)
   
   for(;;)
   {
-    switch(settings.pb_settings.message.RTLSMode) {
+    Settings * msg = &settings.pb_settings.message;
+    switch(msg->RTLSMode) {
     case Settings_rtls_mode_MODE_TWR:
-      if (tskDWM.une_twr.twrInitiatorLoop() == RC_ERR_NONE){
-	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+      for(int i=0; i<msg->ConnectedAnchors_count;i++)
+      {
+	NVIC_DisableIRQ(USB_IRQn);
+	if (tskDWM.une_twr.twrInitiatorLoop(msg->ConnectedAnchors[i]) == RC_ERR_NONE){
+	  HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+	}
+	NVIC_EnableIRQ(USB_IRQn);
+	if (msg->PollDelay > 0)
+	  osDelay(msg->PollDelay);
       }
-      osDelay(1000);
+      osDelay(msg->PollPeriod ? msg->PollPeriod : DEFAULT_TWR_TAG_DELAY);
       break;
     default:
       break;

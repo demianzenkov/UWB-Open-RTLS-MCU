@@ -1,7 +1,7 @@
 #include "settings.h"
 #include "mx25.h"
 
-#define DEFAULT_DEVICE_ID_U32	0xAABBDDCC
+
 
 DeviceSettings settings;
 extern MX25 mx25;
@@ -13,13 +13,15 @@ DeviceSettings::DeviceSettings()
 
 S08 DeviceSettings::init()
 {
-  S08 sErr = readSettingsFromFlash();
+  S08 sErr = getSettings(NULL, NULL);
   /* No valid settings data found */ 
   if(sErr != RC_ERR_NONE)
   {
     /* Set local settings to default values */
     setDefaultSettings();
   }
+  
+  net_conf.init(&pb_settings.message);
   
   return RC_ERR_NONE;
 }
@@ -37,10 +39,13 @@ S08 DeviceSettings::setDefaultSettings()
   pb_settings.message.NodeID = DEFAULT_DEVICE_ID_U32;
   pb_settings.message.NodeType = Settings_node_type_TYPE_ANCHOR;
   pb_settings.message.RTLSMode = Settings_rtls_mode_MODE_TWR;
-  pb_settings.message.PositionX = 0;
-  pb_settings.message.PositionY = 0;
-  pb_settings.message.PositionZ = 0;
+  pb_settings.message.PositionX = 1.0;
+  pb_settings.message.PositionY = 2.0;
+  pb_settings.message.PositionZ = 3.0;
   
+  pb_settings.message.DWRxAntDelay = DEFAULT_RX_ANT_DLY;
+  pb_settings.message.DWTxAntDelay = DEFAULT_TX_ANT_DLY;
+    
   S08 sErr = pb_settings.encode(&pb_settings.message, 
 				pb_settings.temp_buf, 
 				&pb_settings.buf_len);
@@ -67,20 +72,33 @@ S08 DeviceSettings::readSettingsFromFlash()
   if(sErr != RC_ERR_NONE)
     return sErr;
   
-  U16 tmp_len = (pb_settings.temp_buf[0] << 8) + pb_settings.temp_buf[1];
-  
-  sErr = pb_settings.decode(&pb_settings.temp_buf[2], 
-			    tmp_len, 
-			    &pb_settings.message);
   return sErr;
 }
 
 S08 DeviceSettings::getSettings(U08 ** buf, U16 * len)
 {
-  S08 sErr = pb_settings.encode(&pb_settings.message, pb_settings.temp_buf, &pb_settings.buf_len);
-  *buf = &pb_settings.temp_buf[0];
-  *len = pb_settings.buf_len;
-  return sErr;
+  U08 sErr;
+  sErr = readSettingsFromFlash();
+  if(sErr != RC_ERR_NONE)
+    return sErr;
+  
+  U16 len_buf = (pb_settings.temp_buf[0] << 8) + pb_settings.temp_buf[1];
+  
+  
+  sErr = pb_settings.decode(&pb_settings.temp_buf[2], 
+			    len_buf, 
+			    &pb_settings.message);
+  if(sErr != RC_ERR_NONE)
+    return sErr;
+  
+  if (buf == NULL || len == 0) {
+    return sErr;
+  }
+  
+  *buf = &pb_settings.temp_buf[2];
+  *len = len_buf;
+ 
+  return RC_ERR_NONE;
 }
 
 S08 DeviceSettings::setSettingsPb(U08 * buf, U16 len)

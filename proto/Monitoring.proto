@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message Monitoring {
+    message TWR_message
+    {
+        uint32  NodeID          = 1;
+        uint32  TagID           = 2;
+        float   Distance        = 3;
+        uint32  NodeTicks       = 4;    // Current anchor ticks
+        uint32  PollNN          = 5;
+        uint32  ResponseNN      = 7;
+        uint32  FinalNN         = 6;
+    };
+    TWR_message TWR = 1;
+}

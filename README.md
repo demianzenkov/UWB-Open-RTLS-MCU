@@ -4,7 +4,7 @@ UWB RTLS
 
   ```bash
 pip install protobuf grpcio-tools
-  python proto/nanopb_generator/nanopb_generator.py proto/proto_files/Settings.proto
+  python proto/nanopb_generator.py -v proto/Settings.proto
   ```
   
 - Generate .py proto files from proto file using Protoc
@@ -13,7 +13,6 @@ pip install protobuf grpcio-tools
 
     ```bash
     brew install protobuf
-    cd proto/proto_files
-    protoc --proto_path=. --python_out=. ./Settings.proto
-    protoc --proto_path=. --python_out=. ./Monitoring.proto
+    protoc -I=proto --python_out=proto Settings.proto
     ```
+
