@@ -1,5 +1,6 @@
 #include "bsp_os.h"
-
+#include "cmsis_os.h"
+#include "stm32l0xx_hal.h"
 
 S08 BSP_OS::semWait (OS_SEM* p_sem, U32 dly_tck)
 {
@@ -57,4 +58,18 @@ S08 BSP_OS::semDel(OS_SEM * p_sem)
   }
   *p_sem = 0;
   return RC_ERR_NONE;
+}
+
+void BSP_OS::restartCPU(S16 delay)
+{
+  /* Software Reset */
+  if(delay > 0)
+    osDelay(delay);
+  HAL_NVIC_SystemReset();
+  while(1);
+}
+
+U32 BSP_OS::getTicks()
+{
+  return osKernelSysTick();
 }

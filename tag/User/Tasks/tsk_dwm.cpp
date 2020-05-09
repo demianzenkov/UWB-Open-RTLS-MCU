@@ -1,4 +1,4 @@
-#include "tsk_dwm.hpp"
+#include "tsk_dwm.h"
 #include "cmsis_os.h"
 #include "settings.h"
 #include "usbd_cdc_if.h"
@@ -35,11 +35,16 @@ void TskDWM::task(void const *arg)
     }
   }
   
+ if (settings.pb_settings.message.RTLSMode == 
+      Settings_rtls_mode_MODE_TWR_RESPONDER) {
+    UNE_TWR::initDWM();
+  }
+  
   for(;;)
   {
     Settings * msg = &settings.pb_settings.message;
     switch(msg->RTLSMode) {
-    case Settings_rtls_mode_MODE_TWR:
+    case Settings_rtls_mode_MODE_TWR_INITIATOR:
       for(int i=0; i<msg->ConnectedAnchors_count;i++)
       {
 	NVIC_DisableIRQ(USB_IRQn);
@@ -50,7 +55,11 @@ void TskDWM::task(void const *arg)
 	if (msg->PollDelay > 0)
 	  osDelay(msg->PollDelay);
       }
-      osDelay(msg->PollPeriod ? msg->PollPeriod : DEFAULT_TWR_TAG_DELAY);
+      osDelay(msg->PollPeriod ? msg->PollPeriod : DEFAULT_POLL_PERIOD);
+      break;
+    case Settings_rtls_mode_MODE_TWR_RESPONDER:
+      if (tskDWM.une_twr.twrResponderLoop() == RC_ERR_NONE)
+	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       break;
     default:
       break;

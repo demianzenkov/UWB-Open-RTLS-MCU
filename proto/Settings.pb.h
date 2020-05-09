@@ -25,8 +25,9 @@ typedef enum _Settings_node_type {
 typedef enum _Settings_rtls_mode {
     Settings_rtls_mode_MODE_NONE = 0,
     Settings_rtls_mode_MODE_OFF = 1,
-    Settings_rtls_mode_MODE_TWR = 2,
-    Settings_rtls_mode_MODE_TDOA = 3
+    Settings_rtls_mode_MODE_TWR_INITIATOR = 2,
+    Settings_rtls_mode_MODE_TWR_RESPONDER = 3,
+    Settings_rtls_mode_MODE_TDOA = 4
 } Settings_rtls_mode;
 
 /* Struct definitions */
@@ -43,8 +44,8 @@ typedef struct _Settings {
     float PositionX;
     float PositionY;
     float PositionZ;
-    uint32_t DWRxAntDelay;
-    uint32_t DWTxAntDelay;
+    int32_t DWRxAntDelay;
+    int32_t DWTxAntDelay;
     pb_size_t ConnectedAnchors_count;
     uint32_t ConnectedAnchors[10];
     uint32_t PollPeriod;
@@ -99,8 +100,8 @@ X(a, STATIC,   SINGULAR, UINT32,   ConnectionPort,    9) \
 X(a, STATIC,   SINGULAR, FLOAT,    PositionX,        10) \
 X(a, STATIC,   SINGULAR, FLOAT,    PositionY,        11) \
 X(a, STATIC,   SINGULAR, FLOAT,    PositionZ,        12) \
-X(a, STATIC,   SINGULAR, UINT32,   DWRxAntDelay,     13) \
-X(a, STATIC,   SINGULAR, UINT32,   DWTxAntDelay,     14) \
+X(a, STATIC,   SINGULAR, INT32,    DWRxAntDelay,     13) \
+X(a, STATIC,   SINGULAR, INT32,    DWTxAntDelay,     14) \
 X(a, STATIC,   REPEATED, UINT32,   ConnectedAnchors,  15) \
 X(a, STATIC,   SINGULAR, UINT32,   PollPeriod,       16) \
 X(a, STATIC,   SINGULAR, INT32,    PollDelay,        17)
@@ -113,7 +114,7 @@ extern const pb_msgdesc_t Settings_msg;
 #define Settings_fields &Settings_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Settings_size                            152
+#define Settings_size                            162
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -22,10 +22,13 @@ private:
   inline S08 unlock();
   
 public:
-  Wake wake;
   SemaphoreHandle_t xSemUSBReady;
-  const U16 _rxQueueSize = 3;
+  SemaphoreHandle_t xSemConnReady;
+  
+  const U16 _rxQueueSize = 1;
   const U16 _txQueueSize = 1;
+  
+  Wake wake;
   
 private:
   OS_SEM sem;
@@ -35,7 +38,6 @@ private:
   
   queue_data_t rx_queue;
   queue_data_t tx_queue;
-  
 };
 
 

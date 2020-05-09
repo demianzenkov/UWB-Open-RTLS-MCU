@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x10Monitoring.proto\"\xbb\x01\n\nMonitoring\x12$\n\x03TWR\x18\x01 \x01(\x0b\x32\x17.Monitoring.TWR_message\x1a\x86\x01\n\x0bTWR_message\x12\x0e\n\x06NodeID\x18\x01 \x01(\r\x12\r\n\x05TagID\x18\x02 \x01(\r\x12\x10\n\x08\x44istance\x18\x03 \x01(\x02\x12\x11\n\tNodeTicks\x18\x04 \x01(\r\x12\x0e\n\x06PollNN\x18\x05 \x01(\r\x12\x12\n\nResponseNN\x18\x07 \x01(\r\x12\x0f\n\x07\x46inalNN\x18\x06 \x01(\rb\x06proto3'
+  serialized_pb=b'\n\x10Monitoring.proto\"\xc1\x01\n\nMonitoring\x12$\n\x03TWR\x18\x01 \x01(\x0b\x32\x17.Monitoring.TWR_message\x1a\x8c\x01\n\x0bTWR_message\x12\x0e\n\x06NodeID\x18\x01 \x01(\r\x12\x13\n\x0bInitiatorID\x18\x02 \x01(\r\x12\x10\n\x08\x44istance\x18\x03 \x01(\x02\x12\x11\n\tNodeTicks\x18\x04 \x01(\r\x12\x0e\n\x06PollNN\x18\x05 \x01(\r\x12\x12\n\nResponseNN\x18\x07 \x01(\r\x12\x0f\n\x07\x46inalNN\x18\x06 \x01(\rb\x06proto3'
 )
 
 
@@ -39,7 +39,7 @@ _MONITORING_TWR_MESSAGE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='TagID', full_name='Monitoring.TWR_message.TagID', index=1,
+      name='InitiatorID', full_name='Monitoring.TWR_message.InitiatorID', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -93,7 +93,7 @@ _MONITORING_TWR_MESSAGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=74,
-  serialized_end=208,
+  serialized_end=214,
 )
 
 _MONITORING = _descriptor.Descriptor(
@@ -123,7 +123,7 @@ _MONITORING = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=21,
-  serialized_end=208,
+  serialized_end=214,
 )
 
 _MONITORING_TWR_MESSAGE.containing_type = _MONITORING

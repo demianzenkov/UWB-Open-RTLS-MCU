@@ -16,7 +16,7 @@ extern "C" {
 /* Struct definitions */
 typedef struct _Monitoring_TWR_message {
     uint32_t NodeID;
-    uint32_t TagID;
+    uint32_t InitiatorID;
     float Distance;
     uint32_t NodeTicks;
     uint32_t PollNN;
@@ -38,7 +38,7 @@ typedef struct _Monitoring {
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Monitoring_TWR_message_NodeID_tag        1
-#define Monitoring_TWR_message_TagID_tag         2
+#define Monitoring_TWR_message_InitiatorID_tag   2
 #define Monitoring_TWR_message_Distance_tag      3
 #define Monitoring_TWR_message_NodeTicks_tag     4
 #define Monitoring_TWR_message_PollNN_tag        5
@@ -55,7 +55,7 @@ X(a, STATIC,   OPTIONAL, MESSAGE,  TWR,               1)
 
 #define Monitoring_TWR_message_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   NodeID,            1) \
-X(a, STATIC,   SINGULAR, UINT32,   TagID,             2) \
+X(a, STATIC,   SINGULAR, UINT32,   InitiatorID,       2) \
 X(a, STATIC,   SINGULAR, FLOAT,    Distance,          3) \
 X(a, STATIC,   SINGULAR, UINT32,   NodeTicks,         4) \
 X(a, STATIC,   SINGULAR, UINT32,   PollNN,            5) \

@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0eSettings.proto\"\xa9\x04\n\x08Settings\x12%\n\x08NodeType\x18\x01 \x01(\x0e\x32\x13.Settings.node_type\x12\x10\n\x08\x44\x65viceID\x18\x02 \x01(\r\x12%\n\x08RTLSMode\x18\x03 \x01(\x0e\x32\x13.Settings.rtls_mode\x12\x0e\n\x06NodeID\x18\x04 \x01(\r\x12\x10\n\x08\x44\x65viceIp\x18\x05 \x01(\r\x12\x12\n\nSubnetMask\x18\x06 \x01(\r\x12\x11\n\tGatewayIp\x18\x07 \x01(\r\x12\x10\n\x08ServerIp\x18\x08 \x01(\r\x12\x16\n\x0e\x43onnectionPort\x18\t \x01(\r\x12\x11\n\tPositionX\x18\n \x01(\x02\x12\x11\n\tPositionY\x18\x0b \x01(\x02\x12\x11\n\tPositionZ\x18\x0c \x01(\x02\x12\x14\n\x0c\x44WRxAntDelay\x18\r \x01(\r\x12\x14\n\x0c\x44WTxAntDelay\x18\x0e \x01(\r\x12\x18\n\x10\x43onnectedAnchors\x18\x0f \x03(\r\x12\x12\n\nPollPeriod\x18\x10 \x01(\r\x12\x11\n\tPollDelay\x18\x11 \x01(\x05\"]\n\tnode_type\x12\r\n\tTYPE_NONE\x10\x00\x12\x0e\n\nTYPE_UNDEF\x10\x01\x12\x0f\n\x0bTYPE_ANCHOR\x10\x02\x12\x12\n\x0eTYPE_SYNC_NODE\x10\x03\x12\x0c\n\x08TYPE_TAG\x10\x04\"E\n\trtls_mode\x12\r\n\tMODE_NONE\x10\x00\x12\x0c\n\x08MODE_OFF\x10\x01\x12\x0c\n\x08MODE_TWR\x10\x02\x12\r\n\tMODE_TDOA\x10\x03\x62\x06proto3'
+  serialized_pb=b'\n\x0eSettings.proto\"\xcb\x04\n\x08Settings\x12%\n\x08NodeType\x18\x01 \x01(\x0e\x32\x13.Settings.node_type\x12\x10\n\x08\x44\x65viceID\x18\x02 \x01(\r\x12%\n\x08RTLSMode\x18\x03 \x01(\x0e\x32\x13.Settings.rtls_mode\x12\x0e\n\x06NodeID\x18\x04 \x01(\r\x12\x10\n\x08\x44\x65viceIp\x18\x05 \x01(\r\x12\x12\n\nSubnetMask\x18\x06 \x01(\r\x12\x11\n\tGatewayIp\x18\x07 \x01(\r\x12\x10\n\x08ServerIp\x18\x08 \x01(\r\x12\x16\n\x0e\x43onnectionPort\x18\t \x01(\r\x12\x11\n\tPositionX\x18\n \x01(\x02\x12\x11\n\tPositionY\x18\x0b \x01(\x02\x12\x11\n\tPositionZ\x18\x0c \x01(\x02\x12\x14\n\x0c\x44WRxAntDelay\x18\r \x01(\x05\x12\x14\n\x0c\x44WTxAntDelay\x18\x0e \x01(\x05\x12\x18\n\x10\x43onnectedAnchors\x18\x0f \x03(\r\x12\x12\n\nPollPeriod\x18\x10 \x01(\r\x12\x11\n\tPollDelay\x18\x11 \x01(\x05\"]\n\tnode_type\x12\r\n\tTYPE_NONE\x10\x00\x12\x0e\n\nTYPE_UNDEF\x10\x01\x12\x0f\n\x0bTYPE_ANCHOR\x10\x02\x12\x12\n\x0eTYPE_SYNC_NODE\x10\x03\x12\x0c\n\x08TYPE_TAG\x10\x04\"g\n\trtls_mode\x12\r\n\tMODE_NONE\x10\x00\x12\x0c\n\x08MODE_OFF\x10\x01\x12\x16\n\x12MODE_TWR_INITIATOR\x10\x02\x12\x16\n\x12MODE_TWR_RESPONDER\x10\x03\x12\r\n\tMODE_TDOA\x10\x04\x62\x06proto3'
 )
 
 
@@ -72,18 +72,22 @@ _SETTINGS_RTLS_MODE = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODE_TWR', index=2, number=2,
+      name='MODE_TWR_INITIATOR', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODE_TDOA', index=3, number=3,
+      name='MODE_TWR_RESPONDER', index=3, number=3,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='MODE_TDOA', index=4, number=4,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
   serialized_start=503,
-  serialized_end=572,
+  serialized_end=606,
 )
 _sym_db.RegisterEnumDescriptor(_SETTINGS_RTLS_MODE)
 
@@ -181,14 +185,14 @@ _SETTINGS = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='DWRxAntDelay', full_name='Settings.DWRxAntDelay', index=12,
-      number=13, type=13, cpp_type=3, label=1,
+      number=13, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='DWTxAntDelay', full_name='Settings.DWTxAntDelay', index=13,
-      number=14, type=13, cpp_type=3, label=1,
+      number=14, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -229,7 +233,7 @@ _SETTINGS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=19,
-  serialized_end=572,
+  serialized_end=606,
 )
 
 _SETTINGS.fields_by_name['NodeType'].enum_type = _SETTINGS_NODE_TYPE

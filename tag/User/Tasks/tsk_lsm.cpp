@@ -1,4 +1,4 @@
-#include "tsk_lsm.hpp"
+#include "tsk_lsm.h"
 #include "cmsis_os.h"
 
 TskLSM tskLSM;

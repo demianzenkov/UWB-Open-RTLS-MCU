@@ -1,9 +1,11 @@
-#include "tsk_usb.hpp"
+#include "tsk_usb.h"
 #include "usbd_cdc_if.h"
 #include "settings.h"
+#include "tsk_event.h"
 
 TskUSB tskUSB;
 extern DeviceSettings settings;
+extern TskEvent tskEvent;
 
 TskUSB::TskUSB() 
 {
@@ -35,7 +37,17 @@ void TskUSB::task(void const *arg) {
   {
     /* Wait data in xQueueUSBTx and put it to serial port */
     if (xQueueReceive(tskUSB.xQueueUSBTx, &tskUSB.tx_queue, 5)) {
-      CDC_Transmit_FS(tskUSB.tx_queue.data, tskUSB.tx_queue.len);
+      
+      /* COSTYL, CDC Not transmitting packages > than 64 bytes? */
+      uint8_t full = tskUSB.tx_queue.len/64;
+      uint8_t div = tskUSB.tx_queue.len%64;
+      for (int i=0; i<full; i++){
+	CDC_Transmit_FS(&tskUSB.tx_queue.data[i+i*64], 64);
+	osDelay(1);
+      }
+      if(div) {
+	CDC_Transmit_FS(&tskUSB.tx_queue.data[full*64], div);
+      }
     }
     
     /* Check if data received in xQueueUSBRx and process data */
@@ -82,17 +94,69 @@ void TskUSB::task(void const *arg) {
 				   CMD_SET_DEF_SETTINGS_RESP, 
 				   tskUSB.tx_queue.data, 
 				   &tskUSB.tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
+	  case CMD_REBOOT_REQ:
+	     tskUSB.wake.prepareBuf(tskUSB.wake.wake.dbuf, 
+				   tskUSB.wake.wake.len, 
+				   CMD_REBOOT_RESP, 
+				   tskUSB.tx_queue.data, 
+				   &tskUSB.tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	  default:
 	    break;
 	    
 	  }
 	  if (tskUSB.tx_queue.len) {
+	    tskUSB.lock();
 	    tskUSB.tx_queue.data[tskUSB.tx_queue.len++] = '\n';
 	    xQueueSend(tskUSB.xQueueUSBTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
+	    tskUSB.unlock();
 	  }
 	}
       }
     }
   }
+}
+
+S08 TskUSB::lock (void)
+{
+  if (sem)
+  {
+    S08 sErr = BSP_OS::semWait (&sem, 10.0 * BSP_TICKS_PER_SEC);
+    return sErr;
+  }
+  else
+    return RC_ERR_COMMON;
+}
+
+
+S08 TskUSB::unlock (void)
+{
+  if (sem)
+  {
+    S08 sErr = BSP_OS::semPost (&sem);
+    return sErr;
+  }
+  else
+    return RC_ERR_COMMON;
+}
+
+
+void TskUSB::transmit(U08 * buf, U16 len)
+{
+  lock();
+  tx_queue.len = len;
+  memcpy(tx_queue.data, buf, len);
+  xQueueSend(xQueueUSBTx, (void *)&tx_queue, (TickType_t)0);
+  unlock();
+}
+
+void TskUSB::receiveFromISR(U08 * buf, U16 len)
+{
+  lock();
+  rx_queue.len = len;
+  memcpy(rx_queue.data, buf, len);
+  xQueueSendFromISR(xQueueUSBRx, (void *)&rx_queue, (TickType_t)0);
+  unlock();
 }

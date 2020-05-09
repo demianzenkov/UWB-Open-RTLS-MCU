@@ -31,21 +31,30 @@ S08 DeviceSettings::setDefaultSettings()
   pb_settings.clearMessage();
   
   pb_settings.message.DeviceID = DEFAULT_DEVICE_ID_U32;
+  pb_settings.message.NodeID = DEFAULT_DEVICE_ID_U32;
+  pb_settings.message.NodeType = Settings_node_type_TYPE_ANCHOR;
+  pb_settings.message.RTLSMode = Settings_rtls_mode_MODE_OFF;
+  
   pb_settings.message.DeviceIp = this->net_conf.getDefaultDeviceIp32();
   pb_settings.message.SubnetMask = net_conf.getDefaultSubnetMask32();
   pb_settings.message.GatewayIp = net_conf.getDefaultGatewayIp32();
   pb_settings.message.ServerIp = net_conf.getDefaultServerIp32();
   pb_settings.message.ConnectionPort = net_conf.getDefaultServerPort();
-  pb_settings.message.NodeID = DEFAULT_DEVICE_ID_U32;
-  pb_settings.message.NodeType = Settings_node_type_TYPE_ANCHOR;
-  pb_settings.message.RTLSMode = Settings_rtls_mode_MODE_TWR;
+  
   pb_settings.message.PositionX = 1.0;
   pb_settings.message.PositionY = 2.0;
   pb_settings.message.PositionZ = 3.0;
   
+  pb_settings.message.ConnectedAnchors_count = DEFAULT_TWR_ANCHOR_CNT;
+  for(int i=0; i<DEFAULT_TWR_ANCHOR_CNT; i++) 
+    pb_settings.message.ConnectedAnchors[i] = i+1;
+  
   pb_settings.message.DWRxAntDelay = DEFAULT_RX_ANT_DLY;
   pb_settings.message.DWTxAntDelay = DEFAULT_TX_ANT_DLY;
-    
+  
+  pb_settings.message.PollPeriod = 1000;	
+  pb_settings.message.PollDelay = -1;		// -1 = 0
+  
   S08 sErr = pb_settings.encode(&pb_settings.message, 
 				pb_settings.temp_buf, 
 				&pb_settings.buf_len);

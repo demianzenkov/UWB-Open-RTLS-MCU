@@ -25,9 +25,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "tsk_dwm.hpp"
-#include "tsk_lsm.hpp"
-#include "tsk_usb.hpp"
+#include "tsk_dwm.h"
+#include "tsk_lsm.h"
+#include "tsk_usb.h"
+#include "tsk_event.h"
 #include "settings.h"
 
 /* USER CODE END Includes */
@@ -60,6 +61,8 @@ osThreadId initTaskHandle;
 extern TskDWM tskDWM;
 extern TskLSM tskLSM;
 extern TskUSB tskUSB;
+extern TskEvent tskEvent;
+
 extern DeviceSettings settings;
 volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
@@ -144,6 +147,7 @@ int main(void)
   /* add threads, ... */
   tskDWM.createTask();
   tskUSB.createTask();
+//  tskEvent.createTask();
 //  tskLSM.createTask();
   /* USER CODE END RTOS_THREADS */
 

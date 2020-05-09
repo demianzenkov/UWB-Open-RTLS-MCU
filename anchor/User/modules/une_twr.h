@@ -4,6 +4,32 @@
 #include "prj_defs.h"
 #include "dwm1000.h"
 
+/* UWB microsecond (uus) to device time unit (dtu, around 15.65 ps) conversion factor.
+ * 1 uus = 512 / 499.2 µs and 1 µs = 499.2 * 128 dtu. */
+#define UUS_TO_DWT_TIME 65536
+
+/* Delay between frames, in UWB microseconds. See NOTE 4. */
+/* Delays for ANCHOR(initiator) */
+/* This is the delay from Frame RX timestamp to TX reply timestamp used for calculating/setting the DW1000's delayed TX function. This includes the
+* frame length of approximately 2.46 ms with above configuration. */
+#define POLL_RX_TO_RESP_TX_DLY_UUS 2750
+/* This is the delay from the end of the frame transmission to the enable of the receiver, as programmed for the DW1000's wait for response feature. */
+#define RESP_TX_TO_FINAL_RX_DLY_UUS 300		//500
+/* Receive final timeout. See NOTE 5 below. */
+#define FINAL_RX_TIMEOUT_UUS 3700
+
+/* Delays for TAG(initiator) */
+/* Delay between frames, in UWB microseconds. See NOTE 4 below. */
+/* This is the delay from the end of the frame transmission to the enable of the receiver, 
+ * as programmed for the DW1000's wait for response feature. */
+#define POLL_TX_TO_RESP_RX_DLY_UUS 1000 //300 // 1000 - critical minimum value
+/* This is the delay from Frame RX timestamp to TX reply timestamp used for calculating/setting 
+ * the DW1000's delayed TX function. This includes the frame length of approximately 2.66 ms with above configuration. */
+#define RESP_RX_TIMEOUT_UUS 3700 //2700 	// Receive response timeout. NOTE 5
+#define RESP_RX_TO_FINAL_TX_DLY_UUS 3000
+#define PRE_TIMEOUT 8 			// Preamble tomeout. NOTE 6
+
+
 #define POLL_MSG_SIZE	10
 #define RESP_MSG_SIZE	12
 #define FINAL_MSG_SIZE	29
@@ -35,8 +61,7 @@
 #define MSG_FINAL_H_IDX		10
 #define MSG_FINAL_L_IDX		11
 
-/* Speed of light in air, in metres per second. */
-#define SPEED_OF_LIGHT 299702547
+#define SPEED_OF_LIGHT 299702547	// metres per second
 
    
 class UNE_TWR {
@@ -44,24 +69,31 @@ public:
   UNE_TWR(DWM1000 * dwm);
   ~UNE_TWR();
   
+  static void initDWM();
   S08 twrResponderLoop();
-  static void final_msg_get_ts(const uint8 *ts_field, uint64 *ts);
+  S08 twrInitiatorLoop(U08 an_id);	// use anchor in tag mode for calibration
+  static void final_msg_get_ts(uint8 *ts_field, uint64 *ts);
+  static void final_msg_set_ts(uint8 *ts_field, uint64 ts);
   
 private:
   DWM1000 * dwm;
-  
-  U64 poll_rx_ts; 
-  U64 resp_tx_ts;
-  U64 final_rx_ts;
   
   U16 poll_frame_seq_nb;	// Tag
   U16 resp_frame_seq_nb;	// Anchor
   U16 final_frame_seq_nb;	// Tag
   
-  U08 tag_id;
+  U64 poll_rx_ts; 	// anchor(responder)
+  U64 resp_tx_ts;	// anchor(responder)
+  U64 final_rx_ts;	// anchor(responder)
   
-  double tof;
-  float distance;
+  U64 poll_tx_ts;	// tag(initiator)
+  U64 resp_rx_ts;	// tag(initiator)
+  U64 final_tx_time;	// tag(initiator)
+  U64 final_tx_ts;	// tag(initiator)
+  
+  U08 tag_id;		// anchor(initiator)
+  double tof;		// anchor(initiator)
+  float distance;	// anchor(initiator)
   
   U08 poll_msg[POLL_MSG_SIZE] = {'T', 'W', 'R', 'P',
 			DEFAULT_TAG_ID,

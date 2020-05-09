@@ -18,8 +18,8 @@ public:
   static S08  semPost   (OS_SEM* p_sem);
   static S08  semClear  (OS_SEM* p_sem);
   static S08  semDel    (OS_SEM* p_sem);
-  
-  static U32  getTime (void);
+  static void restartCPU(S16 delay=0);
+  static U32  getTicks (void);
 };
 
 

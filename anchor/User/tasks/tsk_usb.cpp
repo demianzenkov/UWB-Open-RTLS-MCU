@@ -28,7 +28,7 @@ void TskUSB::createTask()
   xQueueUSBTx = xQueueCreate(_txQueueSize, sizeof(queue_data_t));
   
   osThreadId USBTaskHandle;
-  osThreadDef(USBTask, tskUSB.task, osPriorityNormal, 0, 256);
+  osThreadDef(USBTask, tskUSB.task, osPriorityNormal, 0, 512);
   USBTaskHandle = osThreadCreate(osThread(USBTask), NULL);
 }
 
@@ -50,6 +50,7 @@ void TskUSB::task(void const *arg) {
 	if (ret == TRUE) {
 	  tskUSB.tx_queue.len = 0;
 	  bool reset = false;
+	  
 	  /* If found valid WAKE command */
 	  switch(tskUSB.wake.wake.cmd) {
 	  case CMD_GET_SETTINGS_REQ:
@@ -76,7 +77,6 @@ void TskUSB::task(void const *arg) {
 				   CMD_SET_SETTINGS_RESP, 
 				   tskUSB.tx_queue.data, 
 				   &tskUSB.tx_queue.len);
-	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
 	  case CMD_SET_DEF_SETTINGS_REQ:
 	    sErr = settings.setDefaultSettings();
@@ -89,13 +89,22 @@ void TskUSB::task(void const *arg) {
 				   &tskUSB.tx_queue.len);
 	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
+	  case CMD_REBOOT_REQ:
+	    tskUSB.wake.prepareBuf(tskUSB.wake.wake.dbuf, 
+				   tskUSB.wake.wake.len, 
+				   CMD_REBOOT_RESP, 
+				   tskUSB.tx_queue.data, 
+				   &tskUSB.tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	  default:
 	    break;
 	    
 	  }
 	  if (tskUSB.tx_queue.len) {
+	    tskUSB.lock();
 	    tskUSB.tx_queue.data[tskUSB.tx_queue.len++] = '\n';
 	    xQueueSend(tskUSB.xQueueUSBTx, (void *)&tskUSB.tx_queue, (TickType_t)0);
+	    tskUSB.unlock();
 	  }
 	}
       }
@@ -138,9 +147,7 @@ void TskUSB::transmit(U08 * buf, U16 len)
 
 void TskUSB::receiveFromISR(U08 * buf, U16 len)
 {
-  lock();
   rx_queue.len = len;
   memcpy(rx_queue.data, buf, len);
   xQueueSendFromISR(xQueueUSBRx, (void *)&rx_queue, (TickType_t)0);
-  unlock();
 }

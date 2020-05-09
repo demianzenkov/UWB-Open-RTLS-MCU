@@ -11,8 +11,9 @@ message Settings {
     enum rtls_mode {
         MODE_NONE = 0;
         MODE_OFF = 1;
-        MODE_TWR = 2;
-        MODE_TDOA = 3;
+        MODE_TWR_INITIATOR = 2;
+        MODE_TWR_RESPONDER = 3;
+        MODE_TDOA = 4;
     };
 
     node_type NodeType =    1;
@@ -29,8 +30,8 @@ message Settings {
     float PositionY = 11;   // Anchor Y
     float PositionZ = 12;   // Anchor Z
 
-    uint32 DWRxAntDelay = 13;       // Antenna receive delay for DW1000 modules
-    uint32 DWTxAntDelay = 14;       // Antenna transmit delay for DW1000 modules
+    int32 DWRxAntDelay = 13;       // Antenna receive delay for DW1000 modules, -1 = zero delay
+    int32 DWTxAntDelay = 14;       // Antenna transmit delay for DW1000 modules, -1 = zero delay
 
     repeated uint32 ConnectedAnchors = 15;  // List of anchors connected with tag, Max count: 10
     uint32 PollPeriod = 16;                // Period of tag poll messages in ms

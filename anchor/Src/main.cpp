@@ -25,18 +25,17 @@
 #include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
-
+#include "usbd_cdc_if.h"
+#include "bsp_os.h"
+#include "bsp_spi.h"
+    
 #include "tsk_udp_client.h"
 #include "tsk_dwm.h"
 #include "tsk_usb.h"
 #include "tsk_une.h"
 #include "tsk_event.h"
-#include "usbd_cdc_if.h"
-#include "bsp_os.h"
-#include "bsp_spi.h"
+
 #include "mx25.h"
-#include "settings_pb.h"
-#include "monitoring_pb.h"
 #include "settings.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,13 +53,16 @@ TIM_HandleTypeDef htim6;
 osThreadId initTaskHandle;
 /* USER CODE BEGIN PV */
 BSP_SPI spi2(&hspi2, 2);
+
 extern MX25 mx25;
+extern DeviceSettings settings;
+
 extern TskUdpClient tskUdpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
 extern TskUNE tskUNE;
 extern TskEvent tskEvent;
-extern DeviceSettings settings;
+
 volatile uint32_t us_tick = 0;
 /* USER CODE END PV */
 
@@ -100,7 +102,7 @@ int main(void)
   tskDWM.createTask();
   tskUSB.createTask();
   tskUNE.createTask();
-  tskEvent.createTask();
+//  tskEvent.createTask();
   
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 256);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);

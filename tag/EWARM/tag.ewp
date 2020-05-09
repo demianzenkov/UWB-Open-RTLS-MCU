@@ -1153,6 +1153,9 @@
                     <name>$PROJ_DIR$\..\..\proto\Monitoring.pb.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\User\Proto\monitoring_pb.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\proto\Settings.pb.c</name>
                 </file>
                 <file>
@@ -1166,6 +1169,9 @@
                 <name>tasks</name>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_dwm.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Tasks\tsk_event.cpp</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_lsm.cpp</name>

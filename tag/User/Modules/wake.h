@@ -16,8 +16,11 @@
 
 #define WAKE_FRAME		1536     // max packet len
 
-#define CMD_I_AM_HERE_REQ		0x80
-#define CMD_I_AM_HERE_RESP		0x81
+#define CMD_I_AM_HERE_REQ		0x31
+#define CMD_I_AM_HERE_RESP		0x32
+#define CMD_REBOOT_REQ			0x33
+#define CMD_REBOOT_RESP			0x34
+
 #define CMD_GET_SETTINGS_REQ		0x11
 #define CMD_GET_SETTINGS_RESP		0x12
 #define CMD_SET_SETTINGS_REQ		0x13

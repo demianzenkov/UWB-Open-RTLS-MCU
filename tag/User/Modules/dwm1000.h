@@ -15,15 +15,6 @@
 #define DEFAULT_NODE_ID 0x01
 #define START_BLYNK_N	0x00
 
-#define RESERVED	0xAA
-
-#define TX_ANT_DLY 	16436
-#define RX_ANT_DLY 	16436
-
-/* UWB microsecond (uus) to device time unit (dtu, around 15.65 ps) conversion factor.
- * 1 uus = 512 / 499.2 µs and 1 µs = 499.2 * 128 dtu. */
-#define UUS_TO_DWT_TIME 65536
-
 class DWM1000 
 {
 public:

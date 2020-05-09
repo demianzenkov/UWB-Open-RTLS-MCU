@@ -70,7 +70,6 @@ void TskUNE::task(void const *arg)
 				   CMD_SET_SETTINGS_RESP, 
 				   tskUNE.net_tx_queue.data, 
 				   &tskUNE.net_tx_queue.len);
-	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
 	  case CMD_SET_DEF_SETTINGS_REQ:
 	    sErr = settings.setDefaultSettings();
@@ -83,6 +82,13 @@ void TskUNE::task(void const *arg)
 				   &tskUNE.net_tx_queue.len);
 	    tskEvent.setEvent(EV_CPU_RESET);
 	    break;
+	  case CMD_REBOOT_REQ:
+	    tskUNE.wake.prepareBuf(tskUNE.wake.wake.dbuf, 
+				   tskUNE.wake.wake.len, 
+				   CMD_REBOOT_RESP, 
+				   tskUNE.net_tx_queue.data, 
+				   &tskUNE.net_tx_queue.len);
+	    tskEvent.setEvent(EV_CPU_RESET);
 	  default:
 	    break;
 	    
