@@ -26,7 +26,7 @@ void TskUSB::createTask()
   xQueueUSBTx = xQueueCreate(_txQueueSize, sizeof(queue_data_t));
   
   osThreadId USBTaskHandle;
-  osThreadDef(USBTask, tskUSB.task, osPriorityNormal, 0, 256);
+  osThreadDef(USBTask, tskUSB.task, osPriorityNormal, 0, 512);
   USBTaskHandle = osThreadCreate(osThread(USBTask), NULL);
 }
 

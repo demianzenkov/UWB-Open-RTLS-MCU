@@ -12,7 +12,7 @@
 /* Delay between frames, in UWB microseconds. See NOTE 4 below. */
 /* This is the delay from the end of the frame transmission to the enable of the receiver, 
  * as programmed for the DW1000's wait for response feature. */
-#define POLL_TX_TO_RESP_RX_DLY_UUS 500
+#define POLL_TX_TO_RESP_RX_DLY_UUS 300
 /* This is the delay from Frame RX timestamp to TX reply timestamp used for calculating/setting 
  * the DW1000's delayed TX function. This includes the frame length of approximately 2.66 ms with above configuration. */
 #define RESP_RX_TO_FINAL_TX_DLY_UUS 3000
@@ -22,7 +22,7 @@
 /* Delays for ANCHOR(initiator) */
 /* This is the delay from Frame RX timestamp to TX reply timestamp used for calculating/setting the DW1000's delayed TX function. This includes the
 * frame length of approximately 2.46 ms with above configuration. */
-#define POLL_RX_TO_RESP_TX_DLY_UUS 3500//2750
+#define POLL_RX_TO_RESP_TX_DLY_UUS 3500				//2750
 /* This is the delay from the end of the frame transmission to the enable of the receiver, as programmed for the DW1000's wait for response feature. */
 #define RESP_TX_TO_FINAL_RX_DLY_UUS 1000		//500
 /* Receive final timeout. See NOTE 5 below. */

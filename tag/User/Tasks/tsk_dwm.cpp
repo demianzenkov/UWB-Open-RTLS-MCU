@@ -36,7 +36,7 @@ void TskDWM::task(void const *arg)
   }
   
  if (settings.pb_settings.message.RTLSMode == 
-      Settings_rtls_mode_MODE_TWR_RESPONDER) {
+      Settings_rtls_mode_MODE_TWR_INITIATOR) {
     UNE_TWR::initDWM();
   }
   

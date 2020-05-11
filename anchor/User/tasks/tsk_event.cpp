@@ -49,7 +49,7 @@ void TskEvent::task(void const *arg) {
       tskUNE.wake.prepareBuf((U08 *)NULL, 0, CMD_I_AM_HERE_REQ, 
 			     tskEvent.wake_cmd_buf, &tskEvent.wake_cmd_len);
       if (tskEvent.wake_cmd_len) {
-	tskUdpClient.transmit(tskEvent.wake_cmd_buf, tskEvent.wake_cmd_len);
+ 	tskUdpClient.transmit(tskEvent.wake_cmd_buf, tskEvent.wake_cmd_len);
       }
     }
     osDelay(1);

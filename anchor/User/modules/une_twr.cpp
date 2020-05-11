@@ -178,9 +178,9 @@ S08 UNE_TWR::twrResponderLoop()
 				 CMD_TWR_RANGING, 
 				 pb_monitoring.temp_buf,
 				 &wake_buf_len);
-	  
+	  pb_monitoring.temp_buf[wake_buf_len++] = '\n';
 	  tskUdpClient.transmit(pb_monitoring.temp_buf, wake_buf_len-1);
-	  tskUSB.transmit(pb_monitoring.temp_buf, wake_buf_len-1);
+	  tskUSB.transmit(pb_monitoring.temp_buf, wake_buf_len);
 	  	  
 	  return RC_ERR_NONE;
 	}

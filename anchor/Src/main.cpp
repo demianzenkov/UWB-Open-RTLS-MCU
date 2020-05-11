@@ -102,7 +102,7 @@ int main(void)
   tskDWM.createTask();
   tskUSB.createTask();
   tskUNE.createTask();
-//  tskEvent.createTask();
+  tskEvent.createTask();
   
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 256);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);

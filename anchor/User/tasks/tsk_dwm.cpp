@@ -47,7 +47,7 @@ void TskDWM::task(void const *arg)
   }
   
   if (settings.pb_settings.message.RTLSMode == 
-      Settings_rtls_mode_MODE_TWR_RESPONDER) {
+      Settings_rtls_mode_MODE_TWR_INITIATOR) {
     UNE_TWR::initDWM();
   }
   
@@ -56,10 +56,12 @@ void TskDWM::task(void const *arg)
   {
     Settings * msg = &settings.pb_settings.message;
     switch(settings.pb_settings.message.RTLSMode) {
+    
     case Settings_rtls_mode_MODE_TWR_RESPONDER:
       if (tskDWM.une_twr.twrResponderLoop() == RC_ERR_NONE)
        HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       break;
+    
     case Settings_rtls_mode_MODE_TWR_INITIATOR:
       for(int i=0; i<msg->ConnectedAnchors_count;i++)
       {

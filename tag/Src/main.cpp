@@ -96,7 +96,7 @@ int main(void)
   /* USER CODE END 1 */
   
 
-  /* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration-------------------------------------------------------- */
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -147,7 +147,7 @@ int main(void)
   /* add threads, ... */
   tskDWM.createTask();
   tskUSB.createTask();
-//  tskEvent.createTask();
+  tskEvent.createTask();
 //  tskLSM.createTask();
   /* USER CODE END RTOS_THREADS */
 

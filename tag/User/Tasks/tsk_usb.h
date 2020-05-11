@@ -25,7 +25,7 @@ public:
   SemaphoreHandle_t xSemUSBReady;
   SemaphoreHandle_t xSemConnReady;
   
-  const U16 _rxQueueSize = 1;
+  const U16 _rxQueueSize = 3;
   const U16 _txQueueSize = 1;
   
   Wake wake;
