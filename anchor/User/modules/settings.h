@@ -28,6 +28,8 @@ public:
   SettingsPB pb_settings;
   NetConfig net_conf;
   
+  static U08 MAC_ADDR[6];
+  
 };
 
 #endif /* __DEV_SETTINGS */

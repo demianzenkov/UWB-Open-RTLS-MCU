@@ -2,12 +2,14 @@
 #include "tsk_dwm.h"
 #include "tsk_usb.h"
 #include "tsk_udp_client.h"
+//#include "tsk_tcp_client.h"
 #include "usbd_cdc_if.h"
 #include "monitoring_pb.h"
 #include "settings.h"
 
 TskDWM tskDWM;
 extern TskUdpClient tskUdpClient;
+//extern TskTcpClient tskTcpClient;
 extern TskUSB tskUSB;
 extern MonitoringPB pb_monitoring;
 extern DeviceSettings settings;
@@ -65,11 +67,11 @@ void TskDWM::task(void const *arg)
     case Settings_rtls_mode_MODE_TWR_INITIATOR:
       for(int i=0; i<msg->ConnectedAnchors_count;i++)
       {
-	NVIC_DisableIRQ(OTG_FS_IRQn);
+//	NVIC_DisableIRQ(OTG_FS_IRQn);
 	if (tskDWM.une_twr.twrInitiatorLoop(msg->ConnectedAnchors[i]) == RC_ERR_NONE){
 	  HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
 	}
-	NVIC_EnableIRQ(OTG_FS_IRQn);
+//	NVIC_EnableIRQ(OTG_FS_IRQn);
 	if (msg->PollDelay > 0)
 	  osDelay(msg->PollDelay);
       }

@@ -2209,6 +2209,12 @@
                 <name>net</name>
                 <file>
                     <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
+                    <excluded>
+                        <configuration>anchor</configuration>
+                    </excluded>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\ethernetif.cpp</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Src\freertos.c</name>
@@ -2248,6 +2254,12 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_event.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Tasks\tsk_tcp_client.cpp</name>
+                    <excluded>
+                        <configuration>anchor</configuration>
+                    </excluded>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_udp_client.cpp</name>

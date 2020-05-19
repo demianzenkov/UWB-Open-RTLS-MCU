@@ -46,6 +46,9 @@ void TskUNE::task(void const *arg)
 	  
 	  /* If found valid WAKE command */
 	  switch(tskUNE.wake.wake.cmd) {
+	  case CMD_I_AM_HERE_RESP:
+	    tskEvent.resetHelloReq();
+	    break;
 	  case CMD_GET_SETTINGS_REQ:
 	    U16 msg_len;
 	    U08 * settings_buf;

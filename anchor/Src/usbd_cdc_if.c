@@ -65,8 +65,8 @@ extern TskUSB tskUSB;
 /* USER CODE BEGIN PRIVATE_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  2048
-#define APP_TX_DATA_SIZE  2048
+#define APP_RX_DATA_SIZE  512
+#define APP_TX_DATA_SIZE  512
 /* USER CODE END PRIVATE_DEFINES */
 
 /**

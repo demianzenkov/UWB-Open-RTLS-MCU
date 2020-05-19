@@ -21,6 +21,11 @@
 #ifndef __ETHERNETIF_H__
 #define __ETHERNETIF_H__
 
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+
 #include "lwip/err.h"
 #include "lwip/netif.h"
 #include "cmsis_os.h"
@@ -51,6 +56,9 @@ u32_t sys_now(void);
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+#ifdef __cplusplus
+}
+#endif
 #endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

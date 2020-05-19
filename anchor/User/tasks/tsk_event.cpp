@@ -1,11 +1,15 @@
 #include "tsk_event.h"
+#include "cmsis_os.h"
+#include "timers.h"
 #include "bsp_os.h"
 #include "tsk_une.h"
 #include "tsk_udp_client.h"
+//#include "tsk_tcp_client.h"
 
 TskEvent tskEvent;
 extern TskUNE tskUNE;
 extern TskUdpClient tskUdpClient;
+//extern TskTcpClient tskTcpClient;
 
 TskEvent::TskEvent()
 {
@@ -13,10 +17,15 @@ TskEvent::TskEvent()
 
 void TskEvent::createTask()
 { 
-  tskEvent.x_ev_group = xEventGroupCreate();
+  x_ev_group = xEventGroupCreate();
+  
+  
+  timer_10s_handle = xTimerCreate("Timer10s", pdMS_TO_TICKS(10000), pdTRUE, (void *) 0, timer10sCallback);
+  
+  xTimerStart(timer_10s_handle, 0);
   
   osThreadId EventTaskHandle;
-  osThreadDef(EventTask, tskEvent.task, osPriorityNormal, 0, 256);
+  osThreadDef(EventTask, task, osPriorityNormal, 0, 512);
   EventTaskHandle = osThreadCreate(osThread(EventTask), NULL);
 }
 
@@ -38,19 +47,15 @@ void TskEvent::task(void const *arg) {
     
     if (uxBits & EV_CPU_RESET) 
     {
-      BSP_OS::restartCPU(100);	// 100 ms - timeout before restart
+      BSP_OS::restartCPU(500);	// 500 ms - timeout before restart
     }
-    /* Check 10s event*/
-    U32 cur_ticks = BSP_OS::getTicks();
-    if (cur_ticks - tskEvent.ticks_10s >= 10000) 
+    if (uxBits & EV_TIMER_10S) 
     {
-      
-      tskEvent.ticks_10s = cur_ticks;
-      tskUNE.wake.prepareBuf((U08 *)NULL, 0, CMD_I_AM_HERE_REQ, 
-			     tskEvent.wake_cmd_buf, &tskEvent.wake_cmd_len);
-      if (tskEvent.wake_cmd_len) {
- 	tskUdpClient.transmit(tskEvent.wake_cmd_buf, tskEvent.wake_cmd_len);
+      if (tskEvent.hello_req >= HELLO_REQ_ATTEMPTS) {
+	BSP_OS::restartCPU(500);	// 500 ms - timeout before restart
       }
+      tskUdpClient.sendHello();
+      tskEvent.hello_req++;
     }
     osDelay(1);
   }
@@ -61,3 +66,14 @@ void TskEvent::setEvent(EventBits_t event_mask)
   /* Set bit 0 and bit 4 in xEventGroup. */
    xEventGroupSetBits( x_ev_group, event_mask );
 }
+
+void TskEvent::timer10sCallback(TimerHandle_t xTimer)
+{
+  tskEvent.setEvent(EV_TIMER_10S);
+}
+
+void TskEvent::resetHelloReq()
+{
+  hello_req = 0;
+}
+

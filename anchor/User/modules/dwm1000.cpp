@@ -29,18 +29,17 @@ S08 DWM1000::init()
   if(settings.pb_settings.message.DWRxAntDelay == 0) {
     settings.pb_settings.message.DWRxAntDelay = DEFAULT_RX_ANT_DLY;
   }
-  if(settings.pb_settings.message.DWTxAntDelay == 0) {
-    settings.pb_settings.message.DWTxAntDelay = DEFAULT_TX_ANT_DLY;
-  }
-  
-  if(settings.pb_settings.message.DWRxAntDelay < 0) {
+  else if(settings.pb_settings.message.DWRxAntDelay < 0) {
     dwt_setrxantennadelay(0);
   }
   else {
     dwt_setrxantennadelay(settings.pb_settings.message.DWRxAntDelay);
   }
   
-  if(settings.pb_settings.message.DWTxAntDelay < 0) {
+  if(settings.pb_settings.message.DWTxAntDelay == 0) {
+    settings.pb_settings.message.DWTxAntDelay = DEFAULT_TX_ANT_DLY;
+  }
+  else if(settings.pb_settings.message.DWTxAntDelay < 0) {
     dwt_settxantennadelay(0);
   }
   else {

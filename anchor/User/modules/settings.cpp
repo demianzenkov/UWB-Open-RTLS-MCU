@@ -13,7 +13,13 @@ DeviceSettings::DeviceSettings()
 
 S08 DeviceSettings::init()
 {
-  S08 sErr = getSettings(NULL, NULL);
+   S08 sErr;
+  for (int i=0; i<5; i++) {
+    sErr = getSettings(NULL, NULL); 
+    if(sErr == RC_ERR_NONE)
+      break;
+    HAL_Delay(500);
+  }
   /* No valid settings data found */ 
   if(sErr != RC_ERR_NONE)
   {
@@ -35,7 +41,8 @@ S08 DeviceSettings::setDefaultSettings()
   pb_settings.message.NodeType = Settings_node_type_TYPE_ANCHOR;
   pb_settings.message.RTLSMode = Settings_rtls_mode_MODE_OFF;
   
-  pb_settings.message.DeviceIp = this->net_conf.getDefaultDeviceIp32();
+  memcpy(pb_settings.message.NetworkMAC, net_conf.getDefaultMac(), 6);
+  pb_settings.message.DeviceIp = net_conf.getDefaultDeviceIp32();
   pb_settings.message.SubnetMask = net_conf.getDefaultSubnetMask32();
   pb_settings.message.GatewayIp = net_conf.getDefaultGatewayIp32();
   pb_settings.message.ServerIp = net_conf.getDefaultServerIp32();
@@ -93,6 +100,8 @@ S08 DeviceSettings::getSettings(U08 ** buf, U16 * len)
   
   U16 len_buf = (pb_settings.temp_buf[0] << 8) + pb_settings.temp_buf[1];
   
+  if(len_buf == 0)
+    return RC_ERR_DATA;
   
   sErr = pb_settings.decode(&pb_settings.temp_buf[2], 
 			    len_buf, 

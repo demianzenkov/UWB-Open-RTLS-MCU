@@ -16,26 +16,28 @@ message Settings {
         MODE_TDOA = 4;
     };
 
-    node_type NodeType =    1;
-    uint32 DeviceID =       2;
-    rtls_mode RTLSMode =    3;
-    uint32 NodeID =         4;  // ID in UNE
-    uint32 DeviceIp =       5;  // Network IP
-    uint32 SubnetMask =     6;  // Network Sunbet Mask
-    uint32 GatewayIp =      7;  // Network Gateway IP
-    uint32 ServerIp =       8;  // Network Server IP
-    uint32 ConnectionPort = 9;  // Network Connection Port
+    node_type   NodeType    = 1;
+    uint32      DeviceID    = 2;
+    rtls_mode   RTLSMode    = 3;
+    uint32      NodeID      = 4;  // ID in UNE
 
-    float PositionX = 10;   // Anchor X
-    float PositionY = 11;   // Anchor Y
-    float PositionZ = 12;   // Anchor Z
+    bytes  NetworkMAC       = 5;
+    uint32 DeviceIp         = 6;  // Network IP
+    uint32 SubnetMask       = 7;  // Network Sunbet Mask
+    uint32 GatewayIp        = 8;  // Network Gateway IP
+    uint32 ServerIp         = 9;  // Network Server IP
+    uint32 ConnectionPort   = 10;  // Network Connection Port
 
-    int32 DWRxAntDelay = 13;       // Antenna receive delay for DW1000 modules, -1 = zero delay
-    int32 DWTxAntDelay = 14;       // Antenna transmit delay for DW1000 modules, -1 = zero delay
+    float PositionX = 11;   // Anchor X
+    float PositionY = 12;   // Anchor Y
+    float PositionZ = 13;   // Anchor Z
 
-    repeated uint32 ConnectedAnchors = 15;  // List of anchors connected with tag, Max count: 10
-    uint32 PollPeriod = 16;                // Period of tag poll messages in ms
-    int32 PollDelay = 17;                // Delay between polls for diffenet anchors -1 = no delay
+    int32 DWRxAntDelay = 14;       // Antenna receive delay for DW1000 modules, -1 = zero delay
+    int32 DWTxAntDelay = 15;       // Antenna transmit delay for DW1000 modules, -1 = zero delay
+
+    repeated uint32 ConnectedAnchors = 16;  // List of anchors connected with tag, Max count: 10
+    uint32 PollPeriod = 17;                // Period of tag poll messages in ms
+    int32 PollDelay = 18;                // Delay between polls for diffenet anchors -1 = no delay
 
 }
 

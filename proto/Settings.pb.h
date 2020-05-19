@@ -36,6 +36,7 @@ typedef struct _Settings {
     uint32_t DeviceID;
     Settings_rtls_mode RTLSMode;
     uint32_t NodeID;
+    pb_byte_t NetworkMAC[6];
     uint32_t DeviceIp;
     uint32_t SubnetMask;
     uint32_t GatewayIp;
@@ -64,27 +65,28 @@ typedef struct _Settings {
 
 
 /* Initializer values for message structs */
-#define Settings_init_default                    {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0}
-#define Settings_init_zero                       {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0}
+#define Settings_init_default                    {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, {0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0}
+#define Settings_init_zero                       {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, {0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Settings_NodeType_tag                    1
 #define Settings_DeviceID_tag                    2
 #define Settings_RTLSMode_tag                    3
 #define Settings_NodeID_tag                      4
-#define Settings_DeviceIp_tag                    5
-#define Settings_SubnetMask_tag                  6
-#define Settings_GatewayIp_tag                   7
-#define Settings_ServerIp_tag                    8
-#define Settings_ConnectionPort_tag              9
-#define Settings_PositionX_tag                   10
-#define Settings_PositionY_tag                   11
-#define Settings_PositionZ_tag                   12
-#define Settings_DWRxAntDelay_tag                13
-#define Settings_DWTxAntDelay_tag                14
-#define Settings_ConnectedAnchors_tag            15
-#define Settings_PollPeriod_tag                  16
-#define Settings_PollDelay_tag                   17
+#define Settings_NetworkMAC_tag                  5
+#define Settings_DeviceIp_tag                    6
+#define Settings_SubnetMask_tag                  7
+#define Settings_GatewayIp_tag                   8
+#define Settings_ServerIp_tag                    9
+#define Settings_ConnectionPort_tag              10
+#define Settings_PositionX_tag                   11
+#define Settings_PositionY_tag                   12
+#define Settings_PositionZ_tag                   13
+#define Settings_DWRxAntDelay_tag                14
+#define Settings_DWTxAntDelay_tag                15
+#define Settings_ConnectedAnchors_tag            16
+#define Settings_PollPeriod_tag                  17
+#define Settings_PollDelay_tag                   18
 
 /* Struct field encoding specification for nanopb */
 #define Settings_FIELDLIST(X, a) \
@@ -92,19 +94,20 @@ X(a, STATIC,   SINGULAR, UENUM,    NodeType,          1) \
 X(a, STATIC,   SINGULAR, UINT32,   DeviceID,          2) \
 X(a, STATIC,   SINGULAR, UENUM,    RTLSMode,          3) \
 X(a, STATIC,   SINGULAR, UINT32,   NodeID,            4) \
-X(a, STATIC,   SINGULAR, UINT32,   DeviceIp,          5) \
-X(a, STATIC,   SINGULAR, UINT32,   SubnetMask,        6) \
-X(a, STATIC,   SINGULAR, UINT32,   GatewayIp,         7) \
-X(a, STATIC,   SINGULAR, UINT32,   ServerIp,          8) \
-X(a, STATIC,   SINGULAR, UINT32,   ConnectionPort,    9) \
-X(a, STATIC,   SINGULAR, FLOAT,    PositionX,        10) \
-X(a, STATIC,   SINGULAR, FLOAT,    PositionY,        11) \
-X(a, STATIC,   SINGULAR, FLOAT,    PositionZ,        12) \
-X(a, STATIC,   SINGULAR, INT32,    DWRxAntDelay,     13) \
-X(a, STATIC,   SINGULAR, INT32,    DWTxAntDelay,     14) \
-X(a, STATIC,   REPEATED, UINT32,   ConnectedAnchors,  15) \
-X(a, STATIC,   SINGULAR, UINT32,   PollPeriod,       16) \
-X(a, STATIC,   SINGULAR, INT32,    PollDelay,        17)
+X(a, STATIC,   SINGULAR, FIXED_LENGTH_BYTES, NetworkMAC,        5) \
+X(a, STATIC,   SINGULAR, UINT32,   DeviceIp,          6) \
+X(a, STATIC,   SINGULAR, UINT32,   SubnetMask,        7) \
+X(a, STATIC,   SINGULAR, UINT32,   GatewayIp,         8) \
+X(a, STATIC,   SINGULAR, UINT32,   ServerIp,          9) \
+X(a, STATIC,   SINGULAR, UINT32,   ConnectionPort,   10) \
+X(a, STATIC,   SINGULAR, FLOAT,    PositionX,        11) \
+X(a, STATIC,   SINGULAR, FLOAT,    PositionY,        12) \
+X(a, STATIC,   SINGULAR, FLOAT,    PositionZ,        13) \
+X(a, STATIC,   SINGULAR, INT32,    DWRxAntDelay,     14) \
+X(a, STATIC,   SINGULAR, INT32,    DWTxAntDelay,     15) \
+X(a, STATIC,   REPEATED, UINT32,   ConnectedAnchors,  16) \
+X(a, STATIC,   SINGULAR, UINT32,   PollPeriod,       17) \
+X(a, STATIC,   SINGULAR, INT32,    PollDelay,        18)
 #define Settings_CALLBACK NULL
 #define Settings_DEFAULT NULL
 
@@ -114,7 +117,7 @@ extern const pb_msgdesc_t Settings_msg;
 #define Settings_fields &Settings_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Settings_size                            162
+#define Settings_size                            180
 
 #ifdef __cplusplus
 } /* extern "C" */

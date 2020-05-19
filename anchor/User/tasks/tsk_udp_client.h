@@ -19,27 +19,26 @@ public:
   void createTask();
 
 public:
-  static void udpEchoThread(void const *);
+  static void udpReceiveThread(void const *);
   static void udpTransmitThread(void const *);
   
+  static void udpThread(void const *arg);
+  static void udpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len);
+  static void sendThread(void const *);
+  
   void transmit(U08 * buf, U16 len);
+  void sendHello();
   
 private:
   inline S08 lock();
   inline S08 unlock();
   
 public:
-  typedef struct struct_conn_t {
-    struct netconn *conn;
-    struct netbuf *buf;
-    struct ip4_addr *addr;
-    unsigned short port;
-  } struct_conn;
+  ip_addr_t srv_addr;
+  unsigned short port;
+  struct netconn *conn;
   
-  struct_conn udp_recv_conn;
-  struct_conn udp_send_conn;
-  
-  SemaphoreHandle_t xSemLwipReady;
+//  SemaphoreHandle_t xSemLwipReady;
   SemaphoreHandle_t xSemConnReady;
   
   QueueHandle_t xQueueUdpRx;
@@ -48,8 +47,9 @@ public:
   queue_data_t rx_queue;
   queue_data_t tx_queue;
   
-  const U16 _rxQueueSize = 1;
-  const U16 _txQueueSize = 1;
+  const U16 _rxQueueSize = 3;
+  const U16 _txQueueSize = 3;
+
   
 private:
   OS_SEM sem;

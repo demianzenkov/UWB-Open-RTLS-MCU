@@ -30,50 +30,57 @@ U32 NetConfig::ipArrToHex(U08 * ip)
 
 void NetConfig::setDefaultSettings()
 {
-  memcpy(ip_conf.device_ip, default_ip_conf.device_ip, 4);
-  memcpy(ip_conf.gw_ip, default_ip_conf.gw_ip, 4);
-  memcpy(ip_conf.server_ip, default_ip_conf.server_ip, 4);
-  memcpy(ip_conf.subnet_mask, default_ip_conf.subnet_mask, 4);
-  ip_conf.server_port = default_ip_conf.server_port;
+  memcpy(ip_conf.device_mac, def_config.device_mac, 4);
+  memcpy(ip_conf.device_ip, def_config.device_ip, 4);
+  memcpy(ip_conf.gw_ip, def_config.gw_ip, 4);
+  memcpy(ip_conf.server_ip, def_config.server_ip, 4);
+  memcpy(ip_conf.subnet_mask, def_config.subnet_mask, 4);
+  ip_conf.server_port = def_config.server_port;
+}
+
+
+const U08 * NetConfig::getDefaultMac(void)
+{
+  return def_config.device_mac;
 }
 
 const U08 * NetConfig::getDefaultDeviceIp(void) 
 {
-  return default_ip_conf.device_ip;
+  return def_config.device_ip;
 }
 const U08 * NetConfig::getDefaultSubnetMask(void) 
 {
-  return default_ip_conf.subnet_mask;
+  return def_config.subnet_mask;
 }
 const U08 * NetConfig::getDefaultGatewayIp(void) 
 {
-  return default_ip_conf.gw_ip;
+  return def_config.gw_ip;
 }
 const U08 * NetConfig::getDefaultServerIp(void)
 {
-  return default_ip_conf.server_ip;
+  return def_config.server_ip;
 }
 U16 NetConfig::getDefaultServerPort(void) 
 {
-  return default_ip_conf.server_port;
+  return def_config.server_port;
 }
 
 
 U32 NetConfig::getDefaultDeviceIp32(void) 
 {
-  return ipArrToHex((U08*)default_ip_conf.device_ip);
+  return ipArrToHex((U08*)def_config.device_ip);
 }
 U32 NetConfig::getDefaultSubnetMask32(void) 
 {
-  return ipArrToHex((U08*)default_ip_conf.subnet_mask);
+  return ipArrToHex((U08*)def_config.subnet_mask);
 }
 U32 NetConfig::getDefaultGatewayIp32(void) 
 {
-  return ipArrToHex((U08*)default_ip_conf.gw_ip);
+  return ipArrToHex((U08*)def_config.gw_ip);
 }
 U32 NetConfig::getDefaultServerIp32(void)
 {
-  return ipArrToHex((U08*)default_ip_conf.server_ip);
+  return ipArrToHex((U08*)def_config.server_ip);
 }
 
 
@@ -136,6 +143,11 @@ void NetConfig::setIp32(U08 * buf, U32 ip)
   buf[3] = (ip >>24) & 0xFF;
 }
 
+
+U08 * NetConfig::getDeviceMac(void)
+{
+  return ip_conf.device_mac;
+}
 U08 * NetConfig::getDeviceIp(void)
 {
   return ip_conf.device_ip;

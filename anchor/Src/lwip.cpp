@@ -26,6 +26,7 @@
 #endif /* MDK ARM Compiler */
 
 /* USER CODE BEGIN 0 */
+#include "ethernetif.h"
 #include "settings.h"
 
 /* USER CODE END 0 */

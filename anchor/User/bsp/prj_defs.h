@@ -1,7 +1,9 @@
 #ifndef __PRJ_DEFS
 #define __PRJ_DEFS
 
-#define MAX_QUEUE_SIZE	128
+#include <stdlib.h>
+
+#define MAX_QUEUE_SIZE	256
 
 /* S08 Return Codes */
 #define RC_ERR_NONE	(0)
@@ -53,10 +55,6 @@ typedef volatile S64		VS64;
 #define S32_MAX_VAL		2147483647
 #define S64_MIN_VAL		-9223372036854775807
 #define S64_MAX_VAL		9223372036854775807
-
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
 
 typedef struct {
   U08 data[MAX_QUEUE_SIZE];

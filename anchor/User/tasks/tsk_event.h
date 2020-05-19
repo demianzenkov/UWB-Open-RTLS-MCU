@@ -5,9 +5,10 @@
 #include "main.h"
 #include "cmsis_os.h"
 
-#define WAKE_CMD_BUF_SIZE	16
-
 #define	EV_CPU_RESET	(1 << 0)
+#define	EV_TIMER_10S	(1 << 1)
+
+#define HELLO_REQ_ATTEMPTS	3
 
 class TskEvent
 {
@@ -18,15 +19,16 @@ public:
   static void task(void const *arg);
   
   void setEvent(EventBits_t event_mask);
+  void resetHelloReq();
 
-public:
-  U32 ticks_10s;
+private:
+  static void timer10sCallback(TimerHandle_t xTimer);
+  
 private:
   EventGroupHandle_t x_ev_group;
+  TimerHandle_t timer_10s_handle;
   
-  U08 wake_cmd_buf[WAKE_CMD_BUF_SIZE];
-  U16 wake_cmd_len;
-    
+  U08 hello_req = 0;
 };
 
 #endif

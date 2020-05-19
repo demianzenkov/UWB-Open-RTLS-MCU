@@ -5,12 +5,14 @@
 #include "deca_port.h"
 #include "tsk_usb.h"
 #include "tsk_udp_client.h"
+//#include "tsk_tcp_client.h"
 #include "monitoring_pb.h"
 #include "settings.h"
 #include "wake.h"
 #include "tsk_une.h"
 
 extern TskUdpClient tskUdpClient;
+//extern TskTcpClient tskTcpClient;
 extern TskUNE tskUNE;
 extern TskUSB tskUSB;
 extern MonitoringPB pb_monitoring;

@@ -2469,6 +2469,9 @@
                     <name>$PROJ_DIR$\..\Src\ethernetif.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\Src\ethernetif.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\Src\freertos.c</name>
                 </file>
                 <file>
@@ -2503,6 +2506,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_event.cpp</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\User\Tasks\tsk_tcp_client.cpp</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\User\Tasks\tsk_udp_client.cpp</name>

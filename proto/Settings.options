@@ -1,1 +1,3 @@
 Settings.ConnectedAnchors max_count:10
+Settings.NetworkMAC max_size:6
+Settings.NetworkMAC fixed_length:true

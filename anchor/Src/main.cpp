@@ -30,6 +30,7 @@
 #include "bsp_spi.h"
     
 #include "tsk_udp_client.h"
+//#include "tsk_tcp_client.h"
 #include "tsk_dwm.h"
 #include "tsk_usb.h"
 #include "tsk_une.h"
@@ -58,6 +59,7 @@ extern MX25 mx25;
 extern DeviceSettings settings;
 
 extern TskUdpClient tskUdpClient;
+//extern TskTcpClient tskTcpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
 extern TskUNE tskUNE;
@@ -97,14 +99,21 @@ int main(void)
   mx25.init(&spi2);
   settings.init();
   
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
+  
+  /* init code for LWIP */
+  MX_LWIP_Init();
+    
   /* Create the thread(s) */
   tskUdpClient.createTask();
+//  tskTcpClient.createTask();
   tskDWM.createTask();
   tskUSB.createTask();
   tskUNE.createTask();
   tskEvent.createTask();
   
-  osThreadDef(initTask, initTask, osPriorityNormal, 0, 256);
+  osThreadDef(initTask, initTask, osPriorityNormal, 0, 1024);
   initTaskHandle = osThreadCreate(osThread(initTask), NULL);
   
 
@@ -122,17 +131,20 @@ int main(void)
 /* USER CODE END Header_StartDefaultTask */
 void initTask(void const * argument)
 { 
-  /* init code for LWIP */
-  MX_LWIP_Init();
-
-  /* init code for USB_DEVICE */
-  MX_USB_DEVICE_Init();
-
-  xSemaphoreGive(tskUdpClient.xSemLwipReady);
+//  xSemaphoreGive(tskUdpClient.xSemLwipReady);
   
   xSemaphoreGive(tskDWM.xSemUSBReady);
   
-  mx25.detect();
+  if (mx25.detect() != TRUE)
+  {
+    for(;;)
+    {
+      osDelay(1000);
+      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+      osDelay(1000);
+      HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET); 
+    }
+  }
   /* Infinite loop */
   for(;;)
   {

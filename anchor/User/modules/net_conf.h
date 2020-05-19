@@ -10,21 +10,15 @@ public:
   NetConfig();
   ~NetConfig();
   
-  typedef const struct {
-    U08 device_ip[4] = {10, 90, 0, 2};
-    U08 gw_ip[4] = {10, 90, 90, 90};
-    U08 server_ip[4] = {10, 90, 90, 99};
-    U16 server_port = 30005;
-    U08 subnet_mask[4] = {255, 0, 0, 0};
-  } default_ip_conf_t;
-  
   typedef struct {
+    U08 device_mac[6];
     U08 device_ip[4];
     U08 gw_ip[4];
     U08 server_ip[4];
     U16 server_port;
     U08 subnet_mask[4];
   } ip_conf_t;
+  
   
 public:
   void init(Settings * settings);
@@ -45,6 +39,7 @@ public:
   void setServerIp32(U32 ip);
   void setSubnetMask32(U32 ip);
   
+  U08 * getDeviceMac(void);
   U08 * getDeviceIp(void);
   U08 * getSubnetMask(void);
   U08 * getGatewayIp(void);
@@ -56,6 +51,7 @@ public:
   U32 getGatewayIp32(void);
   U32 getServerIp32(void);
   
+  const U08 * getDefaultMac(void);
   const U08 * getDefaultDeviceIp(void);
   const U08 * getDefaultSubnetMask(void);
   const U08 * getDefaultGatewayIp(void);
@@ -72,7 +68,16 @@ private:
     
 private:
   ip_conf_t ip_conf;
-  const default_ip_conf_t default_ip_conf;
+  
+  ip_conf_t def_config = {
+    .device_mac = {0x00,0x80,0xE1,0x12,0x45,0x79},
+    .device_ip = {10, 90, 0, 2},
+    .gw_ip = {10, 90, 90, 90},
+    .server_ip = {10, 90, 90, 99},
+    .server_port = 30005,
+    .subnet_mask = {255, 0, 0, 0},
+  };
+  
 };
 
 #endif
