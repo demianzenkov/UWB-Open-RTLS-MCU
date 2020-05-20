@@ -1,9 +1,11 @@
 #include "tsk_udp_client.h"
 #include "tsk_une.h"
 #include "settings.h"
+#include "tsk_event.h"
 
 TskUdpClient tskUdpClient;
 extern TskUNE tskUNE;
+extern TskEvent tskEvent;
 extern DeviceSettings settings;
 
 
@@ -45,35 +47,34 @@ void TskUdpClient::udpThread(void const *arg)
   tskUdpClient.srv_addr.addr = settings.net_conf.getServerIp32();
   tskUdpClient.port = settings.net_conf.getServerPort();
     
-  while (!connected) {
-    tskUdpClient.conn = netconn_new_with_callback(NETCONN_UDP, tskUdpClient.udpReceiveCallback);
-    
-    if (tskUdpClient.conn != NULL)
+  
+  tskUdpClient.conn = netconn_new_with_callback(NETCONN_UDP, tskUdpClient.udpReceiveCallback);
+  
+  if (tskUdpClient.conn != NULL)
+  {
+    if (netconn_bind(tskUdpClient.conn, 
+		     NULL, 
+		     tskUdpClient.port) == ERR_OK)
     {
-      if (netconn_bind(tskUdpClient.conn, 
-		       NULL, 
-		       tskUdpClient.port) == ERR_OK)
+      err = netconn_connect(tskUdpClient.conn, 
+			    &tskUdpClient.srv_addr, 
+			    tskUdpClient.port);
+      if (err == ERR_OK)
       {
-	err = netconn_connect(tskUdpClient.conn, 
-			      &tskUdpClient.srv_addr, 
-			      tskUdpClient.port);
-	if (err == ERR_OK)
-	{
-	  osThreadId udpTransmitTaskHandle;
-	  osThreadDef(UDPTransmitTask, 
-		      tskUdpClient.sendThread, 
-		      osPriorityNormal, 
-		      0, 
-		      512);
-	  udpTransmitTaskHandle = osThreadCreate(osThread(UDPTransmitTask), NULL);
-	  connected = true;
-	}
+	osThreadId udpTransmitTaskHandle;
+	osThreadDef(UDPTransmitTask, 
+		    tskUdpClient.sendThread, 
+		    osPriorityNormal, 
+		    0, 
+		    512);
+	udpTransmitTaskHandle = osThreadCreate(osThread(UDPTransmitTask), NULL);
+	connected = true;
       }
     }
-    if (connected == false) {
-      netconn_delete(tskUdpClient.conn);
-      osDelay(1000);
-    }
+  }
+   
+  if (connected != true) {
+    tskEvent.setEvent(EV_CPU_RESET);
   }
   
   for(;;)

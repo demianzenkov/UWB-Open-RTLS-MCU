@@ -82,7 +82,7 @@ S08 UNE_TWR::twrInitiatorLoop(U08 an_id)
 	 (dwm->rx_buffer[MSG_POLL_L_IDX] == poll_msg[MSG_POLL_L_IDX]) )
     {
       /* RESPONSE IS CORRECT */   
-      uint32 final_tx_time;
+      U64 final_tx_time;
       int ret;
       
       final_msg[MSG_TAG_IDX] = node_id;

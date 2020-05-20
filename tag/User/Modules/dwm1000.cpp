@@ -118,10 +118,12 @@ uint64 DWM1000::getTimestampU64(ts_type_te ts_type)
   }
   else 
     return 0;
+  
   for (i = 4; i >= 0; i--)
   {
     ts <<= 8;
     ts |= ts_tab[i];
   }
+  
   return ts;
 }
