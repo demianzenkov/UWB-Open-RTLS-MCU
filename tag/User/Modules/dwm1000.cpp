@@ -46,29 +46,6 @@ S08 DWM1000::init()
   return RC_ERR_NONE;
 }
 
-void DWM1000::blink()
-{
-  dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
-  /* Write frame data to DW1000 and prepare transmission. See NOTE 4 below.*/
-  dwt_writetxdata(sizeof(tx_msg), tx_msg, 0); /* Zero offset in TX buffer. */
-  dwt_writetxfctrl(sizeof(tx_msg), 0, 1); /* Zero offset in TX buffer, ranging. */
-  
-  /* Start transmission. */
-  dwt_starttx(DWT_START_TX_IMMEDIATE);
-  
-  /* Poll DW1000 until TX frame sent event set. See NOTE 5 below.
-  * STATUS register is 5 bytes long but, as the event we are looking at is in the first byte of the register, we can use this simplest API
-  * function to access it.*/
-  while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS))
-  { };
-  
-  /* Clear TX frame sent event. */
-  dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
-  
-  /* Increment the blink frame sequence number (modulo 256). */
-  tx_msg[BLINK_FRAME_SN_IDX]++;
-}
-
 void DWM1000::configDWM(dwt_config_t * config)
 {
   dwt_configure(config);

@@ -12,4 +12,7 @@ PB_BIND(Monitoring, Monitoring, AUTO)
 PB_BIND(Monitoring_TWR_message, Monitoring_TWR_message, AUTO)
 
 
+PB_BIND(Monitoring_TDOA_message, Monitoring_TDOA_message, AUTO)
+
+
 

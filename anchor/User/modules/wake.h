@@ -27,7 +27,11 @@
 #define CMD_SET_SETTINGS_RESP		0x14
 #define CMD_SET_DEF_SETTINGS_REQ	0x15
 #define CMD_SET_DEF_SETTINGS_RESP	0x16
+
 #define CMD_TWR_RANGING			0x21
+
+#define CMD_TDOA_SYNC			0x41
+#define CMD_TDOA_BLINK			0x42
 
 
 class Wake {

@@ -14,6 +14,17 @@ extern "C" {
 #endif
 
 /* Struct definitions */
+typedef struct _Monitoring_TDOA_message {
+    uint32_t NodeID;
+    uint32_t BlinkID;
+    uint32_t BlinkTS;
+    uint32_t BlinkNN;
+    uint32_t SyncID;
+    uint64_t SyncTxTS;
+    uint64_t SyncRxTS;
+    uint32_t SyncNN;
+} Monitoring_TDOA_message;
+
 typedef struct _Monitoring_TWR_message {
     uint32_t NodeID;
     uint32_t InitiatorID;
@@ -27,16 +38,28 @@ typedef struct _Monitoring_TWR_message {
 typedef struct _Monitoring {
     bool has_TWR;
     Monitoring_TWR_message TWR;
+    bool has_TDOA;
+    Monitoring_TDOA_message TDOA;
 } Monitoring;
 
 
 /* Initializer values for message structs */
-#define Monitoring_init_default                  {false, Monitoring_TWR_message_init_default}
+#define Monitoring_init_default                  {false, Monitoring_TWR_message_init_default, false, Monitoring_TDOA_message_init_default}
 #define Monitoring_TWR_message_init_default      {0, 0, 0, 0, 0, 0, 0}
-#define Monitoring_init_zero                     {false, Monitoring_TWR_message_init_zero}
+#define Monitoring_TDOA_message_init_default     {0, 0, 0, 0, 0, 0, 0, 0}
+#define Monitoring_init_zero                     {false, Monitoring_TWR_message_init_zero, false, Monitoring_TDOA_message_init_zero}
 #define Monitoring_TWR_message_init_zero         {0, 0, 0, 0, 0, 0, 0}
+#define Monitoring_TDOA_message_init_zero        {0, 0, 0, 0, 0, 0, 0, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
+#define Monitoring_TDOA_message_NodeID_tag       1
+#define Monitoring_TDOA_message_BlinkID_tag      2
+#define Monitoring_TDOA_message_BlinkTS_tag      3
+#define Monitoring_TDOA_message_BlinkNN_tag      4
+#define Monitoring_TDOA_message_SyncID_tag       5
+#define Monitoring_TDOA_message_SyncTxTS_tag     6
+#define Monitoring_TDOA_message_SyncRxTS_tag     7
+#define Monitoring_TDOA_message_SyncNN_tag       8
 #define Monitoring_TWR_message_NodeID_tag        1
 #define Monitoring_TWR_message_InitiatorID_tag   2
 #define Monitoring_TWR_message_Distance_tag      3
@@ -45,13 +68,16 @@ typedef struct _Monitoring {
 #define Monitoring_TWR_message_ResponseNN_tag    7
 #define Monitoring_TWR_message_FinalNN_tag       6
 #define Monitoring_TWR_tag                       1
+#define Monitoring_TDOA_tag                      2
 
 /* Struct field encoding specification for nanopb */
 #define Monitoring_FIELDLIST(X, a) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  TWR,               1)
+X(a, STATIC,   OPTIONAL, MESSAGE,  TWR,               1) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  TDOA,              2)
 #define Monitoring_CALLBACK NULL
 #define Monitoring_DEFAULT NULL
 #define Monitoring_TWR_MSGTYPE Monitoring_TWR_message
+#define Monitoring_TDOA_MSGTYPE Monitoring_TDOA_message
 
 #define Monitoring_TWR_message_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   NodeID,            1) \
@@ -64,16 +90,31 @@ X(a, STATIC,   SINGULAR, UINT32,   ResponseNN,        7)
 #define Monitoring_TWR_message_CALLBACK NULL
 #define Monitoring_TWR_message_DEFAULT NULL
 
+#define Monitoring_TDOA_message_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   NodeID,            1) \
+X(a, STATIC,   SINGULAR, UINT32,   BlinkID,           2) \
+X(a, STATIC,   SINGULAR, UINT32,   BlinkTS,           3) \
+X(a, STATIC,   SINGULAR, UINT32,   BlinkNN,           4) \
+X(a, STATIC,   SINGULAR, UINT32,   SyncID,            5) \
+X(a, STATIC,   SINGULAR, UINT64,   SyncTxTS,          6) \
+X(a, STATIC,   SINGULAR, UINT64,   SyncRxTS,          7) \
+X(a, STATIC,   SINGULAR, UINT32,   SyncNN,            8)
+#define Monitoring_TDOA_message_CALLBACK NULL
+#define Monitoring_TDOA_message_DEFAULT NULL
+
 extern const pb_msgdesc_t Monitoring_msg;
 extern const pb_msgdesc_t Monitoring_TWR_message_msg;
+extern const pb_msgdesc_t Monitoring_TDOA_message_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define Monitoring_fields &Monitoring_msg
 #define Monitoring_TWR_message_fields &Monitoring_TWR_message_msg
+#define Monitoring_TDOA_message_fields &Monitoring_TDOA_message_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Monitoring_size                          43
+#define Monitoring_size                          103
 #define Monitoring_TWR_message_size              41
+#define Monitoring_TDOA_message_size             58
 
 #ifdef __cplusplus
 } /* extern "C" */

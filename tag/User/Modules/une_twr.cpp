@@ -265,14 +265,31 @@ S08 UNE_TWR::twrResponderLoop()
 	  final_msg_get_ts(&dwm->rx_buffer[FINAL_MSG_FINAL_TX_TS_IDX], &final_tx_ts);
 	  /* Compute time of flight. 32-bit subtractions give correct answers even if clock has wrapped. See NOTE 12 below. */
 	  
-	  Ra = (double)(resp_rx_ts - poll_tx_ts);
-	  Rb = (double)(final_rx_ts - resp_tx_ts);
-	  Da = (double)(final_tx_ts - resp_rx_ts);
-	  Db = (double)(resp_tx_ts - poll_rx_ts);
+	  poll_rx_ts &= 0xFFFFFFFFFF;
+	  poll_tx_ts &= 0xFFFFFFFFFF;
+	  final_rx_ts &= 0xFFFFFFFFFF;
+	  final_tx_ts &= 0xFFFFFFFFFF;
+	  resp_tx_ts &= 0xFFFFFFFFFF;
+	  resp_rx_ts &= 0xFFFFFFFFFF;
+	  
+	  U32 poll_rx_ts_32 = (U32)poll_rx_ts;
+	  U32 resp_tx_ts_32 = (U32)resp_tx_ts;
+	  U32 final_rx_ts_32 = (U32)final_rx_ts;
+	  
+	  Ra = (U32)(resp_rx_ts - poll_tx_ts);
+	  Rb = (U32)(final_rx_ts_32 - resp_tx_ts_32);
+	  Da = (U32)(final_tx_ts - resp_rx_ts);
+	  Db = (U32)(resp_tx_ts_32 - poll_rx_ts_32);
+	
 	  tof_dtu = (S64)((Ra * Rb - Da * Db) / (Ra + Rb + Da + Db));
 	  
 	  tof = tof_dtu * DWT_TIME_UNITS;
 	  distance = tof * SPEED_OF_LIGHT;
+	  
+	  if ((distance > 1000) || (distance < -1000))
+	  {
+	    return RC_ERR_DATA;
+	  }
 	  
 	  pb_monitoring.clearMessage();
 	  

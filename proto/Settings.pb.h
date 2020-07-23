@@ -16,26 +16,28 @@ extern "C" {
 /* Enum definitions */
 typedef enum _Settings_node_type {
     Settings_node_type_TYPE_NONE = 0,
-    Settings_node_type_TYPE_UNDEF = 1,
-    Settings_node_type_TYPE_ANCHOR = 2,
-    Settings_node_type_TYPE_SYNC_NODE = 3,
-    Settings_node_type_TYPE_TAG = 4
+    Settings_node_type_UNDEF = 1,
+    Settings_node_type_ANCHOR = 2,
+    Settings_node_type_SYNC_NODE = 3,
+    Settings_node_type_TAG = 4
 } Settings_node_type;
 
 typedef enum _Settings_rtls_mode {
     Settings_rtls_mode_MODE_NONE = 0,
-    Settings_rtls_mode_MODE_OFF = 1,
-    Settings_rtls_mode_MODE_TWR_INITIATOR = 2,
-    Settings_rtls_mode_MODE_TWR_RESPONDER = 3,
-    Settings_rtls_mode_MODE_TDOA = 4
+    Settings_rtls_mode_OFF = 1,
+    Settings_rtls_mode_TWR_INITIATOR = 2,
+    Settings_rtls_mode_TWR_RESPONDER = 3,
+    Settings_rtls_mode_TDOA_ANCHOR = 4,
+    Settings_rtls_mode_TDOA_SYNC = 5,
+    Settings_rtls_mode_TDOA_TAG = 6
 } Settings_rtls_mode;
 
 /* Struct definitions */
 typedef struct _Settings {
     Settings_node_type NodeType;
-    uint32_t DeviceID;
+    int32_t DeviceID;
     Settings_rtls_mode RTLSMode;
-    uint32_t NodeID;
+    int32_t NodeID;
     pb_byte_t NetworkMAC[6];
     uint32_t DeviceIp;
     uint32_t SubnetMask;
@@ -47,26 +49,30 @@ typedef struct _Settings {
     float PositionZ;
     int32_t DWRxAntDelay;
     int32_t DWTxAntDelay;
-    pb_size_t ConnectedAnchors_count;
-    uint32_t ConnectedAnchors[10];
-    uint32_t PollPeriod;
-    int32_t PollDelay;
+    pb_size_t TwrConnectedAnchors_count;
+    uint32_t TwrConnectedAnchors[10];
+    uint32_t TwrPollPeriod;
+    int32_t TwrPollDelay;
+    int32_t TdoaSyncPeriod;
+    int32_t TdoaPollPeriod;
+    int32_t TdoaSyncSenderID;
+    int32_t TdoaSyncReceiverID;
 } Settings;
 
 
 /* Helper constants for enums */
 #define _Settings_node_type_MIN Settings_node_type_TYPE_NONE
-#define _Settings_node_type_MAX Settings_node_type_TYPE_TAG
-#define _Settings_node_type_ARRAYSIZE ((Settings_node_type)(Settings_node_type_TYPE_TAG+1))
+#define _Settings_node_type_MAX Settings_node_type_TAG
+#define _Settings_node_type_ARRAYSIZE ((Settings_node_type)(Settings_node_type_TAG+1))
 
 #define _Settings_rtls_mode_MIN Settings_rtls_mode_MODE_NONE
-#define _Settings_rtls_mode_MAX Settings_rtls_mode_MODE_TDOA
-#define _Settings_rtls_mode_ARRAYSIZE ((Settings_rtls_mode)(Settings_rtls_mode_MODE_TDOA+1))
+#define _Settings_rtls_mode_MAX Settings_rtls_mode_TDOA_TAG
+#define _Settings_rtls_mode_ARRAYSIZE ((Settings_rtls_mode)(Settings_rtls_mode_TDOA_TAG+1))
 
 
 /* Initializer values for message structs */
-#define Settings_init_default                    {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, {0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0}
-#define Settings_init_zero                       {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, {0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0}
+#define Settings_init_default                    {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, {0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0, 0, 0, 0, 0}
+#define Settings_init_zero                       {_Settings_node_type_MIN, 0, _Settings_rtls_mode_MIN, 0, {0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0, 0, 0, 0, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define Settings_NodeType_tag                    1
@@ -84,16 +90,20 @@ typedef struct _Settings {
 #define Settings_PositionZ_tag                   13
 #define Settings_DWRxAntDelay_tag                14
 #define Settings_DWTxAntDelay_tag                15
-#define Settings_ConnectedAnchors_tag            16
-#define Settings_PollPeriod_tag                  17
-#define Settings_PollDelay_tag                   18
+#define Settings_TwrConnectedAnchors_tag         16
+#define Settings_TwrPollPeriod_tag               17
+#define Settings_TwrPollDelay_tag                18
+#define Settings_TdoaSyncPeriod_tag              19
+#define Settings_TdoaPollPeriod_tag              20
+#define Settings_TdoaSyncSenderID_tag            21
+#define Settings_TdoaSyncReceiverID_tag          22
 
 /* Struct field encoding specification for nanopb */
 #define Settings_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UENUM,    NodeType,          1) \
-X(a, STATIC,   SINGULAR, UINT32,   DeviceID,          2) \
+X(a, STATIC,   SINGULAR, INT32,    DeviceID,          2) \
 X(a, STATIC,   SINGULAR, UENUM,    RTLSMode,          3) \
-X(a, STATIC,   SINGULAR, UINT32,   NodeID,            4) \
+X(a, STATIC,   SINGULAR, INT32,    NodeID,            4) \
 X(a, STATIC,   SINGULAR, FIXED_LENGTH_BYTES, NetworkMAC,        5) \
 X(a, STATIC,   SINGULAR, UINT32,   DeviceIp,          6) \
 X(a, STATIC,   SINGULAR, UINT32,   SubnetMask,        7) \
@@ -105,9 +115,13 @@ X(a, STATIC,   SINGULAR, FLOAT,    PositionY,        12) \
 X(a, STATIC,   SINGULAR, FLOAT,    PositionZ,        13) \
 X(a, STATIC,   SINGULAR, INT32,    DWRxAntDelay,     14) \
 X(a, STATIC,   SINGULAR, INT32,    DWTxAntDelay,     15) \
-X(a, STATIC,   REPEATED, UINT32,   ConnectedAnchors,  16) \
-X(a, STATIC,   SINGULAR, UINT32,   PollPeriod,       17) \
-X(a, STATIC,   SINGULAR, INT32,    PollDelay,        18)
+X(a, STATIC,   REPEATED, UINT32,   TwrConnectedAnchors,  16) \
+X(a, STATIC,   SINGULAR, UINT32,   TwrPollPeriod,    17) \
+X(a, STATIC,   SINGULAR, INT32,    TwrPollDelay,     18) \
+X(a, STATIC,   SINGULAR, INT32,    TdoaSyncPeriod,   19) \
+X(a, STATIC,   SINGULAR, INT32,    TdoaPollPeriod,   20) \
+X(a, STATIC,   SINGULAR, INT32,    TdoaSyncSenderID,  21) \
+X(a, STATIC,   SINGULAR, INT32,    TdoaSyncReceiverID,  22)
 #define Settings_CALLBACK NULL
 #define Settings_DEFAULT NULL
 
@@ -117,7 +131,7 @@ extern const pb_msgdesc_t Settings_msg;
 #define Settings_fields &Settings_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Settings_size                            180
+#define Settings_size                            238
 
 #ifdef __cplusplus
 } /* extern "C" */

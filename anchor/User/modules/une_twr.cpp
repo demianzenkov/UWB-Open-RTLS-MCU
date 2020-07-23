@@ -166,35 +166,7 @@ S08 UNE_TWR::twrResponderLoop()
 	  Rb = (U32)(final_rx_ts_32 - resp_tx_ts_32);
 	  Da = (U32)(final_tx_ts - resp_rx_ts);
 	  Db = (U32)(resp_tx_ts_32 - poll_rx_ts_32);
-	  /*
-	  if ((resp_rx_ts <= 0xFF000000) && (poll_tx_ts >= 0xFF00000000)) {
-	    Ra = (resp_rx_ts + (0xFFFFFFFFFF - poll_tx_ts)&0xFFFFFFFFFF);
-	  }
-	  else { 
-	    Ra = (resp_rx_ts - poll_tx_ts);
-	  }
-	  
-	  if ((final_rx_ts <= 0xFF000000) && (resp_tx_ts >= 0xFF00000000)) {
-	    Rb = (final_rx_ts + (0xFFFFFFFFFF - resp_tx_ts)&0xFFFFFFFFFF);
-	  }
-	  else {
-	    Rb = (final_rx_ts - resp_tx_ts);
-	  }
-	  
-	  if ((final_tx_ts <= 0xFF000000) && (resp_rx_ts >= 0xFF00000000)) {
-	    Da = (final_tx_ts + (0xFFFFFFFFFF - resp_rx_ts)&0xFFFFFFFFFF);
-	  }
-	  else {
-	    Da = (final_tx_ts - resp_rx_ts);
-	  }
-	  
-	  if ((resp_tx_ts <= 0xFF000000) && (poll_rx_ts >= 0xFF00000000)) {
-	    Db = (resp_tx_ts + (0xFFFFFFFFFF - poll_rx_ts)&0xFFFFFFFFFF);
-	  }
-	  else {
-	    Db = (resp_tx_ts - poll_rx_ts);
-	  }
-	*/
+	
 	  tof_dtu = (S64)((Ra * Rb - Da * Db) / (Ra + Rb + Da + Db));
 	  
 	  tof = tof_dtu * DWT_TIME_UNITS;
@@ -215,19 +187,19 @@ S08 UNE_TWR::twrResponderLoop()
 	  pb_monitoring.message.TWR.ResponseNN = resp_frame_seq_nb;
 	  pb_monitoring.message.TWR.FinalNN = final_frame_seq_nb;
 	  
+	  /* Encode message to wake.dbuf for encoding to wake */
 	  U16 msg_len;
 	  U16 wake_buf_len;
-	  /* Encode message to wake.dbuf for encoding to wake */
 	  pb_monitoring.encode(&pb_monitoring.message, pb_monitoring.temp_buf, &msg_len);
-	  
 	  tskUNE.wake.prepareBuf(pb_monitoring.temp_buf, 
 				 msg_len, 
 				 CMD_TWR_RANGING, 
 				 pb_monitoring.temp_buf,
 				 &wake_buf_len);
 	  pb_monitoring.temp_buf[wake_buf_len++] = '\n';
+	  
 	  tskUdpClient.transmit(pb_monitoring.temp_buf, wake_buf_len-1);
-	  tskUSB.transmit(pb_monitoring.temp_buf, wake_buf_len);
+//	  tskUSB.transmit(pb_monitoring.temp_buf, wake_buf_len);
 	  	  
 	  return RC_ERR_NONE;
 	}

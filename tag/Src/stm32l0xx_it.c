@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "deca_port.h"
+#include "tsk_event.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,6 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern uint32_t signalResetDone;
+extern TskEvent tskEvent;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -208,6 +210,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   else if (GPIO_Pin == DW_IRQn_Pin)
   {
     process_deca_irq();
+  }
+  else if (GPIO_Pin == INT1_IMU_Pin)
+  {
+    tskEvent.setEvent(EV_IMU_IRQ1);
+  }
+  else if (GPIO_Pin == INT2_IMU_Pin)
+  {
+    tskEvent.setEvent(EV_IMU_IRQ2);
   }
   else
   {

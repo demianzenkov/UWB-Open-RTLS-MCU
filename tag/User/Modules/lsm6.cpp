@@ -66,6 +66,10 @@ void LSM6::config()
  
   /* Gyroscope - filtering chain */
   lsm6ds3tr_c_gy_band_pass_set(&dev_ctx, LSM6DS3TR_C_HP_260mHz_LP1_STRONG);
+  
+  /* Set free fall duration and threshold */
+  lsm6ds3tr_c_ff_dur_set(&dev_ctx, 10);
+  lsm6ds3tr_c_ff_threshold_set(&dev_ctx, LSM6DS3TR_C_FF_TSH_250mg);
 }
 
 void LSM6::poll()
@@ -162,5 +166,10 @@ void LSM6::updateAHRS()
 	  AHRSIMU.Pitch, 
 	  AHRSIMU.Yaw);
   tx_com( tx_buffer, strlen( (char const*)tx_buffer ) );
-  
+}
+
+void LSM6::processEvent()
+{
+//  lsm6ds3tr_c_reg_t reg;
+//  lsm6ds3tr_c_status_reg_get(&dev_ctx, &reg.free_fall);
 }

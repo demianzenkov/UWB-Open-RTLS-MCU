@@ -115,95 +115,26 @@ uint64 DWM1000::getTimestampU64(ts_type_te ts_type)
     ts |= ts_tab[i];
   }
   
-  return ts;
+  return (ts & 0xFFFFFFFFFFUL);
 }
 
-void DWM1000::sendSyncPacket()
+uint64 DWM1000::getSysTimeU64()
 {
-  dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
-  /* Write frame data to DW1000 and prepare transmission. See NOTE 4 below.*/
-  dwt_writetxdata(sizeof(sync_msg), sync_msg, 0); /* Zero offset in TX buffer. */
-  dwt_writetxfctrl(sizeof(sync_msg), 0, 1); /* Zero offset in TX buffer, ranging. */
-  sync_msg[6]++;
-  /* Start transmission. */
-  dwt_starttx(DWT_START_TX_IMMEDIATE);
+  uint8 ts_tab[5];
+  uint64 ts = 0;
+  int i;
+ 
+  dwt_readsystime(ts_tab);
   
-  /* Poll DW1000 until TX frame sent event set. See NOTE 5 below.
-  * STATUS register is 5 bytes long but, as the event we are looking at is in the first byte of the register, we can use this simplest API
-  * function to access it.*/
-  while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS))
-  { };
-  
-  /* Clear TX frame sent event. */
-  dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
-}
-
-DWM1000::packet_type_te DWM1000::receivePacket(uint8_t * data_len) 
-{
-  packet_type_te packet_type = NO_DATA;
-  
-  memset(rx_buffer, 0, FRAME_LEN_MAX);
-  if(receiveEnable() != DWT_SUCCESS) {
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-    osDelay(250);
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-    osDelay(250);
-    return packet_type;
-  };
-  
-  /* Poll until a frame is properly received or an error/timeout occurs. See NOTE 4 below.
-  * STATUS register is 5 bytes long but, as the event we are looking at is in the first byte of the register, we can use this simplest API
-  * function to access it. */
-  while (!((status_reg = dwt_read32bitreg(SYS_STATUS_ID)) & (SYS_STATUS_RXFCG | SYS_STATUS_ALL_RX_ERR)))
-  { };
-  
-  if (status_reg & SYS_STATUS_RXFCG)
+  for (i = 4; i >= 0; i--)
   {
-    /* A frame has been received, copy it to our local buffer. */
-    frame_len = dwt_read32bitreg(RX_FINFO_ID) & RX_FINFO_RXFL_MASK_1023;
-    if (frame_len <= FRAME_LEN_MAX)
-    {
-      dwt_readrxdata(rx_buffer, frame_len, 0);
-      
-      if(memcmp(rx_buffer, sync_msg, 4) == 0) {
-	sync_n = rx_buffer[6];
-	packet_type = SYNC;
-      }
-      
-      else if(memcmp(rx_buffer, blynk_msg, 4) == 0) {
-	tag_id = rx_buffer[5];
-	blynk_n = rx_buffer[6];
-	packet_type = BLYNK;
-      }
-      else {
-	packet_type = UNKNOWN;
-      }
-      if (data_len != NULL) {
-	*data_len = frame_len;
-      }
-    }
-    /* Clear good RX frame event in the DW1000 status register. */
-    dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG);
+    ts <<= 8;
+    ts |= ts_tab[i];
   }
-  else
-  {
-    /* Clear RX error events in the DW1000 status register. */
-    dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_ALL_RX_ERR);
-    return packet_type;
-  }
-  return packet_type;
+  
+  return (ts & 0xFFFFFFFFFFUL);
 }
 
-uint16_t DWM1000::collectSocketBuf(uint8_t * out_buf)
-{
-  out_buf[0] = anchor_id;
-  out_buf[1] = tag_id;
-  out_buf[2] = sync_n;
-  out_buf[3] = blynk_n;
-  memcpy(&out_buf[4], &sync_ts, sizeof(sync_ts));
-  memcpy(&out_buf[12], &blynk_ts, sizeof(blynk_ts));
-  return 20;
-}
 
 void DWM1000::testReceive()
 {

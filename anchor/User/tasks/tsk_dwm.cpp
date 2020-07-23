@@ -30,7 +30,7 @@ void TskDWM::createTask()
   
   /* Create transmit task */
   osThreadId dwmTaskHandle;
-  osThreadDef(DWMTask, tskDWM.task, osPriorityAboveNormal, 0, 512);
+  osThreadDef(DWMTask, tskDWM.task, osPriorityNormal, 0, 512);
   dwmTaskHandle = osThreadCreate(osThread(DWMTask), NULL);
 }
 
@@ -48,38 +48,54 @@ void TskDWM::task(void const *arg)
     }
   }
   
-  if (settings.pb_settings.message.RTLSMode == 
-      Settings_rtls_mode_MODE_TWR_INITIATOR) {
+  if ((settings.pb_settings.message.RTLSMode == Settings_rtls_mode_TWR_INITIATOR)
+      || (settings.pb_settings.message.RTLSMode == Settings_rtls_mode_TDOA_ANCHOR))
+  {
     UNE_TWR::initDWM();
   }
   
   
   for(;;)
   {
-    Settings * msg = &settings.pb_settings.message;
-    switch(settings.pb_settings.message.RTLSMode) {
+    Settings * cfg = &settings.pb_settings.message;
+    switch(cfg->RTLSMode) {
     
-    case Settings_rtls_mode_MODE_TWR_RESPONDER:
+    case Settings_rtls_mode_TWR_RESPONDER:
       if (tskDWM.une_twr.twrResponderLoop() == RC_ERR_NONE)
        HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       break;
     
-    case Settings_rtls_mode_MODE_TWR_INITIATOR:
-      for(int i=0; i<msg->ConnectedAnchors_count;i++)
+    case Settings_rtls_mode_TWR_INITIATOR:
+      for(int i=0; i<cfg->TwrConnectedAnchors_count;i++)
       {
 	NVIC_DisableIRQ(OTG_FS_IRQn);
-	if (tskDWM.une_twr.twrInitiatorLoop(msg->ConnectedAnchors[i]) == RC_ERR_NONE){
+	if (tskDWM.une_twr.twrInitiatorLoop(cfg->TwrConnectedAnchors[i]) == RC_ERR_NONE){
 	  HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
 	}
 	NVIC_EnableIRQ(OTG_FS_IRQn);
-	if (msg->PollDelay > 0)
-	  osDelay(msg->PollDelay);
+	if (cfg->TwrPollDelay > 0)
+	  osDelay(cfg->TwrPollDelay);
       }
-      osDelay(msg->PollPeriod ? msg->PollPeriod : DEFAULT_POLL_PERIOD);
+      osDelay(cfg->TwrPollPeriod ? cfg->TwrPollPeriod : DEFAULT_POLL_PERIOD);
       break;
+    
+    case Settings_rtls_mode_TDOA_ANCHOR:
+      if (tskDWM.une_tdoa.tdoaAnchorRoutine() == RC_ERR_NONE)
+      {
+	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+      }
+      break;
+    
+    case Settings_rtls_mode_TDOA_SYNC:
+      tskDWM.une_tdoa.tdoaSyncNodeRoutine();
+      break;
+      
+    case Settings_rtls_mode_TDOA_TAG:
+      tskDWM.une_tdoa.tdoaBlinkNodeRoutine();
+      break;
+      
     default:
       break;
     }
-    osDelay(1);
   }
 }

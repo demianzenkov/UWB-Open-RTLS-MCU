@@ -36,6 +36,20 @@ void TskEvent::task(void const *arg) {
     {
       BSP_OS::restartCPU(100);	// 100 ms - timeout before restart
     }
+    if (uxBits & EV_IMU_IRQ1) 
+    {
+//      tskLSM.lsm6.processEvent();
+      for(int i=0; i<20; i++) {
+	HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+	osDelay(250);
+	HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+	osDelay(250);
+      }
+    }
+    if (uxBits & EV_IMU_IRQ1) 
+    {
+      BSP_OS::restartCPU(100);	// 100 ms - timeout before restart
+    }
     
     osDelay(10);
   }

@@ -37,6 +37,8 @@ public:
   void config();
   void poll();
   void updateAHRS();
+  
+  void processEvent();
 private:
   stmdev_ctx_t dev_ctx;
   

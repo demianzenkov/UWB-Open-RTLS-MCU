@@ -8,6 +8,8 @@
 #define WAKE_CMD_BUF_SIZE	16
 
 #define	EV_CPU_RESET	(1 << 0)
+#define	EV_IMU_IRQ1	(1 << 1)
+#define	EV_IMU_IRQ2	(1 << 2)
 
 class TskEvent
 {

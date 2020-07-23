@@ -32,6 +32,8 @@ void TskEvent::createTask()
 void TskEvent::task(void const *arg) {
   S08 sErr;
   
+  tskUdpClient.sendHello();
+  
   for(;;) 
   {
     EventBits_t uxBits;
@@ -43,7 +45,7 @@ void TskEvent::task(void const *arg) {
 				 0x00FFFFFF, 	/* The bits within the event group to wait for. */
 				 pdTRUE,        /* BITs should be cleared before returning. */
 				 pdFALSE,       /* Don't wait for all bits, either bit will do. */
-				 xTicksToWait );/* Wait a maximum of 100ms for either bit to be set. */
+				 portMAX_DELAY );/* Wait a maximum of 100ms for either bit to be set. */
     
     if (uxBits & EV_CPU_RESET) 
     {

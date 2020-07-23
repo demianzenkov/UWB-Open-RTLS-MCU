@@ -38,13 +38,6 @@ public:
 private:
   dwt_config_t config;
   
-  uint8 tx_msg[9] = {'B', 'L', 'N', 'K', 
-  			DEFAULT_AREA_ID, 
-			DEFAULT_NODE_ID, 
-			DEFAULT_NODE_ID,
-  			0x00, 0x00};
-  uint8_t BLINK_FRAME_SN_IDX = 6;
-  
 public:
   U32 status_reg = 0;
   U16 frame_len = 0;

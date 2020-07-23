@@ -11,5 +11,17 @@ message Monitoring {
         uint32  ResponseNN      = 7;
         uint32  FinalNN         = 6;
     };
-    TWR_message TWR = 1;
+    message TDOA_message
+    {
+        uint32  NodeID      = 1;    // Receiver node
+        uint32  BlinkID     = 2;    // Blink sender
+        uint32  BlinkTS     = 3;    // Blink timestamp
+        uint32  BlinkNN     = 4;    // Blink packet number
+        uint32  SyncID      = 5;    // Sync sender
+        uint64  SyncTxTS    = 6;    // Sync timestamp
+        uint64  SyncRxTS    = 7;    // Sync timestamp
+        uint32  SyncNN      = 8;    // Sync packet number
+    };
+    TWR_message TWR     = 1;
+    TDOA_message TDOA   = 2;
 }

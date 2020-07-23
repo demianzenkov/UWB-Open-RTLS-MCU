@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0eSettings.proto\"\xdf\x04\n\x08Settings\x12%\n\x08NodeType\x18\x01 \x01(\x0e\x32\x13.Settings.node_type\x12\x10\n\x08\x44\x65viceID\x18\x02 \x01(\r\x12%\n\x08RTLSMode\x18\x03 \x01(\x0e\x32\x13.Settings.rtls_mode\x12\x0e\n\x06NodeID\x18\x04 \x01(\r\x12\x12\n\nNetworkMAC\x18\x05 \x01(\x0c\x12\x10\n\x08\x44\x65viceIp\x18\x06 \x01(\r\x12\x12\n\nSubnetMask\x18\x07 \x01(\r\x12\x11\n\tGatewayIp\x18\x08 \x01(\r\x12\x10\n\x08ServerIp\x18\t \x01(\r\x12\x16\n\x0e\x43onnectionPort\x18\n \x01(\r\x12\x11\n\tPositionX\x18\x0b \x01(\x02\x12\x11\n\tPositionY\x18\x0c \x01(\x02\x12\x11\n\tPositionZ\x18\r \x01(\x02\x12\x14\n\x0c\x44WRxAntDelay\x18\x0e \x01(\x05\x12\x14\n\x0c\x44WTxAntDelay\x18\x0f \x01(\x05\x12\x18\n\x10\x43onnectedAnchors\x18\x10 \x03(\r\x12\x12\n\nPollPeriod\x18\x11 \x01(\r\x12\x11\n\tPollDelay\x18\x12 \x01(\x05\"]\n\tnode_type\x12\r\n\tTYPE_NONE\x10\x00\x12\x0e\n\nTYPE_UNDEF\x10\x01\x12\x0f\n\x0bTYPE_ANCHOR\x10\x02\x12\x12\n\x0eTYPE_SYNC_NODE\x10\x03\x12\x0c\n\x08TYPE_TAG\x10\x04\"g\n\trtls_mode\x12\r\n\tMODE_NONE\x10\x00\x12\x0c\n\x08MODE_OFF\x10\x01\x12\x16\n\x12MODE_TWR_INITIATOR\x10\x02\x12\x16\n\x12MODE_TWR_RESPONDER\x10\x03\x12\r\n\tMODE_TDOA\x10\x04\x62\x06proto3'
+  serialized_pb=b'\n\x0eSettings.proto\"\xca\x05\n\x08Settings\x12%\n\x08NodeType\x18\x01 \x01(\x0e\x32\x13.Settings.node_type\x12\x10\n\x08\x44\x65viceID\x18\x02 \x01(\x05\x12%\n\x08RTLSMode\x18\x03 \x01(\x0e\x32\x13.Settings.rtls_mode\x12\x0e\n\x06NodeID\x18\x04 \x01(\x05\x12\x12\n\nNetworkMAC\x18\x05 \x01(\x0c\x12\x10\n\x08\x44\x65viceIp\x18\x06 \x01(\r\x12\x12\n\nSubnetMask\x18\x07 \x01(\r\x12\x11\n\tGatewayIp\x18\x08 \x01(\r\x12\x10\n\x08ServerIp\x18\t \x01(\r\x12\x16\n\x0e\x43onnectionPort\x18\n \x01(\r\x12\x11\n\tPositionX\x18\x0b \x01(\x02\x12\x11\n\tPositionY\x18\x0c \x01(\x02\x12\x11\n\tPositionZ\x18\r \x01(\x02\x12\x14\n\x0c\x44WRxAntDelay\x18\x0e \x01(\x05\x12\x14\n\x0c\x44WTxAntDelay\x18\x0f \x01(\x05\x12\x1b\n\x13TwrConnectedAnchors\x18\x10 \x03(\r\x12\x15\n\rTwrPollPeriod\x18\x11 \x01(\r\x12\x14\n\x0cTwrPollDelay\x18\x12 \x01(\x05\x12\x16\n\x0eTdoaSyncPeriod\x18\x13 \x01(\x05\x12\x16\n\x0eTdoaPollPeriod\x18\x14 \x01(\x05\x12\x18\n\x10TdoaSyncSenderID\x18\x15 \x01(\x05\x12\x1a\n\x12TdoaSyncReceiverID\x18\x16 \x01(\x05\"I\n\tnode_type\x12\r\n\tTYPE_NONE\x10\x00\x12\t\n\x05UNDEF\x10\x01\x12\n\n\x06\x41NCHOR\x10\x02\x12\r\n\tSYNC_NODE\x10\x03\x12\x07\n\x03TAG\x10\x04\"w\n\trtls_mode\x12\r\n\tMODE_NONE\x10\x00\x12\x07\n\x03OFF\x10\x01\x12\x11\n\rTWR_INITIATOR\x10\x02\x12\x11\n\rTWR_RESPONDER\x10\x03\x12\x0f\n\x0bTDOA_ANCHOR\x10\x04\x12\r\n\tTDOA_SYNC\x10\x05\x12\x0c\n\x08TDOA_TAG\x10\x06\x62\x06proto3'
 )
 
 
@@ -34,26 +34,26 @@ _SETTINGS_NODE_TYPE = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TYPE_UNDEF', index=1, number=1,
+      name='UNDEF', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TYPE_ANCHOR', index=2, number=2,
+      name='ANCHOR', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TYPE_SYNC_NODE', index=3, number=3,
+      name='SYNC_NODE', index=3, number=3,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='TYPE_TAG', index=4, number=4,
+      name='TAG', index=4, number=4,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=428,
-  serialized_end=521,
+  serialized_start=539,
+  serialized_end=612,
 )
 _sym_db.RegisterEnumDescriptor(_SETTINGS_NODE_TYPE)
 
@@ -68,26 +68,34 @@ _SETTINGS_RTLS_MODE = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODE_OFF', index=1, number=1,
+      name='OFF', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODE_TWR_INITIATOR', index=2, number=2,
+      name='TWR_INITIATOR', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODE_TWR_RESPONDER', index=3, number=3,
+      name='TWR_RESPONDER', index=3, number=3,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MODE_TDOA', index=4, number=4,
+      name='TDOA_ANCHOR', index=4, number=4,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='TDOA_SYNC', index=5, number=5,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='TDOA_TAG', index=6, number=6,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=523,
-  serialized_end=626,
+  serialized_start=614,
+  serialized_end=733,
 )
 _sym_db.RegisterEnumDescriptor(_SETTINGS_RTLS_MODE)
 
@@ -108,7 +116,7 @@ _SETTINGS = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='DeviceID', full_name='Settings.DeviceID', index=1,
-      number=2, type=13, cpp_type=3, label=1,
+      number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -122,7 +130,7 @@ _SETTINGS = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='NodeID', full_name='Settings.NodeID', index=3,
-      number=4, type=13, cpp_type=3, label=1,
+      number=4, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -205,22 +213,50 @@ _SETTINGS = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ConnectedAnchors', full_name='Settings.ConnectedAnchors', index=15,
+      name='TwrConnectedAnchors', full_name='Settings.TwrConnectedAnchors', index=15,
       number=16, type=13, cpp_type=3, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='PollPeriod', full_name='Settings.PollPeriod', index=16,
+      name='TwrPollPeriod', full_name='Settings.TwrPollPeriod', index=16,
       number=17, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='PollDelay', full_name='Settings.PollDelay', index=17,
+      name='TwrPollDelay', full_name='Settings.TwrPollDelay', index=17,
       number=18, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='TdoaSyncPeriod', full_name='Settings.TdoaSyncPeriod', index=18,
+      number=19, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='TdoaPollPeriod', full_name='Settings.TdoaPollPeriod', index=19,
+      number=20, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='TdoaSyncSenderID', full_name='Settings.TdoaSyncSenderID', index=20,
+      number=21, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='TdoaSyncReceiverID', full_name='Settings.TdoaSyncReceiverID', index=21,
+      number=22, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -240,7 +276,7 @@ _SETTINGS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=19,
-  serialized_end=626,
+  serialized_end=733,
 )
 
 _SETTINGS.fields_by_name['NodeType'].enum_type = _SETTINGS_NODE_TYPE
