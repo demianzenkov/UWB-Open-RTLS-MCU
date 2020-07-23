@@ -1,10 +1,10 @@
 #include "tsk_udp_client.h"
-#include "tsk_une.h"
+#include "tsk_network.h"
 #include "settings.h"
 #include "tsk_event.h"
 
 TskUdpClient tskUdpClient;
-extern TskUNE tskUNE;
+extern TskNetwork tskNetwork;
 extern TskEvent tskEvent;
 extern DeviceSettings settings;
 
@@ -122,7 +122,7 @@ void TskUdpClient::udpReceiveCallback(struct netconn* conn, enum netconn_evt evt
 	     rx_buf->p->len);
       tskUdpClient.rx_queue.len = rx_buf->p->len;
       
-      xQueueSend(tskUNE.xQueueNetworkRx, (void *) &tskUdpClient.rx_queue, (TickType_t)0 );
+      xQueueSend(tskNetwork.xQueueNetworkRx, (void *) &tskUdpClient.rx_queue, (TickType_t)0 );
       netbuf_delete(rx_buf);
     }
   }
@@ -163,7 +163,7 @@ void TskUdpClient::transmit(U08 * buf, U16 len)
 void TskUdpClient::sendHello()
 {
   lock();
-  tskUNE.wake.prepareBuf((U08 *)NULL, 0, CMD_I_AM_HERE_REQ, 
+  tskNetwork.wake.prepareBuf((U08 *)NULL, 0, CMD_I_AM_HERE_REQ, 
 				   tx_queue.data, 
 				   &tx_queue.len);
   xQueueSend(xQueueUdpTx, (void *)&tx_queue, (TickType_t)0);

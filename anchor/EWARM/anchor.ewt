@@ -2382,10 +2382,10 @@
             <group>
                 <name>bsp</name>
                 <file>
-                    <name>$PROJ_DIR$\..\User\BSP\bsp_os.cpp</name>
+                    <name>$PROJ_DIR$\..\User\bsp\bsp_os.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\BSP\bsp_spi.cpp</name>
+                    <name>$PROJ_DIR$\..\User\bsp\bsp_spi.cpp</name>
                 </file>
             </group>
             <group>
@@ -2393,74 +2393,74 @@
                 <group>
                     <name>driver</name>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_device.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_device.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_device_api.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_device_api.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_param_types.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_param_types.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_params_init.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_params_init.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_regs.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_regs.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_types.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_types.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\decadriver\deca_version.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\decadriver\deca_version.h</name>
                     </file>
                 </group>
                 <group>
                     <name>platform</name>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\deca_mutex.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_mutex.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\deca_port.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_port.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\deca_port.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_port.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\deca_range_tables.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_range_tables.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\deca_sleep.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_sleep.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\deca_spi.c</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\deca_spi.c</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\User\Decawave\platform\sleep.h</name>
+                        <name>$PROJ_DIR$\..\User\decawave\platform\sleep.h</name>
                     </file>
                 </group>
             </group>
             <group>
                 <name>modules</name>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\dwm1000.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\dwm1000.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\mx25.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\mx25.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\net_conf.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\net_conf.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\settings.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\settings.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\une_tdoa.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\une_tdoa.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\une_twr.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\une_twr.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Modules\wake.cpp</name>
+                    <name>$PROJ_DIR$\..\User\modules\wake.cpp</name>
                 </file>
             </group>
             <group>
@@ -2487,37 +2487,37 @@
                     <name>$PROJ_DIR$\..\..\proto\Monitoring.pb.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Proto\monitoring_pb.cpp</name>
+                    <name>$PROJ_DIR$\..\User\proto\monitoring_pb.cpp</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\proto\Settings.pb.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Proto\settings_pb.cpp</name>
+                    <name>$PROJ_DIR$\..\User\proto\settings_pb.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Proto\virtual_pb.cpp</name>
+                    <name>$PROJ_DIR$\..\User\proto\virtual_pb.cpp</name>
                 </file>
             </group>
             <group>
                 <name>tasks</name>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Tasks\tsk_dwm.cpp</name>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_dwm.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Tasks\tsk_event.cpp</name>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_event.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Tasks\tsk_tcp_client.cpp</name>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_network.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Tasks\tsk_udp_client.cpp</name>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_tcp_client.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Tasks\tsk_une.cpp</name>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_udp_client.cpp</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\User\Tasks\tsk_usb.cpp</name>
+                    <name>$PROJ_DIR$\..\User\tasks\tsk_usb.cpp</name>
                 </file>
             </group>
             <group>

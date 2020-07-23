@@ -1,9 +1,9 @@
 #include "tsk_tcp_client.h"
-#include "tsk_une.h"
+#include "tsk_network.h"
 #include "settings.h"
 
 TskTcpClient tskTcpClient;
-extern TskUNE tskUNE;
+extern TskNetwork tskNetwork;
 extern DeviceSettings settings;
 
 
@@ -72,7 +72,7 @@ void TskTcpClient::tcpReceiveThread(void const *arg)
                  tskTcpClient.tcp_recv_conn.buf->p->payload,
                  tskTcpClient.tcp_recv_conn.buf->p->len);
           rx_queue.len = tskTcpClient.tcp_recv_conn.buf->p->len;
-          xQueueSend( tskUNE.xQueueNetworkRx, (void *) &rx_queue, (TickType_t)0 );
+          xQueueSend( tskNetwork.xQueueNetworkRx, (void *) &rx_queue, (TickType_t)0 );
           /* Echo end */
           
           netbuf_delete(tskTcpClient.tcp_recv_conn.buf);

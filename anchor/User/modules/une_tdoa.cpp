@@ -3,13 +3,13 @@
 #include "tsk_udp_client.h"
 #include "monitoring_pb.h"
 #include "settings.h"
-#include "tsk_une.h"
+#include "tsk_network.h"
 
 extern TskUdpClient tskUdpClient;
 extern TskUSB tskUSB;
 extern MonitoringPB pb_monitoring;
 extern DeviceSettings settings;
-extern TskUNE tskUNE;
+extern TskNetwork tskNetwork;
 
 UNE_TDOA::UNE_TDOA(DWM1000 * dwm)
 {
@@ -36,7 +36,7 @@ S08 UNE_TDOA::tdoaAnchorRoutine()
       U16 msg_len;
       U16 wake_buf_len;
       pb_monitoring.encode(&pb_monitoring.message, pb_monitoring.temp_buf, &msg_len);
-      tskUNE.wake.prepareBuf(pb_monitoring.temp_buf, 
+      tskNetwork.wake.prepareBuf(pb_monitoring.temp_buf, 
 			     msg_len, 
 			     CMD_TDOA_SYNC, 
 			     pb_monitoring.temp_buf,
@@ -57,7 +57,7 @@ S08 UNE_TDOA::tdoaAnchorRoutine()
     U16 msg_len;
     U16 wake_buf_len;
     pb_monitoring.encode(&pb_monitoring.message, pb_monitoring.temp_buf, &msg_len);
-    tskUNE.wake.prepareBuf(pb_monitoring.temp_buf, 
+    tskNetwork.wake.prepareBuf(pb_monitoring.temp_buf, 
 			   msg_len, 
 			   CMD_TDOA_BLINK, 
 			   pb_monitoring.temp_buf,

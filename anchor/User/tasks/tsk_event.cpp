@@ -2,12 +2,12 @@
 #include "cmsis_os.h"
 #include "timers.h"
 #include "bsp_os.h"
-#include "tsk_une.h"
+#include "tsk_network.h"
 #include "tsk_udp_client.h"
 //#include "tsk_tcp_client.h"
 
 TskEvent tskEvent;
-extern TskUNE tskUNE;
+extern TskNetwork tskNetwork;
 extern TskUdpClient tskUdpClient;
 //extern TskTcpClient tskTcpClient;
 
@@ -54,7 +54,7 @@ void TskEvent::task(void const *arg) {
     if (uxBits & EV_TIMER_10S) 
     {
       if (tskEvent.hello_req >= HELLO_REQ_ATTEMPTS) {
-	BSP_OS::restartCPU(500);	// 500 ms - timeout before restart
+        BSP_OS::restartCPU(500);	// 500 ms - timeout before restart
       }
       tskUdpClient.sendHello();
       tskEvent.hello_req++;

@@ -33,7 +33,7 @@
 //#include "tsk_tcp_client.h"
 #include "tsk_dwm.h"
 #include "tsk_usb.h"
-#include "tsk_une.h"
+#include "tsk_network.h"
 #include "tsk_event.h"
 
 #include "mx25.h"
@@ -62,7 +62,7 @@ extern TskUdpClient tskUdpClient;
 //extern TskTcpClient tskTcpClient;
 extern TskDWM tskDWM;
 extern TskUSB tskUSB;
-extern TskUNE tskUNE;
+extern TskNetwork tskNetwork;
 extern TskEvent tskEvent;
 
 volatile uint32_t us_tick = 0;
@@ -110,7 +110,7 @@ int main(void)
 //  tskTcpClient.createTask();
   tskDWM.createTask();
   tskUSB.createTask();
-  tskUNE.createTask();
+  tskNetwork.createTask();
   tskEvent.createTask();
   
   osThreadDef(initTask, initTask, osPriorityNormal, 0, 1024);
@@ -170,8 +170,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 26;	// 20, 26	
-  RCC_OscInitStruct.PLL.PLLN = 240;	// 192, 240
+  RCC_OscInitStruct.PLL.PLLM = 20;	// 20, 26	
+  RCC_OscInitStruct.PLL.PLLN = 192;	// 192, 240
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 5;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)

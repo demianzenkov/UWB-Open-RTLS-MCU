@@ -9,12 +9,12 @@
 #include "monitoring_pb.h"
 #include "settings.h"
 #include "wake.h"
-#include "tsk_une.h"
+#include "tsk_network.h"
 
 
 extern TskUdpClient tskUdpClient;
 //extern TskTcpClient tskTcpClient;
-extern TskUNE tskUNE;
+extern TskNetwork tskNetwork;
 extern TskUSB tskUSB;
 extern MonitoringPB pb_monitoring;
 extern DeviceSettings settings;
@@ -191,7 +191,7 @@ S08 UNE_TWR::twrResponderLoop()
 	  U16 msg_len;
 	  U16 wake_buf_len;
 	  pb_monitoring.encode(&pb_monitoring.message, pb_monitoring.temp_buf, &msg_len);
-	  tskUNE.wake.prepareBuf(pb_monitoring.temp_buf, 
+	  tskNetwork.wake.prepareBuf(pb_monitoring.temp_buf, 
 				 msg_len, 
 				 CMD_TWR_RANGING, 
 				 pb_monitoring.temp_buf,
