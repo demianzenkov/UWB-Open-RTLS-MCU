@@ -5,11 +5,11 @@
 #include "cmsis_os.h"
 #include "wake.h"
 
-class TskUNE 
+class TskNetwork 
 {
 public:
-  TskUNE();
-  ~TskUNE();
+  TskNetwork();
+  ~TskNetwork();
   void createTask();
   static void task(void const *arg);
   
@@ -21,7 +21,8 @@ public:
 private:
   queue_data_t net_rx_queue;
   queue_data_t net_tx_queue;
-  
 };
+
+extern TskNetwork tskNetwork;
 
 #endif
