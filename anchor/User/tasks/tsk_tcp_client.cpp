@@ -3,8 +3,6 @@
 #include "settings.h"
 
 TskTcpClient tskTcpClient;
-extern TskNetwork tskNetwork;
-extern DeviceSettings settings;
 
 
 TskTcpClient::TskTcpClient() 

@@ -641,7 +641,7 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state>$PROJ_DIR$\..//Inc</state>
+                    <state>$PROJ_DIR$\..\\Inc</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -2187,6 +2187,9 @@
                     <name>$PROJ_DIR$\..\User\modules\dwm1000.cpp</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\User\modules\indication.cpp</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\User\modules\mx25.cpp</name>
                 </file>
                 <file>
@@ -2571,7 +2574,6 @@
                 <name>$PROJ_DIR$\..\Src\main.c</name>
                 <excluded>
                     <configuration>anchor</configuration>
-                    <configuration>sync_node</configuration>
                 </excluded>
             </file>
             <file>
@@ -2579,6 +2581,12 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\stm32f2xx_hal_msp.c</name>
+                <excluded>
+                    <configuration>anchor</configuration>
+                </excluded>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\stm32f2xx_hal_msp.cpp</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\stm32f2xx_hal_timebase_tim.c</name>

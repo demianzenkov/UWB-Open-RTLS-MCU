@@ -5,7 +5,6 @@
 #include "string.h"
 #include "settings.h"
 
-extern DeviceSettings settings;
 
 DWM1000::DWM1000() 
 {
@@ -140,9 +139,9 @@ void DWM1000::testReceive()
 {
   memset(rx_buffer, 0, FRAME_LEN_MAX);
   if(receiveEnable() != DWT_SUCCESS) {
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+//    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
     osDelay(250);
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+//    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
     osDelay(250);
     return;
   };
@@ -160,9 +159,9 @@ void DWM1000::testReceive()
     if (frame_len <= FRAME_LEN_MAX)
     {
       dwt_readrxdata(rx_buffer, frame_len, 0);
-      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+//      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       osDelay(250);
-      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+//      HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       osDelay(250);
     }
     

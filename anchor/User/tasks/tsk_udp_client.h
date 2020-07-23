@@ -55,5 +55,7 @@ private:
   OS_SEM sem;
 };
 
+extern TskUdpClient tskUdpClient;
+
 
 #endif /* __TSK_UDP_CLIENT */

@@ -50,6 +50,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -80,14 +82,12 @@ void Error_Handler(void);
 #define FLASH_MOSI_GPIO_Port GPIOB
 #define FLASH_CS_Pin GPIO_PIN_8
 #define FLASH_CS_GPIO_Port GPIOD
+#define LED_DIN_Pin GPIO_PIN_8
+#define LED_DIN_GPIO_Port GPIOA
+#define LED_VDD_Pin GPIO_PIN_1
+#define LED_VDD_GPIO_Port GPIOD
 #define DW_MOSI_Pin GPIO_PIN_5
 #define DW_MOSI_GPIO_Port GPIOB
-#define LED1_Pin GPIO_PIN_6
-#define LED1_GPIO_Port GPIOB
-#define LED2_Pin GPIO_PIN_7
-#define LED2_GPIO_Port GPIOB
-#define LED3_Pin GPIO_PIN_8
-#define LED3_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

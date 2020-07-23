@@ -4,9 +4,6 @@
 #include "tsk_event.h"
 
 TskUdpClient tskUdpClient;
-extern TskNetwork tskNetwork;
-extern TskEvent tskEvent;
-extern DeviceSettings settings;
 
 
 TskUdpClient::TskUdpClient() 
@@ -87,29 +84,27 @@ void TskUdpClient::udpThread(void const *arg)
 void TskUdpClient::sendThread(void const *arg)
 {
   struct netbuf *tx_buf;
-  uint32_t syscnt = 0;
   
   for(;;)
+  {
+    if (!xQueueReceive(tskUdpClient.xQueueUdpTx, &tskUdpClient.tx_queue, pdMS_TO_TICKS(5000)))
     {
-      if (!xQueueReceive(tskUdpClient.xQueueUdpTx, &tskUdpClient.tx_queue, pdMS_TO_TICKS(5000)))
-      {
-	tskUdpClient.unlock();
-	continue;
-      }
-   
-      tx_buf = netbuf_new();
-      netbuf_alloc(tx_buf, tskUdpClient.tx_queue.len);
-      pbuf_take(tx_buf->p, (void *) tskUdpClient.tx_queue.data, tskUdpClient.tx_queue.len);
-      netconn_sendto(tskUdpClient.conn,tx_buf,&tskUdpClient.srv_addr,tskUdpClient.port);
-      netbuf_delete(tx_buf);
       tskUdpClient.unlock();
+      continue;
     }
+    
+    tx_buf = netbuf_new();
+    netbuf_alloc(tx_buf, tskUdpClient.tx_queue.len);
+    pbuf_take(tx_buf->p, (void *) tskUdpClient.tx_queue.data, tskUdpClient.tx_queue.len);
+    netconn_sendto(tskUdpClient.conn,tx_buf,&tskUdpClient.srv_addr,tskUdpClient.port);
+    netbuf_delete(tx_buf);
+    tskUdpClient.unlock();
+  }
 }
 
 
 void TskUdpClient::udpReceiveCallback(struct netconn* conn, enum netconn_evt evt, u16_t len)
 {
-  unsigned short port;
   err_t recv_err;
   struct netbuf *rx_buf;
   if(evt==NETCONN_EVT_RCVPLUS)

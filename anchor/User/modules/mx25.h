@@ -95,8 +95,9 @@ public:
 private:
   U08 temp_buf[MX25_PAGE_SIZE];
   OS_SEM sem;
-  BSP_SPI * bsp_spi;
-  
+  BSP_SPI * bsp_spi;  
 };
+
+extern MX25 mx25;
 
 #endif

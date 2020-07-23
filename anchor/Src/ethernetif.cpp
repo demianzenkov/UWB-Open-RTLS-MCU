@@ -78,7 +78,6 @@ ETH_HandleTypeDef heth;
 
 /* USER CODE BEGIN 3 */
 
-extern DeviceSettings settings;
 /* USER CODE END 3 */
 
 /* Private functions ---------------------------------------------------------*/

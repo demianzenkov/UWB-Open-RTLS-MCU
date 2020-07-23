@@ -4,12 +4,10 @@
 #include "bsp_os.h"
 #include "tsk_network.h"
 #include "tsk_udp_client.h"
-//#include "tsk_tcp_client.h"
+#include "indication.h"
+
 
 TskEvent tskEvent;
-extern TskNetwork tskNetwork;
-extern TskUdpClient tskUdpClient;
-//extern TskTcpClient tskTcpClient;
 
 TskEvent::TskEvent()
 {
@@ -46,7 +44,6 @@ void TskEvent::task(void const *arg) {
 				 pdTRUE,        /* BITs should be cleared before returning. */
 				 pdFALSE,       /* Don't wait for all bits, either bit will do. */
 				 portMAX_DELAY );/* Wait a maximum of 100ms for either bit to be set. */
-    
     if (uxBits & EV_CPU_RESET) 
     {
       BSP_OS::restartCPU(500);	// 500 ms - timeout before restart

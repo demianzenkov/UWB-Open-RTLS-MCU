@@ -8,11 +8,6 @@
 #include "settings.h"
 
 TskDWM tskDWM;
-extern TskUdpClient tskUdpClient;
-//extern TskTcpClient tskTcpClient;
-extern TskUSB tskUSB;
-extern MonitoringPB pb_monitoring;
-extern DeviceSettings settings;
 
 TskDWM::TskDWM() : une_tdoa(&dwm), une_twr(&dwm)
 {
@@ -41,9 +36,9 @@ void TskDWM::task(void const *arg)
   
   if (tskDWM.dwm.init() != RC_ERR_NONE) {
     while(1) {
-      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+//      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
       osDelay(250);
-      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+//      HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
       osDelay(250);
     }
   }
@@ -62,7 +57,7 @@ void TskDWM::task(void const *arg)
     
     case Settings_rtls_mode_TWR_RESPONDER:
       if (tskDWM.une_twr.twrResponderLoop() == RC_ERR_NONE)
-       HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+//       HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       break;
     
     case Settings_rtls_mode_TWR_INITIATOR:
@@ -70,7 +65,7 @@ void TskDWM::task(void const *arg)
       {
 	NVIC_DisableIRQ(OTG_FS_IRQn);
 	if (tskDWM.une_twr.twrInitiatorLoop(cfg->TwrConnectedAnchors[i]) == RC_ERR_NONE){
-	  HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+//	  HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
 	}
 	NVIC_EnableIRQ(OTG_FS_IRQn);
 	if (cfg->TwrPollDelay > 0)
@@ -82,7 +77,7 @@ void TskDWM::task(void const *arg)
     case Settings_rtls_mode_TDOA_ANCHOR:
       if (tskDWM.une_tdoa.tdoaAnchorRoutine() == RC_ERR_NONE)
       {
-	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+//	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
       }
       break;
     

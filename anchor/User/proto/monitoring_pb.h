@@ -28,6 +28,8 @@ public:
 public:
   Monitoring message = Monitoring_init_zero;
   U08 temp_buf[Monitoring_size*2 + 7];	// byte-stuffing, to use buffer to build wake
-};  
+};
+
+extern MonitoringPB pb_monitoring;
 
 #endif /* __MONITORING_PB */

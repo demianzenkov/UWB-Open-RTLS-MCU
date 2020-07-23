@@ -5,19 +5,11 @@
 #include "deca_port.h"
 #include "tsk_usb.h"
 #include "tsk_udp_client.h"
-//#include "tsk_tcp_client.h"
 #include "monitoring_pb.h"
 #include "settings.h"
 #include "wake.h"
 #include "tsk_network.h"
 
-
-extern TskUdpClient tskUdpClient;
-//extern TskTcpClient tskTcpClient;
-extern TskNetwork tskNetwork;
-extern TskUSB tskUSB;
-extern MonitoringPB pb_monitoring;
-extern DeviceSettings settings;
 
 UNE_TWR::UNE_TWR(DWM1000 * dwm)
 {

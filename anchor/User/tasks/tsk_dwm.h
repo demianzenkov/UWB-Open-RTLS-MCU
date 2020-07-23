@@ -21,8 +21,9 @@ public:
 public:
   DWM1000 dwm;
   UNE_TDOA une_tdoa;
-  UNE_TWR une_twr;
-  
+  UNE_TWR une_twr;  
 };
+
+extern TskDWM tskDWM;
 
 #endif

@@ -32,4 +32,6 @@ public:
   
 };
 
+extern DeviceSettings settings;
+
 #endif /* __DEV_SETTINGS */

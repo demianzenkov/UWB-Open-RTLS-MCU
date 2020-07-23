@@ -4,10 +4,7 @@
 #include "settings.h"
 #include "main.h"
 
-
 TskUSB tskUSB;
-extern DeviceSettings settings;
-extern TskEvent tskEvent;
 
 TskUSB::TskUSB() 
 {

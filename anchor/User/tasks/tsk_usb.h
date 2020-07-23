@@ -38,5 +38,6 @@ private:
   
 };
 
+extern TskUSB tskUSB;
 
 #endif /* TSK_USB */

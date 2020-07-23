@@ -31,4 +31,6 @@ private:
   U08 hello_req = 0;
 };
 
+extern TskEvent tskEvent;
+
 #endif

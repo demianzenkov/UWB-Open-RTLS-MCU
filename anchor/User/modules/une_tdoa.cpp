@@ -5,11 +5,6 @@
 #include "settings.h"
 #include "tsk_network.h"
 
-extern TskUdpClient tskUdpClient;
-extern TskUSB tskUSB;
-extern MonitoringPB pb_monitoring;
-extern DeviceSettings settings;
-extern TskNetwork tskNetwork;
 
 UNE_TDOA::UNE_TDOA(DWM1000 * dwm)
 {
@@ -115,34 +110,34 @@ UNE_TDOA::packet_type_te UNE_TDOA::receivePacket(uint8_t * data_len)
       
       if(memcmp(dwm->rx_buffer, sync_msg, 4) == 0) 
       {
-	sync_id = dwm->rx_buffer[TDOA_MSG_SYNC_ID];
-	sync_n = ((dwm->rx_buffer[TDOA_MSG_SYNC_L] << 8) + 
-		  dwm->rx_buffer[TDOA_MSG_SYNC_H]);
-	
-	sync_rx_ts = DWM1000::getTimestampU64(DWM1000::RX_TS);
-	sync_tx_ts = 0;
-	for (int i = 4; i >= 0; i--)
-	{
-	  sync_tx_ts <<= 8;
-	  sync_tx_ts |=  dwm->rx_buffer[TDOA_SYNC_TS+i];
-	}
-	packet_type = SYNC;
+        sync_id = dwm->rx_buffer[TDOA_MSG_SYNC_ID];
+        sync_n = ((dwm->rx_buffer[TDOA_MSG_SYNC_L] << 8) + 
+                  dwm->rx_buffer[TDOA_MSG_SYNC_H]);
+        
+        sync_rx_ts = DWM1000::getTimestampU64(DWM1000::RX_TS);
+        sync_tx_ts = 0;
+        for (int i = 4; i >= 0; i--)
+        {
+          sync_tx_ts <<= 8;
+          sync_tx_ts |=  dwm->rx_buffer[TDOA_SYNC_TS+i];
+        }
+        packet_type = SYNC;
       }
       
       else if(memcmp(dwm->rx_buffer, blink_msg, 4) == 0) 
       {
-	blink_id = dwm->rx_buffer[TDOA_MSG_BLINK_ID];
-	blink_n = ((dwm->rx_buffer[TDOA_MSG_BLINK_L] << 8) + 
-		   dwm->rx_buffer[TDOA_MSG_BLINK_H]);
-	blink_ts =  DWM1000::getTimestampU64(DWM1000::RX_TS);
-	packet_type = BLINK;
+        blink_id = dwm->rx_buffer[TDOA_MSG_BLINK_ID];
+        blink_n = ((dwm->rx_buffer[TDOA_MSG_BLINK_L] << 8) + 
+                   dwm->rx_buffer[TDOA_MSG_BLINK_H]);
+        blink_ts =  DWM1000::getTimestampU64(DWM1000::RX_TS);
+        packet_type = BLINK;
       }
       
       else {
-	packet_type = UNKNOWN;
+        packet_type = UNKNOWN;
       }
       if (data_len != NULL) {
-	*data_len = frame_len;
+        *data_len = frame_len;
       }
     }
     /* Clear good RX frame event in the DW1000 status register. */
