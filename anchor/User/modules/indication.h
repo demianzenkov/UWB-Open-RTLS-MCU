@@ -25,8 +25,11 @@ public:
   void light();
   void pixelToDMA(uint8_t Rpixel , uint8_t Gpixel, uint8_t Bpixel, uint16_t posX);
   
+  U08 isTxComplete();
+  void setTxComplete(U08 val);
+  
 private:
-  U08 dma_buf[DMA_BUF_LEN] = {0};
+  U16 dma_buf[DMA_BUF_LEN] = {0};
   U08 tx_complete = 1;
 };
 

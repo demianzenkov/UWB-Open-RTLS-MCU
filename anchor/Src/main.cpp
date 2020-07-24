@@ -97,8 +97,13 @@ int main(void)
   settings.init();
   
   indication.init();
-  HAL_Delay(5000);
   indication.pixelToDMA(0, 128, 0, 0);
+  indication.pixelToDMA(0, 128, 0, 1);
+  indication.pixelToDMA(0, 128, 0, 2);
+  indication.pixelToDMA(0, 128, 0, 3);
+  indication.pixelToDMA(0, 128, 0, 4);
+  indication.pixelToDMA(0, 128, 0, 5);
+    
   
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
@@ -361,8 +366,11 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA2_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA2_Stream1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream1_IRQn);
+  
+//  HAL_DMA_RegisterCallback(&hdma_tim1_ch1, HAL_DMA_XFER_CPLT_CB_ID, indication.DMATransferComplete);
+//  HAL_DMA_RegisterCallback(&hdma_tim1_ch1, HAL_DMA_XFER_ERROR_CB_ID, indication.DMATransferError);
 }
 
 /**
@@ -426,7 +434,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : LED_DIN on PCB */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
   

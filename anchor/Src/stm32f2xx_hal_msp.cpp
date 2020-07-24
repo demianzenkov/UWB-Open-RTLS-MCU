@@ -235,16 +235,13 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
       Error_Handler();
     }
     
-    __HAL_LINKDMA(htim_base,hdma[TIM_DMA_ID_CC1],hdma_tim1_ch1);
+    __HAL_LINKDMA(htim_base, hdma[TIM_DMA_ID_CC1], hdma_tim1_ch1);
     
     /* TIM1 interrupt Init */
     HAL_NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
     
     /* USER CODE BEGIN TIM1_MspInit 1 */
-    
-    HAL_DMA_RegisterCallback(&hdma_tim1_ch1, HAL_DMA_XFER_CPLT_CB_ID, indication.DMATransferComplete);
-    HAL_DMA_RegisterCallback(&hdma_tim1_ch1, HAL_DMA_XFER_ERROR_CB_ID, indication.DMATransferError);
     
     /* USER CODE END TIM1_MspInit 1 */
   }
