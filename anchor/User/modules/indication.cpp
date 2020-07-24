@@ -24,7 +24,7 @@ void Indication::init()
 void Indication::light()
 {
   if (tx_complete) {
-    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*)indication.dma_buf, DMA_BUF_LEN);
+    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)indication.dma_buf, DMA_BUF_LEN);
     tx_complete = 0;
   }
 }
