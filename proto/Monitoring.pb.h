@@ -17,7 +17,7 @@ extern "C" {
 typedef struct _Monitoring_TDOA_message {
     uint32_t NodeID;
     uint32_t BlinkID;
-    uint32_t BlinkTS;
+    uint64_t BlinkTS;
     uint32_t BlinkNN;
     uint32_t SyncID;
     uint64_t SyncTxTS;
@@ -93,7 +93,7 @@ X(a, STATIC,   SINGULAR, UINT32,   ResponseNN,        7)
 #define Monitoring_TDOA_message_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   NodeID,            1) \
 X(a, STATIC,   SINGULAR, UINT32,   BlinkID,           2) \
-X(a, STATIC,   SINGULAR, UINT32,   BlinkTS,           3) \
+X(a, STATIC,   SINGULAR, UINT64,   BlinkTS,           3) \
 X(a, STATIC,   SINGULAR, UINT32,   BlinkNN,           4) \
 X(a, STATIC,   SINGULAR, UINT32,   SyncID,            5) \
 X(a, STATIC,   SINGULAR, UINT64,   SyncTxTS,          6) \
@@ -112,9 +112,9 @@ extern const pb_msgdesc_t Monitoring_TDOA_message_msg;
 #define Monitoring_TDOA_message_fields &Monitoring_TDOA_message_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Monitoring_size                          103
+#define Monitoring_size                          108
 #define Monitoring_TWR_message_size              41
-#define Monitoring_TDOA_message_size             58
+#define Monitoring_TDOA_message_size             63
 
 #ifdef __cplusplus
 } /* extern "C" */
