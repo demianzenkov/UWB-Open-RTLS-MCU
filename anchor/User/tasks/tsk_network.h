@@ -5,11 +5,11 @@
 #include "cmsis_os.h"
 #include "wake.h"
 
-class TskUNE 
+class TskNetwork 
 {
 public:
-  TskUNE();
-  ~TskUNE();
+  TskNetwork();
+  ~TskNetwork();
   void createTask();
   static void task(void const *arg);
   
